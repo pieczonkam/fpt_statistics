@@ -17,8 +17,8 @@ a = Analysis(['main.py'],
              cipher=block_cipher,
              noarchive=False)
 
-a.datas += [('applogo.ico', 'C:\\Users\\mac25\\Desktop\\Studia\\fpt_projekt\\app\\applogo.ico', 'DATA'),
-            ('excellogo.png', 'C:\\Users\\mac25\\Desktop\\Studia\\fpt_projekt\\app\\excellogo.png', 'DATA')]
+a.datas += [('applogo.ico', 'D:\\users\\student\\Desktop\\app\\applogo.ico', 'DATA'),
+            ('excellogo.png', 'D:\\users\\student\\Desktop\\app\\excellogo.png', 'DATA')]
 
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)

@@ -9,11 +9,8 @@ class App:
         self.window.title('PMS Data Analysis')
         self.window.state('zoomed')
         self.window.minsize(800, 600)
-        self.window.iconbitmap(os.path.abspath('applogo.ico'))
-        #self.window.bind('<Configure>', self.resize)
-
-        self.widnow_width = self.window.winfo_width()
-
+        self.window.iconbitmap(utils.resourcePath('applogo.ico'))
+        
         self.language = 'polish'
         self.filepath = ''
         self.filename = ''
@@ -159,7 +156,7 @@ class App:
         # label1
         if self.filename != '':
             excel_logo = tkinter.PhotoImage(
-                file=os.path.abspath('excellogo.png'))
+                file=utils.resourcePath('excellogo.png'))
             self.label1 = tkinter.Label(
                 self.window,
                 image=excel_logo,
@@ -174,12 +171,6 @@ class App:
             widget.destroy()
 
     ##########################################################################
-
-    def resize(self, event):
-        if self.widnow_width != self.window.winfo_width():
-            self.window_width = self.window.winfo_width()
-            self.reloadWidgets()
-
 
 if __name__ == '__main__':
     pass

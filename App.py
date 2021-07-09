@@ -1,6 +1,7 @@
 from imports import *
 from MenuBar import *
 from Table import *
+from Loading import *
 
 
 class App:
@@ -8,9 +9,10 @@ class App:
         self.language = 'polish'
         self.filepath = ''
         self.filename = ''
-        self.excel_table = None
         self.excel_all_sheets = [self.setLabel('Brak', 'None')]
         self.excel_sheet = None
+        self.excel_table = None
+        self.prev_excel_table = None
 
         self.window = tkinter.Tk()
         self.window.title('PMS Data Analysis')
@@ -26,18 +28,22 @@ class App:
         self.frame2 = ttk.Frame(self.window)
         self.frame3 = ttk.Frame(self.window)
         self.frame4 = ttk.Frame(self.window)
+        self.frame5 = ttk.Frame(self.window)
         self.frame1.place(relx=0, rely=0, relwidth=0.85, relheight=0.05)
-        self.frame2.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.93)
-        self.frame3.place(relx=0, rely=0.98, relwidth=0.85, relheight=0.02)
-        self.frame4.place(relx=0.85, rely=0, relwidth=0.15, relheight=1)
+        self.frame2.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
+        self.frame3.place(relx=0, rely=0.97, relwidth=0.85, relheight=0.03)
+        self.frame4.place(relx=0.85, rely=0, relwidth=0.15, relheight=0.94)
+        self.frame5.place(relx=0.85, rely=0.94, relwidth=0.15, relheight=0.06)
 
         # Separators
         self.sep1 = ttk.Separator(self.frame4, orient='vertical')
         self.sep2 = ttk.Separator(self.frame1, orient='horizontal')
         self.sep3 = ttk.Separator(self.frame3, orient='horizontal')
+        self.sep4 = ttk.Separator(self.frame5, orient='vertical')
         self.sep1.place(relx=0, rely=0, relheight=1)
         self.sep2.place(relx=0, rely=0.98, relwidth=1)
         self.sep3.place(relx=0, rely=0, relwidth=1)
+        self.sep4.place(relx=0, rely=0, relheight=1)
 
         # Buttons
         self.btn1 = None
@@ -53,6 +59,7 @@ class App:
         # Classes
         self.menubar = None
         self.table = None
+        self.loading = Loading(self.window, self.frame5, self.language)
 
     ##########################################################################
     # Menu bar commands
@@ -73,8 +80,6 @@ class App:
             self.filepath = prev_filepath
         else:
             self.filename = os.path.basename(self.filepath)
-            tkinter.messagebox.showinfo(
-                message=self.setLabel('Plik załadowany pomyślnie.', 'File was loaded successfully.'))
             self.excel_all_sheets = pd.ExcelFile(self.filepath).sheet_names
             self.excel_all_sheets = [self.excel_all_sheets[0] if len(
                 self.excel_all_sheets) > 0 else self.setLabel('Brak', 'None')] + self.excel_all_sheets
@@ -82,7 +87,12 @@ class App:
                 self.excel_sheet = self.excel_all_sheets[1]
             else:
                 self.excel_sheet = None
-            self.excel_table = None
+            #self.loading.show()
+            self.excel_table = pd.read_excel(
+                self.filepath, sheet_name=self.excel_sheet)
+            #self.loading.hide()
+            tkinter.messagebox.showinfo(
+                message=self.setLabel('Plik załadowany pomyślnie.', 'File was loaded successfully.'))
             self.reloadWidgets()
             self.reloadTable()
 
@@ -96,11 +106,13 @@ class App:
         self.language = 'polish'
         self.reloadMenuBar()
         self.reloadWidgets()
+        self.loading.setLanguage(self.language)
 
     def setEnglish(self):
         self.language = 'english'
         self.reloadMenuBar()
         self.reloadWidgets()
+        self.loading.setLanguage(self.language)
 
     def setLabel(self, polish, english):
         if self.language == 'polish':
@@ -111,6 +123,7 @@ class App:
     def exitApp(self):
         if tkinter.messagebox.askquestion(
                 message=self.setLabel('Czy na pewno chcesz zakończyć?', 'Are you sure you want to exit?')) == 'yes':
+            self.loading.stop()
             self.window.quit()
 
     ##########################################################################
@@ -120,6 +133,10 @@ class App:
     def selectSheet(self, selected_sheet):
         if self.excel_sheet != selected_sheet:
             self.excel_sheet = selected_sheet
+            self.loading.show()
+            self.excel_table = pd.read_excel(
+                self.filepath, sheet_name=self.excel_sheet)
+            self.loading.hide()
             self.reloadTable()
 
     def reloadMenuBar(self):
@@ -136,11 +153,13 @@ class App:
     def reloadTable(self):
         if self.show_table != False:
             if self.filepath != '':
-                if self.table != None:
-                    self.table.destroy()
-                self.excel_table = pd.read_excel(
-                    self.filepath, sheet_name=self.excel_sheet)
-                self.table = Table(self.frame2, self.excel_table)
+                if self.prev_excel_table is None or not self.excel_table.equals(self.prev_excel_table):
+                    self.prev_excel_table = self.excel_table
+                    if self.table != None:
+                        self.table.destroy()
+                    self.loading.show()
+                    self.table = Table(self.frame2, self.excel_table)
+                    self.loading.hide()
             else:
                 tkinter.messagebox.showerror(
                     message=self.setLabel('Aby wyświetlić tabelę, proszę załadować plik.', 'In order to show a table, load a file first.'))
@@ -190,9 +209,9 @@ class App:
 
         # Frame4
         self.btn1 = ttk.Button(self.frame4, text=self.setLabel(
-            'Dane wejściowe', 'Input data'), command=self.showTable)
+            'Wyświetl tabelę', 'Show table'), command=self.showTable)
         self.btn2 = ttk.Button(self.frame4, text=self.setLabel(
-            'Pusty', 'Empty'), command=self.showEmpty)
+            'Wyczyść', 'Clear'), command=self.showEmpty)
         # 0.02 for vertical separator
         self.btn1.place(relx=0.05, rely=0.01, relwidth=0.92)
         self.btn2.place(relx=0.05, rely=0.05, relwidth=0.92)
@@ -213,10 +232,12 @@ class App:
         self.show_empty = True
         self.show_table = False
         if self.table != None:
+            self.prev_excel_table = None
             self.table = None
             self.frame2.destroy()
             self.frame2 = ttk.Frame(self.window)
             self.frame2.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.93)
+
 
 if __name__ == '__main__':
     pass

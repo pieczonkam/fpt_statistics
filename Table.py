@@ -18,15 +18,10 @@ class Table:
         for i in range(self.rows):
             row_dict = {}
             for col in self.excel_table:
-                if isinstance(self.excel_table[col][i], pd.Timestamp):
-                    row_dict[col] = self.excel_table[col][i].strftime('%Y-%m-%d %X')
-                elif isinstance(self.excel_table[col][i], datetime.time):
-                    row_dict[col] = self.excel_table[col][i].strftime('%d.%m.%Y %X')
-                    print(type(row_dict[col]), ':', row_dict[col])
-                elif isinstance(self.excel_table[col][i], np.int64) or isinstance(self.excel_table[col][i], np.float64) or isinstance(self.excel_table[col][i], np.int32) or isinstance(self.excel_table[col][i], np.float32):
-                    row_dict[col] = self.excel_table[col][i].item()
+                if pd.isnull(self.excel_table[col][i]):
+                    row_dict[col] = ''
                 else:
-                    row_dict[col] = self.excel_table[col][i]
+                    row_dict[col] = str(self.excel_table[col][i])
             data[i+1] = row_dict
 
         return data

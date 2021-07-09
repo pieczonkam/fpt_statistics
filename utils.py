@@ -8,3 +8,11 @@ def resourcePath(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
+def setLabel(language, polish, english):
+        if language == 'polish':
+            return polish
+        return english
+
+if __name__ == '__main__':
+    pass

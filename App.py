@@ -18,19 +18,26 @@ class App:
         self.window.minsize(1100, 700)
         self.window.iconbitmap(utils.resourcePath('applogo.ico'))
 
+        self.show_empty = True
+        self.show_table = False
+
         # Frames
         self.frame1 = ttk.Frame(self.window)
         self.frame2 = ttk.Frame(self.window)
         self.frame3 = ttk.Frame(self.window)
+        self.frame4 = ttk.Frame(self.window)
         self.frame1.place(relx=0, rely=0, relwidth=0.85, relheight=0.05)
-        self.frame2.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.95)
-        self.frame3.place(relx=0.85, rely=0, relwidth=0.15, relheight=1)
+        self.frame2.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.93)
+        self.frame3.place(relx=0, rely=0.98, relwidth=0.85, relheight=0.02)
+        self.frame4.place(relx=0.85, rely=0, relwidth=0.15, relheight=1)
 
         # Separators
-        self.sep1 = ttk.Separator(self.frame3, orient='vertical')
-        self.sep2 = ttk.Separator(self.frame2, orient='horizontal')
+        self.sep1 = ttk.Separator(self.frame4, orient='vertical')
+        self.sep2 = ttk.Separator(self.frame1, orient='horizontal')
+        self.sep3 = ttk.Separator(self.frame3, orient='horizontal')
         self.sep1.place(relx=0, rely=0, relheight=1)
-        self.sep2.place(relx=0, rely=0, relwidth=1)
+        self.sep2.place(relx=0, rely=0.98, relwidth=1)
+        self.sep3.place(relx=0, rely=0, relwidth=1)
 
         # Buttons
         self.btn1 = None
@@ -77,6 +84,7 @@ class App:
                 self.excel_sheet = None
             self.excel_table = None
             self.reloadWidgets()
+            self.reloadTable()
 
     # Help commands
     def printInfo(self):
@@ -106,11 +114,13 @@ class App:
             self.window.quit()
 
     ##########################################################################
-    # Other commands
+    # Other methods
 
     # opt_menu1
     def selectSheet(self, selected_sheet):
-        self.excel_sheet = selected_sheet
+        if self.excel_sheet != selected_sheet:
+            self.excel_sheet = selected_sheet
+            self.reloadTable()
 
     def reloadMenuBar(self):
         self.menubar = MenuBar(self.window)
@@ -124,15 +134,18 @@ class App:
             'Zakończ', 'Exit'), main_command=self.exitApp)
 
     def reloadTable(self):
-        if self.filepath != '':
-            if self.table != None:
-                self.table.destroy()
-            self.excel_table = pd.read_excel(
-                self.filepath, sheet_name=self.excel_sheet)
-            self.table = Table(self.frame2, self.excel_table)
-        else:
-            tkinter.messagebox.showerror(
-                message=self.setLabel('Aby wyświetlić tabelę, proszę załadować plik.', 'In order to show a table, load a file first.'))
+        if self.show_table != False:
+            if self.filepath != '':
+                if self.table != None:
+                    self.table.destroy()
+                self.excel_table = pd.read_excel(
+                    self.filepath, sheet_name=self.excel_sheet)
+                self.table = Table(self.frame2, self.excel_table)
+            else:
+                tkinter.messagebox.showerror(
+                    message=self.setLabel('Aby wyświetlić tabelę, proszę załadować plik.', 'In order to show a table, load a file first.'))
+                self.show_table = False
+                self.show_empty = True
 
     def reloadWidgets(self):
         # Destroy widgets if they exist
@@ -175,24 +188,35 @@ class App:
                 'Nie załadowano pliku.', 'No file loaded.'))
             self.label1.pack(side=tkinter.LEFT, padx=15)
 
-        # Frame3
-        self.btn1 = ttk.Button(self.frame3, text=self.setLabel(
-            'Tabela', 'Table'), command=self.reloadTable)
-        self.btn2 = ttk.Button(self.frame3, text=self.setLabel(
-            'Pusty', 'Empty'), command=self.reloadTable)
-        self.btn3 = ttk.Button(self.frame3, text=self.setLabel(
-            'Pusty', 'Empty'), command=self.reloadTable)
+        # Frame4
+        self.btn1 = ttk.Button(self.frame4, text=self.setLabel(
+            'Dane wejściowe', 'Input data'), command=self.showTable)
+        self.btn2 = ttk.Button(self.frame4, text=self.setLabel(
+            'Pusty', 'Empty'), command=self.showEmpty)
         # 0.02 for vertical separator
         self.btn1.place(relx=0.05, rely=0.01, relwidth=0.92)
         self.btn2.place(relx=0.05, rely=0.05, relwidth=0.92)
-        self.btn3.place(relx=0.05, rely=0.09, relwidth=0.92)
 
     def destroyWidget(self, widget):
         if widget is not None:
             widget.destroy()
 
     ##########################################################################
+    # Content display controllers
 
+    def showTable(self):
+        self.show_table = True
+        self.show_empty = False
+        self.reloadTable()
+
+    def showEmpty(self):
+        self.show_empty = True
+        self.show_table = False
+        if self.table != None:
+            self.table = None
+            self.frame2.destroy()
+            self.frame2 = ttk.Frame(self.window)
+            self.frame2.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.93)
 
 if __name__ == '__main__':
     pass

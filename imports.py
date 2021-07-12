@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import ttk
 from tkinter import filedialog
-import tkintertable
+import tksheet
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt

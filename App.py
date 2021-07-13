@@ -1,6 +1,7 @@
 from imports import *
 from MenuBar import *
 from Table import *
+from Charts import *
 from Loading import *
 
 
@@ -23,7 +24,11 @@ class App:
 
         self.show_empty = True
         self.show_table = False
-        self.show_chart = False
+        self.show_chartA = False
+        self.show_chartB = False
+        self.show_chartC = False
+        self.show_chartD = False
+        self.show_chartE = False
 
         self.is_loading = False
 
@@ -31,6 +36,7 @@ class App:
         self.frame1 = ttk.Frame(self.window)
         self.frame2_empty = ttk.Frame(self.window)
         self.frame2_table = ttk.Frame(self.window)
+        self.frame2_chart = ttk.Frame(self.window)
         self.frame3 = ttk.Frame(self.window)
         self.frame4 = ttk.Frame(self.window)
         self.frame5 = ttk.Frame(self.window)
@@ -55,6 +61,10 @@ class App:
         self.btn1 = None
         self.btn2 = None
         self.btn3 = None
+        self.btn4 = None
+        self.btn5 = None
+        self.btn6 = None
+        self.btn7 = None
         # Labels
         self.label1 = None
         self.label2 = None
@@ -65,6 +75,7 @@ class App:
         # Classes
         self.menubar = None
         self.table = None
+        self.chart = None
         self.loading = Loading(self.window, self.frame5, self.language)
 
     ##########################################################################
@@ -98,6 +109,7 @@ class App:
                     self.readExcel, 'Ładowanie pliku...', 'Loading file...')
                 self.reloadWidgets()
                 self.reloadTable()
+                self.reloadChart()
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
                 'Proszę zaczekać na ukończenie ładowania.', 'Please wait until loading is finished.'))
@@ -145,8 +157,11 @@ class App:
             self.excel_table = self.runWithLoading(
                 self.readExcel, 'Ładowanie arkusza...', 'Loading sheet...')
             self.reloadTable()
+            self.reloadChart()
 
     def reloadMenuBar(self):
+        if not self.menubar is None:
+            self.menubar.clear()
         self.menubar = MenuBar(self.window)
         self.menubar.addMenu(self.setLabel('Plik', 'File'), labels=[self.setLabel(
             'Załaduj', 'Load')], commands=[self.loadFile])
@@ -162,14 +177,32 @@ class App:
             if self.filepath != '':
                 if self.prev_excel_table is None or not self.excel_table.equals(self.prev_excel_table):
                     self.prev_excel_table = self.excel_table
+                    if not self.table is None:
+                        prev_table = self.table
+                    else:
+                        prev_table = None
                     self.table = self.runWithLoading(Table(
                         self.frame2_table, self.excel_table).prepareTable, 'Ładowanie tabeli...', 'Loading table...')
-                    self.table.grid(row = 0, column = 0, sticky = 'nswe')
+                    self.table.grid(row=0, column=0, sticky='nswe')
+                    if not prev_table is None:
+                        prev_table.destroy()
             else:
                 tkinter.messagebox.showerror(
                     message=self.setLabel('Aby wyświetlić tabelę, proszę załadować plik.', 'In order to show a table load a file first.'))
-                self.show_table = False
-                self.show_empty = True
+                self.showEmpty()
+
+    def reloadChart(self):
+        self.chart = Chart(self.frame2_chart, self.excel_table)
+        if self.show_chartA == True:
+            self.chart.drawChart('A')
+        elif self.show_chartB == True:
+            self.chart.drawChart('B')
+        elif self.show_chartC == True:
+            self.chart.drawChart('C')
+        elif self.show_chartD == True:
+            self.chart.drawChart('D')
+        elif self.show_chartE == True:
+            self.chart.drawChart('E')
 
     def reloadWidgets(self):
         # Destroy widgets if they exist
@@ -177,6 +210,10 @@ class App:
         self.destroyWidget(self.btn1)
         self.destroyWidget(self.btn2)
         self.destroyWidget(self.btn3)
+        self.destroyWidget(self.btn4)
+        self.destroyWidget(self.btn5)
+        self.destroyWidget(self.btn6)
+        self.destroyWidget(self.btn7)
         # Labels
         self.destroyWidget(self.label1)
         self.destroyWidget(self.label2)
@@ -202,7 +239,7 @@ class App:
             opt = tkinter.StringVar()
             self.opt_menu1 = ttk.OptionMenu(
                 self.frame1, opt, *self.excel_all_sheets, command=self.selectSheet)
-            opt.set(self.excel_sheet if self.excel_sheet !=
+            opt.set(self.excel_sheet if not self.excel_sheet is
                     None else self.setLabel('Brak', 'None'))
             self.label1.pack(side=tkinter.LEFT, padx=15)
             self.label2.pack(side=tkinter.LEFT)
@@ -216,13 +253,25 @@ class App:
         self.btn1 = ttk.Button(self.frame4, text=self.setLabel(
             'Wyświetl tabelę', 'Show table'), command=self.showTable)
         self.btn2 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl wykres', 'Show chart'), command=self.showChart)
+            'Wyświetl wykres A', 'Show chart A'), command=self.showChartA)
         self.btn3 = ttk.Button(self.frame4, text=self.setLabel(
+            'Wyświetl wykres B', 'Show chart B'), command=self.showChartB)
+        self.btn4 = ttk.Button(self.frame4, text=self.setLabel(
+            'Wyświetl wykres C', 'Show chart C'), command=self.showChartC)
+        self.btn5 = ttk.Button(self.frame4, text=self.setLabel(
+            'Wyświetl wykres D', 'Show chart D'), command=self.showChartD)
+        self.btn6 = ttk.Button(self.frame4, text=self.setLabel(
+            'Wyświetl wykres E', 'Show chart E'), command=self.showChartE)
+        self.btn7 = ttk.Button(self.frame4, text=self.setLabel(
             'Wyczyść', 'Clear'), command=self.showEmpty)
         # 0.02 for vertical separator
         self.btn1.place(relx=0.05, rely=0.01, relwidth=0.92)
         self.btn2.place(relx=0.05, rely=0.05, relwidth=0.92)
         self.btn3.place(relx=0.05, rely=0.09, relwidth=0.92)
+        self.btn4.place(relx=0.05, rely=0.13, relwidth=0.92)
+        self.btn5.place(relx=0.05, rely=0.17, relwidth=0.92)
+        self.btn6.place(relx=0.05, rely=0.21, relwidth=0.92)
+        self.btn7.place(relx=0.05, rely=0.25, relwidth=0.92)
 
     def destroyWidget(self, widget):
         if widget is not None:
@@ -248,27 +297,81 @@ class App:
     # Content display controllers
 
     def showTable(self):
-        if not self.is_loading:
+        if not self.is_loading and not self.show_table:
             self.show_table = True
             self.show_empty = False
+            self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
             self.reloadTable()
-            self.frame2_empty.place_forget()
-            self.frame2_table.place(
-                relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
-            self.frame2_table.grid_columnconfigure(0, weight = 1)
-            self.frame2_table.grid_rowconfigure(0, weight = 1)
+            if self.show_empty != True:
+                self.frame2_empty.place_forget()
+                self.frame2_chart.place_forget()
+                self.frame2_table.place(
+                    relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
+                self.frame2_table.grid_columnconfigure(0, weight=1)
+                self.frame2_table.grid_rowconfigure(0, weight=1)
 
     def showChart(self):
-        if not self.is_loading:
-            print('Chart')
+        if self.chart is None:
+            tkinter.messagebox.showerror(
+                message=self.setLabel('Aby wyświetlić wykres, proszę załadować plik.', 'In order to show a chart load a file first.'))
+            self.showEmpty()
+        else:
+            self.show_empty = self.show_table = False
+            self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
+            self.frame2_empty.place_forget()
+            self.frame2_table.place_forget()
+            self.frame2_chart.place(
+                relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
+
+    def showChartA(self):
+        if not self.is_loading and not self.show_chartA:
+            self.showChart()
+            if self.show_empty != True:
+                self.show_chartA = True
+                self.chart.drawChart('A')
+
+    def showChartB(self):
+        if not self.is_loading and not self.show_chartB:
+            self.showChart()
+            if self.show_empty != True:
+                self.show_chartB = True
+                self.chart.drawChart('B')
+
+    def showChartC(self):
+        if not self.is_loading and not self.show_chartC:
+            self.showChart()
+            if self.show_empty != True:
+                self.show_chartC = True
+                self.chart.drawChart('C')
+
+    def showChartD(self):
+        if not self.is_loading and not self.show_chartD:
+            self.showChart()
+            if self.show_empty != True:
+                self.show_chartD = True
+                self.chart.drawChart('D')
+
+    def showChartE(self):
+        if not self.is_loading and not self.show_chartE:
+            self.showChart()
+            if self.show_empty != True:
+                self.show_chartE = True
+                self.chart.drawChart('E')
 
     def showEmpty(self):
-        if not self.is_loading:
+        if not self.is_loading and not self.show_empty:
             self.show_empty = True
             self.show_table = False
+            self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
             self.frame2_table.place_forget()
+            self.frame2_chart.place_forget()
             self.frame2_empty.place(
                 relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
+
+            print(self.window.winfo_children())
+            for child in self.window.winfo_children():
+                print(child)
+                print(child.winfo_children())
 
 
 if __name__ == '__main__':

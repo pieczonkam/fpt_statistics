@@ -8,7 +8,7 @@ class Table:
         self.cols = len(excel_table.columns)
         self.rows = len(excel_table)
         self.table = None
-
+        
     def readExcelData(self):
         data = []
         headers = [col for col in self.excel_table]

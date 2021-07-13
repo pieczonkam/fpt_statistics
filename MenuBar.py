@@ -7,6 +7,9 @@ class MenuBar:
         self.menubar = tkinter.Menu(self.window)
         self.window.config(menu=self.menubar)
 
+    def clear(self):
+        self.menubar.destroy()
+
     def addMenu(self, main_label, main_command=None,
                 labels=None, commands=None):
         menu = tkinter.Menu(self.menubar, tearoff=0)

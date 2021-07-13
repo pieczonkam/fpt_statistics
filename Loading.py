@@ -35,7 +35,7 @@ class Loading:
             self.window.after_cancel(self.timer_id)
 
     def show(self):
-        self.label.pack(side=tkinter.LEFT, padx=15)
+        self.label.pack(side=tkinter.LEFT, padx=10)
         self.window.update()
         self.start()
 

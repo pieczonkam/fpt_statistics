@@ -251,12 +251,12 @@ class App:
         if not self.is_loading:
             self.show_table = True
             self.show_empty = False
+            self.reloadTable()
             self.frame2_empty.place_forget()
             self.frame2_table.place(
                 relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
             self.frame2_table.grid_columnconfigure(0, weight = 1)
             self.frame2_table.grid_rowconfigure(0, weight = 1)
-            self.reloadTable()
 
     def showChart(self):
         if not self.is_loading:

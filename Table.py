@@ -26,10 +26,12 @@ class Table:
     def prepareTable(self):
         data, headers = self.readExcelData()
         self.table = tksheet.Sheet(self.frame,
-                           data=data, headers=headers)
-        self.table.header_font(newfont=('Arial', 12, 'bold'))
+                           data=data, headers=headers, header_font=('Arial', 12, 'bold'))
         self.table.readonly_columns(columns=list(range(self.cols)))
         self.table.enable_bindings()
+        self.table.disable_bindings('paste')
+        self.table.disable_bindings('cut')
+        self.table.disable_bindings('delete')
         return self.table
 
 

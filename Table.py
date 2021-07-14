@@ -8,7 +8,7 @@ class Table:
         self.cols = len(excel_table.columns)
         self.rows = len(excel_table)
         self.table = None
-        
+
     def readExcelData(self):
         data = []
         headers = [col for col in self.excel_table]
@@ -26,7 +26,7 @@ class Table:
     def prepareTable(self):
         data, headers = self.readExcelData()
         self.table = tksheet.Sheet(self.frame,
-                           data=data, headers=headers, header_font=('Arial', 12, 'bold'))
+                                   data=data, headers=headers, header_font=('Arial', 12, 'bold'))
         self.table.readonly_columns(columns=list(range(self.cols)))
         self.table.enable_bindings()
         self.table.disable_bindings('paste')
@@ -37,8 +37,3 @@ class Table:
 
 if __name__ == '__main__':
     pass
-
-
-
-
-

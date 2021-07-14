@@ -1,7 +1,7 @@
 from imports import *
 from MenuBar import *
 from Table import *
-from Charts import *
+from Chart import *
 from Loading import *
 
 
@@ -71,6 +71,7 @@ class App:
         self.label3 = None
         # OptionMenus
         self.opt_menu1 = None
+        self.opt = None
 
         # Classes
         self.menubar = None
@@ -105,9 +106,9 @@ class App:
                     self.excel_sheet = self.excel_all_sheets[1]
                 else:
                     self.excel_sheet = None
+                self.reloadWidgets()
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Ładowanie pliku...', 'Loading file...')
-                self.reloadWidgets()
                 self.reloadTable()
                 self.reloadChart()
         else:
@@ -152,12 +153,17 @@ class App:
 
     # opt_menu1
     def selectSheet(self, selected_sheet):
-        if self.excel_sheet != selected_sheet and not self.is_loading:
-            self.excel_sheet = selected_sheet
-            self.excel_table = self.runWithLoading(
-                self.readExcel, 'Ładowanie arkusza...', 'Loading sheet...')
-            self.reloadTable()
-            self.reloadChart()
+        if self.excel_sheet != selected_sheet:
+            if not self.is_loading:
+                self.excel_sheet = selected_sheet
+                self.excel_table = self.runWithLoading(
+                    self.readExcel, 'Ładowanie arkusza...', 'Loading sheet...')
+                self.reloadTable()
+                self.reloadChart()
+            else:
+                tkinter.messagebox.showerror(message=self.setLabel(
+                    'Proszę zaczekać na ukończenie ładowania.', 'Please wait until loading is finished.'))
+                self.opt.set(self.excel_sheet)
 
     def reloadMenuBar(self):
         if not self.menubar is None:
@@ -236,11 +242,11 @@ class App:
             self.label1.image = excel_logo
             self.label2 = ttk.Label(
                 self.frame1, text=self.setLabel('Arkusz:', 'Sheet:'))
-            opt = tkinter.StringVar()
+            self.opt = tkinter.StringVar()
             self.opt_menu1 = ttk.OptionMenu(
-                self.frame1, opt, *self.excel_all_sheets, command=self.selectSheet)
-            opt.set(self.excel_sheet if not self.excel_sheet is
-                    None else self.setLabel('Brak', 'None'))
+                self.frame1, self.opt, *self.excel_all_sheets, command=self.selectSheet)
+            self.opt.set(self.excel_sheet if not self.excel_sheet is
+                         None else self.setLabel('Brak', 'None'))
             self.label1.pack(side=tkinter.LEFT, padx=15)
             self.label2.pack(side=tkinter.LEFT)
             self.opt_menu1.pack(side=tkinter.LEFT)
@@ -367,11 +373,6 @@ class App:
             self.frame2_chart.place_forget()
             self.frame2_empty.place(
                 relx=0, rely=0.05, relwidth=0.85, relheight=0.92)
-
-            print(self.window.winfo_children())
-            for child in self.window.winfo_children():
-                print(child)
-                print(child.winfo_children())
 
 
 if __name__ == '__main__':

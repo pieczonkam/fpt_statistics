@@ -3,6 +3,7 @@ from MenuBar import *
 from Table import *
 from Chart import *
 from Loading import *
+from ChecklistWindow import *
 
 
 class App:
@@ -78,6 +79,7 @@ class App:
         self.table = None
         self.chart = None
         self.loading = Loading(self.window, self.frame5, self.language)
+        self.checklist_window = None
 
     ##########################################################################
     # Menu bar commands
@@ -280,7 +282,7 @@ class App:
         self.btn7.place(relx=0.05, rely=0.25, relwidth=0.92)
 
     def destroyWidget(self, widget):
-        if widget is not None:
+        if not widget is None:
             widget.destroy()
 
     @utils.threadpool

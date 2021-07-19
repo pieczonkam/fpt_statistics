@@ -3,7 +3,6 @@ from MenuBar import *
 from Table import *
 from Chart import *
 from Loading import *
-from ChecklistWindow import *
 
 
 class App:
@@ -74,12 +73,18 @@ class App:
         self.opt_menu1 = None
         self.opt = None
 
+        # Charts data
+        self.chartA_data = [None, None, None, None]
+        self.chartB_data = None
+        self.chartC_data = None
+        self.chartD_data = None
+        self.chartE_data = None
+
         # Classes
         self.menubar = None
         self.table = None
         self.chart = None
         self.loading = Loading(self.window, self.frame5, self.language)
-        self.checklist_window = None
 
     ##########################################################################
     # Menu bar commands
@@ -112,6 +117,7 @@ class App:
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Ładowanie pliku...', 'Loading file...')
                 self.reloadTable()
+                self.resetChartsData()
                 self.reloadChart()
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
@@ -127,12 +133,14 @@ class App:
         self.language = 'polish'
         self.reloadMenuBar()
         self.reloadWidgets()
+        self.reloadChart()
         self.loading.setText(self.language)
 
     def setEnglish(self):
         self.language = 'english'
         self.reloadMenuBar()
         self.reloadWidgets()
+        self.reloadChart()
         self.loading.setText(self.language)
 
     def setLabel(self, polish, english):
@@ -161,6 +169,7 @@ class App:
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Ładowanie arkusza...', 'Loading sheet...')
                 self.reloadTable()
+                self.resetChartsData()
                 self.reloadChart()
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
@@ -200,7 +209,10 @@ class App:
                 self.showEmpty()
 
     def reloadChart(self):
-        self.chart = Chart(self.frame2_chart, self.excel_table)
+        if not self.chart is None:
+            del self.chart
+        self.chart = Chart(self.window, self.frame2_chart, self.excel_table, self.language,
+                           self.chartA_data, self.chartB_data, self.chartC_data, self.chartD_data, self.chartE_data)
         if self.show_chartA == True:
             self.chart.drawChart('A')
         elif self.show_chartB == True:
@@ -300,6 +312,13 @@ class App:
         self.loading.setText(self.language, 'Ładowanie...', 'Loading...')
         self.is_loading = False
         return fun_future.result()
+
+    def resetChartsData(self):
+        self.chartA_data = [None, None, None, None]
+        self.chartB_data = None
+        self.chartC_data = None
+        self.chartD_data = None
+        self.chartE_data = None
 
     ##########################################################################
     # Content display controllers

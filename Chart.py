@@ -17,39 +17,43 @@ class Chart:
         self.rows = len(excel_table)
 
         # ChartA
-        self.serial_number_selected = None
-        self.station_selected = None
-        self.operator_name_selected = None
-        self.date_selected = None
+        self.serial_numberA_selected = None
+        self.stationA_selected = None
+        self.operator_nameA_selected = None
+        self.dateA_selected = None
 
     def __del__(self):
+        self.rewriteChartData()
+
+    def rewriteChartData(self):
         # ChartA
-        self.chartA_data[0] = self.serial_number_selected
-        self.chartA_data[1] = self.station_selected
-        self.chartA_data[2] = self.operator_name_selected
-        self.chartA_data[3] = self.date_selected
+        self.chartA_data[0] = self.serial_numberA_selected
+        self.chartA_data[1] = self.stationA_selected
+        self.chartA_data[2] = self.operator_nameA_selected
+        self.chartA_data[3] = self.dateA_selected
 
     def getColumn(self, column_name, optional_name, col_index):
         try:
-            col = self.excel_table[column_name].tolist()
+            col = self.excel_table[column_name]
         except:
             try:
-                col = self.excel_table[optional_name].tolist()
+                col = self.excel_table[optional_name]
             except:
                 try:
-                    col = self.excel_table.iloc[:, col_index].tolist()
+                    col = self.excel_table.iloc[:, col_index]
                 except:
-                    col = []
+                    col = pd.Series()
         finally:
             return col
 
-    def getColumnUnique(self, column_name, optional_name, col_index):
-        return list(set(self.getColumn(column_name, optional_name, col_index)))
+    def getColumnUniqueList(self, column_name, optional_name=None, col_index=None):
+        return list(set(self.getColumn(column_name, optional_name, col_index).tolist()))
 
     def clearFrame(self):
         for child in self.frame.winfo_children():
             child.destroy()
 
+    @utils.threadpool
     def drawChart(self, chart='A'):
         def chartChoice(chart):
             return {
@@ -71,41 +75,43 @@ class Chart:
         ttk.Separator(options_frame, orient='horizontal').place(
             relx=0, rely=0.98, relwidth=1)
 
-        serial_number = sorted(self.getColumnUnique(
+        serial_number = sorted(self.getColumnUniqueList(
             'Numer seryjny', 'Serial Number', 10))
-        station = sorted(self.getColumnUnique('Stacja', 'Station', 1))
-        operator_name = sorted(self.getColumnUnique(
+        station = sorted(self.getColumnUniqueList('Stacja', 'Station', 1))
+        operator_name = sorted(self.getColumnUniqueList(
             'Operator Name', 'Operator Name', 4))
-        date = sorted(self.getColumnUnique('Date', 'Date', 2))
+        date = sorted(self.getColumnUniqueList('Date', 'Date', 2))
 
         if self.chartA_data == [None, None, None, None]:
-            self.serial_number_selected = [
+            self.serial_numberA_selected = [
                 0 for _ in range(len(serial_number))]
-            self.station_selected = [0 for _ in range(len(station))]
-            self.operator_name_selected = [
+            self.stationA_selected = [0 for _ in range(len(station))]
+            self.operator_nameA_selected = [
                 0 for _ in range(len(operator_name))]
-            self.date_selected = [0 for _ in range(len(date))]
+            self.dateA_selected = [0 for _ in range(len(date))]
             try:
-                self.serial_number_selected[0] = 1
-                self.station_selected[0] = 1
-                self.operator_name_selected[0] = 1
-                self.date_selected[0] = 1
+                self.serial_numberA_selected[0] = 1
+                self.stationA_selected[0] = 1
+                self.operator_nameA_selected[0] = 1
+                self.dateA_selected[0] = 1
             except:
                 pass
+            
+            self.rewriteChartData()
         else:
-            self.serial_number_selected = self.chartA_data[0]
-            self.station_selected = self.chartA_data[1]
-            self.operator_name_selected = self.chartA_data[2]
-            self.date_selected = self.chartA_data[3]
+            self.serial_numberA_selected = self.chartA_data[0]
+            self.stationA_selected = self.chartA_data[1]
+            self.operator_nameA_selected = self.chartA_data[2]
+            self.dateA_selected = self.chartA_data[3]
 
         serial_number_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Numer seryjny \u25bc', u'Serial number \u25bc'),
-                                       command=lambda: self.checklist_window.show(self.language, serial_number, self.serial_number_selected, page_len=250))
+                                       command=lambda: self.checklist_window.show(self.language, serial_number, self.serial_numberA_selected, page_len=250))
         station_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Stacja \u25bc', u'Station \u25bc'),
-                                 command=lambda: self.checklist_window.show(self.language, station, self.station_selected, page_len=250))
+                                 command=lambda: self.checklist_window.show(self.language, station, self.stationA_selected, page_len=250))
         operator_name_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Operator \u25bc', u'Operator name \u25bc'),
-                                       command=lambda: self.checklist_window.show(self.language, operator_name, self.operator_name_selected, page_len=250))
+                                       command=lambda: self.checklist_window.show(self.language, operator_name, self.operator_nameA_selected, page_len=250))
         date_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Data \u25bc', u'Date \u25bc'),
-                              command=lambda: self.checklist_window.show(self.language, date, self.date_selected, page_len=250))
+                              command=lambda: self.checklist_window.show(self.language, date, self.dateA_selected, page_len=250))
         serial_number_btn.pack(side=tkinter.LEFT, padx=15)
         station_btn.pack(side=tkinter.LEFT)
         operator_name_btn.pack(side=tkinter.LEFT, padx=15)
@@ -116,19 +122,15 @@ class Chart:
         chart_frame = ttk.Frame(self.frame)
         chart_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-        data = {'Year': [1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010],
-                'Unemployment_Rate': [9.8, 12, 8, 7.2, 6.9, 7, 6.5, 6.2, 5.5, 6.3]
-                }
-        df = pd.DataFrame(data, columns=['Year', 'Unemployment_Rate'])
-
-        figure = plt.Figure()
-        ax = figure.add_subplot(111)
-        line = FigureCanvasTkAgg(figure, chart_frame)
-        line.get_tk_widget().place(relx=0.05, rely=0.05, relwidth=0.9, relheight=0.9)
-        df = df[['Year', 'Unemployment_Rate']].groupby('Year').sum()
-        df.plot(kind='line', legend=True, ax=ax,
-                color='r', marker='o', fontsize=10)
-        ax.set_title('Year Vs. Unemployment Rate')
+        bars_nmb = 28
+        frequency = [0 for _ in range(bars_nmb)]
+        time_elapsed = {}
+        
+        for sn in self.getColumnUniqueList('Numer seryjny', 'Serial Number', 10):
+            date = self.getColumn('Date', 'Date', 2)[self.getColumn('Numer seryjny', 'Serial Number', 10) == sn].values
+            delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn('Numer seryjny', 'Serial Number', 10) == sn) & (self.getColumn('Date', 'Date', 2) == np.max(date))].values[0])
+            time_elapsed[sn] = (np.max(date) - np.min(date)) / np.timedelta64(1, 's') + delta_time
+        
 
     def drawChartC(self):
         self.clearFrame()
@@ -171,6 +173,7 @@ class Chart:
         self.clearFrame()
         chart_frame = ttk.Frame(self.frame)
         chart_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+        time.sleep(2)
         print('Chart E')
 
 

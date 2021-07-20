@@ -14,6 +14,10 @@ class App:
         self.excel_sheet = None
         self.excel_table = None
         self.prev_excel_table = None
+        self.excel_table_cols_nmb = 12
+        self.excel_table_cols_pl = ['UTE', 'Stacja', 'Date', 'Operator ID',	'Operator Name', 'Cycle', 'Aktualny czas trwania [s]', 'Czas trwania cyklu [s]', 'Różnica czasu [s]', 'Numer części', 'Numer seryjny', 'Przesunięcie']
+        self.excel_table_cols_eng = ['UTE', 'Station', 'Date', 'Operator ID', 'Operator Name', 'Cycle', 'Actual duration [s]', 'Cycle duration [s]', 'Time differences [s]', 'Part Number', 'Serial Number', 'Shift']
+
 
         self.window = tkinter.Tk()
         self.window.title('PMS Data Analysis')
@@ -24,6 +28,7 @@ class App:
 
         self.show_empty = True
         self.show_table = False
+        self.show_chart = False
         self.show_chartA = False
         self.show_chartB = False
         self.show_chartC = False
@@ -116,6 +121,7 @@ class App:
                 self.reloadWidgets()
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Ładowanie pliku...', 'Loading file...')
+                self.validateTable()
                 self.reloadTable()
                 self.resetChartsData()
                 self.reloadChart()
@@ -130,18 +136,20 @@ class App:
 
     # Language commands
     def setPolish(self):
-        self.language = 'polish'
-        self.reloadMenuBar()
-        self.reloadWidgets()
-        self.reloadChart()
-        self.loading.setText(self.language)
+        if self.language != 'polish':
+            self.language = 'polish'
+            self.reloadMenuBar()
+            self.reloadWidgets()
+            self.reloadChart()
+            self.loading.setText(self.language)
 
     def setEnglish(self):
-        self.language = 'english'
-        self.reloadMenuBar()
-        self.reloadWidgets()
-        self.reloadChart()
-        self.loading.setText(self.language)
+        if self.language != 'english':
+            self.language = 'english'
+            self.reloadMenuBar()
+            self.reloadWidgets()
+            self.reloadChart()
+            self.loading.setText(self.language)
 
     def setLabel(self, polish, english):
         if self.language == 'polish':
@@ -168,6 +176,7 @@ class App:
                 self.excel_sheet = selected_sheet
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Ładowanie arkusza...', 'Loading sheet...')
+                self.validateTable()
                 self.reloadTable()
                 self.resetChartsData()
                 self.reloadChart()
@@ -214,15 +223,15 @@ class App:
         self.chart = Chart(self.window, self.frame2_chart, self.excel_table, self.language,
                            self.chartA_data, self.chartB_data, self.chartC_data, self.chartD_data, self.chartE_data)
         if self.show_chartA == True:
-            self.chart.drawChart('A')
+            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'A')
         elif self.show_chartB == True:
-            self.chart.drawChart('B')
+            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'B')
         elif self.show_chartC == True:
-            self.chart.drawChart('C')
+            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'C')
         elif self.show_chartD == True:
-            self.chart.drawChart('D')
+            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'D')
         elif self.show_chartE == True:
-            self.chart.drawChart('E')
+            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'E')
 
     def reloadWidgets(self):
         # Destroy widgets if they exist
@@ -301,11 +310,11 @@ class App:
     def readExcel(self):
         return pd.read_excel(self.filepath, sheet_name=self.excel_sheet)
 
-    def runWithLoading(self, fun, text_pl, text_eng):
+    def runWithLoading(self, fun, text_pl, text_eng, *args):
         self.is_loading = True
         self.loading.setText(self.language, text_pl, text_eng)
         self.loading.show()
-        fun_future = fun()
+        fun_future = fun(*args)
         while not fun_future.done():
             self.window.update()
         self.loading.hide()
@@ -320,6 +329,11 @@ class App:
         self.chartD_data = None
         self.chartE_data = None
 
+    def validateTable(self):
+        if not self.excel_table is None:
+            if len(self.excel_table.columns) != 12 or (self.excel_table.columns.tolist() != self.excel_table_cols_pl and self.excel_table.columns.tolist() != self.excel_table_cols_eng):
+                tkinter.messagebox.showwarning(message=utils.setLabel(self.language, 'Wybrany arkusz ma nieprawidłowy format. Niektóre funkcjonalności mogą nie zadziałać poprawnie.', 'Selected sheet has incorrect format. Some functionalities may not work properly.'))
+
     ##########################################################################
     # Content display controllers
 
@@ -327,7 +341,7 @@ class App:
         if not self.is_loading and not self.show_table:
             self.show_table = True
             self.show_empty = False
-            self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
+            self.show_chart = self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
             self.reloadTable()
             if self.show_empty != True:
                 self.frame2_empty.place_forget()
@@ -343,6 +357,7 @@ class App:
                 message=self.setLabel('Aby wyświetlić wykres, proszę załadować plik.', 'In order to show a chart load a file first.'))
             self.showEmpty()
         else:
+            self.show_chart = True
             self.show_empty = self.show_table = False
             self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
             self.frame2_empty.place_forget()
@@ -355,41 +370,41 @@ class App:
             self.showChart()
             if self.show_empty != True:
                 self.show_chartA = True
-                self.chart.drawChart('A')
+                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'A')
 
     def showChartB(self):
         if not self.is_loading and not self.show_chartB:
             self.showChart()
             if self.show_empty != True:
                 self.show_chartB = True
-                self.chart.drawChart('B')
+                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'B')
 
     def showChartC(self):
         if not self.is_loading and not self.show_chartC:
             self.showChart()
             if self.show_empty != True:
                 self.show_chartC = True
-                self.chart.drawChart('C')
+                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'C')
 
     def showChartD(self):
         if not self.is_loading and not self.show_chartD:
             self.showChart()
             if self.show_empty != True:
                 self.show_chartD = True
-                self.chart.drawChart('D')
+                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'D')
 
     def showChartE(self):
         if not self.is_loading and not self.show_chartE:
             self.showChart()
             if self.show_empty != True:
                 self.show_chartE = True
-                self.chart.drawChart('E')
+                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'E')
 
     def showEmpty(self):
         if not self.is_loading and not self.show_empty:
             self.show_empty = True
             self.show_table = False
-            self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
+            self.show_chart = self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
             self.frame2_table.place_forget()
             self.frame2_chart.place_forget()
             self.frame2_empty.place(

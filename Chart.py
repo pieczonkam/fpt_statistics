@@ -21,6 +21,10 @@ class Chart:
 
         # chartB
         self.chartB_drawn = False
+        self.B_stations_range = None
+        self.B_dates_range = None
+
+
         self.B_bars_nmb = 29
         self.B_engines_nmb = [0 for _ in range(self.B_bars_nmb)]
         self.B_transition_time = ['' for i in range(self.B_bars_nmb)]
@@ -128,28 +132,39 @@ class Chart:
                     if value <= 390 + i * 15 and key in time_elapsed_cpy:
                         self.B_engines_nmb[i] += 1
                         time_elapsed_cpy.pop(key, 'None')
-            self.B_transition_time[-1] = '> ' + self.B_transition_time[-2]
             self.B_engines_nmb[-1] = len(time_elapsed_cpy.keys())
             self.chartB_drawn = True
+        self.B_transition_time[-1] = utils.setLabel(self.language, 'Więcej', 'More')
 
         self.clearFrame()
+        options_frame = ttk.Frame(self.frame)
         chart_frame = ttk.Frame(self.frame)
-        chart_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
-        B_engines_nmb_str = utils.setLabel(self.language, 'Ilość silników', 'Number of engines')
+        options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
+        chart_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.95)
+        ttk.Separator(options_frame, orient='horizontal').place(
+            relx=0, rely=0.98, relwidth=1)
+        B_engines_nmb_str = utils.setLabel(self.language, 'Liczba silników', 'Number of engines')
         B_transition_time_str = utils.setLabel(self.language, 'Czas przejścia', 'Transition time')
-        
+        B_cdf_str = utils.setLabel(self.language, 'Dystrybuanta', 'CDF')
         self.figure = plt.Figure()
         self.figure.set_tight_layout(True)
-        ax = self.figure.add_subplot(111)
-        ax.bar(self.B_transition_time, self.B_engines_nmb, align='edge',width=-0.8)
-        ax.set_title('Histogram', pad=15, weight='bold')
-        ax.tick_params(labelrotation=90)
-        ax.set_xlabel(B_transition_time_str)
-        ax.legend(labels=[B_engines_nmb_str])
-        for bar, label in zip(ax.patches, self.B_engines_nmb):
+        
+        ax1 = self.figure.add_subplot(111)
+        hist = ax1.bar(self.B_transition_time, self.B_engines_nmb, align='edge', width=-0.8)
+        ax1.set_title(utils.setLabel(self.language, 'Histogram czasu przepływu', 'Transition time histogram'), pad=15, weight='bold')
+        ax1.tick_params(labelrotation=90)
+        ax1.set_xlabel(B_transition_time_str)
+        for bar, label in zip(ax1.patches, self.B_engines_nmb):
             if label > 0:
                 rotation = 0 if len(str(label)) < 4 else 45
-                ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + (0.01 * max(self.B_engines_nmb) if rotation == 45 else 0), str(label), ha='center', va='bottom', rotation=rotation)
+                ax1.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + (0.01 * max(self.B_engines_nmb) if rotation == 45 else 0), str(label), ha='center', va='bottom', rotation=rotation)
+
+        ax2 = ax1.twinx()
+        cdf = ax2.plot(self.B_transition_time, self.B_engines_nmb, 'rs-')
+        ax2.set_ylim(0, 101)
+
+        ax1.legend([hist, cdf[0]], [B_engines_nmb_str, B_cdf_str])
+
         canvas = FigureCanvasTkAgg(self.figure, chart_frame)
         canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
         canvas.draw()

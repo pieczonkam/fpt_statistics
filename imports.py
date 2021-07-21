@@ -1,6 +1,7 @@
 import tkinter
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import font
 from idlelib.tooltip import Hovertip
 import tksheet
 import numpy as np

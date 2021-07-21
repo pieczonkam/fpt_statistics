@@ -13,7 +13,7 @@ class MenuBar:
     def addMenu(self, main_label, main_command=None,
                 labels=None, commands=None):
         menu = tkinter.Menu(self.menubar, tearoff=0)
-        if labels is not None and commands is not None:
+        if not labels is None and not commands is None:
             for label, command in zip(labels, commands):
                 menu.add_command(label=label, command=command)
 

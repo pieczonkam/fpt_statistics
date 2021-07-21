@@ -13,16 +13,14 @@ class App:
         self.excel_all_sheets = [self.setLabel('Brak', 'None')]
         self.excel_sheet = None
         self.excel_table = None
-        self.prev_excel_table = None
+        self.table_prev_excel_table = None
+        self.chart_prev_excel_table = None
         self.excel_table_cols_nmb = 12
-        self.excel_table_cols_pl = ['UTE', 'Stacja', 'Date', 'Operator ID',	'Operator Name', 'Cycle', 'Aktualny czas trwania [s]', 'Czas trwania cyklu [s]', 'Różnica czasu [s]', 'Numer części', 'Numer seryjny', 'Przesunięcie']
-        self.excel_table_cols_eng = ['UTE', 'Station', 'Date', 'Operator ID', 'Operator Name', 'Cycle', 'Actual duration [s]', 'Cycle duration [s]', 'Time differences [s]', 'Part Number', 'Serial Number', 'Shift']
-
 
         self.window = tkinter.Tk()
         self.window.title('PMS Data Analysis')
         self.window.state('zoomed')
-        self.window.minsize(1100, 700)
+        self.window.minsize(1200, 700)
         self.window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.window.protocol('WM_DELETE_WINDOW', self.exitApp)
 
@@ -78,13 +76,6 @@ class App:
         self.opt_menu1 = None
         self.opt = None
 
-        # Charts data
-        self.chartA_data = [None, None, None, None]
-        self.chartB_data = None
-        self.chartC_data = None
-        self.chartD_data = None
-        self.chartE_data = None
-
         # Classes
         self.menubar = None
         self.table = None
@@ -120,14 +111,25 @@ class App:
                     self.excel_sheet = None
                 self.reloadWidgets()
                 self.excel_table = self.runWithLoading(
-                    self.readExcel, 'Ładowanie pliku...', 'Loading file...')
+                    self.readExcel, 'Wczytywanie arkusza...', 'Loading sheet...')
                 self.validateTable()
                 self.reloadTable()
-                self.resetChartsData()
                 self.reloadChart()
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
-                'Proszę zaczekać na ukończenie ładowania.', 'Please wait until loading is finished.'))
+                'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
+
+    def saveChart(self):
+        if not self.is_loading:
+            if self.show_chart and not self.chart is None:
+                filename = 'aaa.png'
+                self.runWithLoading(self.chart.saveChart, 'Zapisywanie wykresu...', 'Saving chart...', filename)
+            else:
+                tkinter.messagebox.showerror(message=self.setLabel(
+                    'Proszę wybrać wykres do zapisania.', 'Please select a chart to save.'))
+        else:
+            tkinter.messagebox.showerror(message=self.setLabel(
+                'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
 
     # Help commands
     def printInfo(self):
@@ -137,19 +139,32 @@ class App:
     # Language commands
     def setPolish(self):
         if self.language != 'polish':
-            self.language = 'polish'
-            self.reloadMenuBar()
-            self.reloadWidgets()
-            self.reloadChart()
-            self.loading.setText(self.language)
+            if not (self.is_loading and self.show_chart):
+                self.language = 'polish'
+                self.reloadMenuBar()
+                self.reloadWidgets()
+                if not self.chart is None:
+                    self.chart.setLanguage(self.language)
+                    self.redrawChart()
+                self.loading.setText(self.language)
+            else:
+                tkinter.messagebox.showerror(message=self.setLabel(
+                    'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
+
 
     def setEnglish(self):
         if self.language != 'english':
-            self.language = 'english'
-            self.reloadMenuBar()
-            self.reloadWidgets()
-            self.reloadChart()
-            self.loading.setText(self.language)
+            if not (self.is_loading and self.show_chart):
+                self.language = 'english'
+                self.reloadMenuBar()
+                self.reloadWidgets()
+                if not self.chart is None:
+                    self.chart.setLanguage(self.language)
+                    self.redrawChart()
+                self.loading.setText(self.language)
+            else:
+                tkinter.messagebox.showerror(message=self.setLabel(
+                    'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
 
     def setLabel(self, polish, english):
         if self.language == 'polish':
@@ -164,7 +179,7 @@ class App:
                 self.window.destroy()
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
-                'Proszę zaczekać na ukończenie ładowania.', 'Please wait until loading is finished.'))
+                'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
 
     ##########################################################################
     # Other methods
@@ -175,14 +190,13 @@ class App:
             if not self.is_loading:
                 self.excel_sheet = selected_sheet
                 self.excel_table = self.runWithLoading(
-                    self.readExcel, 'Ładowanie arkusza...', 'Loading sheet...')
+                    self.readExcel, 'Wczytywanie arkusza...', 'Loading sheet...')
                 self.validateTable()
                 self.reloadTable()
-                self.resetChartsData()
                 self.reloadChart()
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
-                    'Proszę zaczekać na ukończenie ładowania.', 'Please wait until loading is finished.'))
+                    'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
                 self.opt.set(self.excel_sheet)
 
     def reloadMenuBar(self):
@@ -190,7 +204,7 @@ class App:
             self.menubar.clear()
         self.menubar = MenuBar(self.window)
         self.menubar.addMenu(self.setLabel('Plik', 'File'), labels=[self.setLabel(
-            'Załaduj', 'Load')], commands=[self.loadFile])
+            'Wczytaj arkusz', 'Load sheet'), self.setLabel('Zapisz wykres', 'Save chart')], commands=[self.loadFile, self.saveChart])
         self.menubar.addMenu(self.setLabel('Pomoc', 'Help'), labels=[self.setLabel(
             'Instrukcja obsługi', 'Manual')], commands=[self.printInfo])
         self.menubar.addMenu(self.setLabel('Język', 'Language'), labels=[self.setLabel(u'\u2713 Polski', '     Polish'), self.setLabel(
@@ -199,39 +213,38 @@ class App:
             'Zakończ', 'Exit'), main_command=self.exitApp)
 
     def reloadTable(self):
-        if self.show_table != False:
+        if self.show_table:
             if self.filepath != '':
-                if self.prev_excel_table is None or not self.excel_table.equals(self.prev_excel_table):
-                    self.prev_excel_table = self.excel_table
-                    if not self.table is None:
-                        prev_table = self.table
-                    else:
-                        prev_table = None
+                if self.table_prev_excel_table is None or not self.excel_table.equals(self.table_prev_excel_table):
+                    self.table_prev_excel_table = self.excel_table
+                    prev_table = self.table
                     self.table = self.runWithLoading(Table(
-                        self.frame2_table, self.excel_table).prepareTable, 'Ładowanie tabeli...', 'Loading table...')
+                        self.frame2_table, self.excel_table).prepareTable, 'Wczytywanie tabeli...', 'Loading table...')
                     self.table.grid(row=0, column=0, sticky='nswe')
                     if not prev_table is None:
                         prev_table.destroy()
             else:
                 tkinter.messagebox.showerror(
-                    message=self.setLabel('Aby wyświetlić tabelę, proszę załadować plik.', 'In order to show a table load a file first.'))
+                    message=self.setLabel('Aby wyświetlić tabelę, proszę wczytać plik.', 'In order to show a table load a file first.'))
                 self.showEmpty()
 
     def reloadChart(self):
-        if not self.chart is None:
-            del self.chart
-        self.chart = Chart(self.window, self.frame2_chart, self.excel_table, self.language,
-                           self.chartA_data, self.chartB_data, self.chartC_data, self.chartD_data, self.chartE_data)
-        if self.show_chartA == True:
-            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'A')
-        elif self.show_chartB == True:
-            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'B')
-        elif self.show_chartC == True:
-            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'C')
-        elif self.show_chartD == True:
-            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'D')
-        elif self.show_chartE == True:
-            self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'E')
+        if self.chart_prev_excel_table is None or not self.excel_table.equals(self.chart_prev_excel_table):
+            self.chart_prev_excel_table = self.excel_table
+            self.chart = Chart(self.window, self.frame2_chart, self.excel_table, self.language)
+        self.redrawChart()
+
+    def redrawChart(self):
+        if self.show_chartA:
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'A')
+        elif self.show_chartB:
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'B')
+        elif self.show_chartC:
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'C')
+        elif self.show_chartD:
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'D')
+        elif self.show_chartE:
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'E')
 
     def reloadWidgets(self):
         # Destroy widgets if they exist
@@ -275,22 +288,22 @@ class App:
             self.opt_menu1.pack(side=tkinter.LEFT)
         else:
             self.label1 = ttk.Label(self.frame1, text=self.setLabel(
-                'Nie załadowano pliku.', 'No file loaded.'))
+                'Nie wczytano arkusza.', 'No sheet loaded.'))
             self.label1.pack(side=tkinter.LEFT, padx=15)
 
         # Frame4
         self.btn1 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl tabelę', 'Show table'), command=self.showTable)
+            'Tabela', 'Table'), command=self.showTable, style='B1.TButton')
         self.btn2 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl wykres A', 'Show chart A'), command=self.showChartA)
+            'Wykres A', 'Chart A'), command=self.showChartA, style='B2.TButton')
         self.btn3 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl wykres B', 'Show chart B'), command=self.showChartB)
+            'Wykres B', 'Chart B'), command=self.showChartB, style='B3.TButton')
         self.btn4 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl wykres C', 'Show chart C'), command=self.showChartC)
+            'Wykres C', 'Chart C'), command=self.showChartC, style='B4.TButton')
         self.btn5 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl wykres D', 'Show chart D'), command=self.showChartD)
+            'Wykres D', 'Chart D'), command=self.showChartD, style='B5.TButton')
         self.btn6 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wyświetl wykres E', 'Show chart E'), command=self.showChartE)
+            'Wykres E', 'Chart E'), command=self.showChartE, style='B6.TButton')
         self.btn7 = ttk.Button(self.frame4, text=self.setLabel(
             'Wyczyść', 'Clear'), command=self.showEmpty)
         # 0.02 for vertical separator
@@ -306,6 +319,13 @@ class App:
         if not widget is None:
             widget.destroy()
 
+    def switchButtons(self, active_btn=None):
+        s = ttk.Style()
+        for i in range(1, 8):
+            s.configure(f'B{i}.TButton', font=font.nametofont('TkDefaultFont'))
+        if not active_btn is None:
+            s.configure(active_btn + '.TButton', font=('Arial', 10, 'bold'))
+
     @utils.threadpool
     def readExcel(self):
         return pd.read_excel(self.filepath, sheet_name=self.excel_sheet)
@@ -318,20 +338,13 @@ class App:
         while not fun_future.done():
             self.window.update()
         self.loading.hide()
-        self.loading.setText(self.language, 'Ładowanie...', 'Loading...')
+        self.loading.setText(self.language, 'Wczytywanie...', 'Loading...')
         self.is_loading = False
         return fun_future.result()
 
-    def resetChartsData(self):
-        self.chartA_data = [None, None, None, None]
-        self.chartB_data = None
-        self.chartC_data = None
-        self.chartD_data = None
-        self.chartE_data = None
-
     def validateTable(self):
         if not self.excel_table is None:
-            if len(self.excel_table.columns) != 12 or (self.excel_table.columns.tolist() != self.excel_table_cols_pl and self.excel_table.columns.tolist() != self.excel_table_cols_eng):
+            if len(self.excel_table.columns) != self.excel_table_cols_nmb:
                 tkinter.messagebox.showwarning(message=utils.setLabel(self.language, 'Wybrany arkusz ma nieprawidłowy format. Niektóre funkcjonalności mogą nie zadziałać poprawnie.', 'Selected sheet has incorrect format. Some functionalities may not work properly.'))
 
     ##########################################################################
@@ -343,7 +356,8 @@ class App:
             self.show_empty = False
             self.show_chart = self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
             self.reloadTable()
-            if self.show_empty != True:
+            if not self.show_empty:
+                self.switchButtons('B1')
                 self.frame2_empty.place_forget()
                 self.frame2_chart.place_forget()
                 self.frame2_table.place(
@@ -354,7 +368,7 @@ class App:
     def showChart(self):
         if self.chart is None:
             tkinter.messagebox.showerror(
-                message=self.setLabel('Aby wyświetlić wykres, proszę załadować plik.', 'In order to show a chart load a file first.'))
+                message=self.setLabel('Aby wyświetlić wykres, proszę wczytać plik.', 'In order to show a chart load a file first.'))
             self.showEmpty()
         else:
             self.show_chart = True
@@ -368,40 +382,46 @@ class App:
     def showChartA(self):
         if not self.is_loading and not self.show_chartA:
             self.showChart()
-            if self.show_empty != True:
+            if not self.show_empty:
+                self.switchButtons('B2')
                 self.show_chartA = True
-                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'A')
+                self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'A')
 
     def showChartB(self):
         if not self.is_loading and not self.show_chartB:
             self.showChart()
-            if self.show_empty != True:
+            if not self.show_empty:
+                self.switchButtons('B3')
                 self.show_chartB = True
-                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'B')
+                self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'B')
 
     def showChartC(self):
         if not self.is_loading and not self.show_chartC:
             self.showChart()
-            if self.show_empty != True:
+            if not self.show_empty:
+                self.switchButtons('B4')
                 self.show_chartC = True
-                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'C')
+                self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'C')
 
     def showChartD(self):
         if not self.is_loading and not self.show_chartD:
             self.showChart()
-            if self.show_empty != True:
+            if not self.show_empty:
+                self.switchButtons('B5')
                 self.show_chartD = True
-                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'D')
+                self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'D')
 
     def showChartE(self):
         if not self.is_loading and not self.show_chartE:
             self.showChart()
-            if self.show_empty != True:
+            if not self.show_empty:
+                self.switchButtons('B6')
                 self.show_chartE = True
-                self.runWithLoading(self.chart.drawChart, 'Ładowanie wykresu...', 'Loading chart...', 'E')
+                self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'E')
 
     def showEmpty(self):
         if not self.is_loading and not self.show_empty:
+            self.switchButtons()
             self.show_empty = True
             self.show_table = False
             self.show_chart = self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False

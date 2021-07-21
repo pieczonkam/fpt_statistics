@@ -6,14 +6,14 @@ class Loading:
         self.window = window
         self.giflist = []
         self.prepareGiflist(utils.resourcePath('loading_animation'))
-        self.loading_text = ('Ładowanie...', 'Loading...')
+        self.loading_text = ('Wczytywanie...', 'Loading...')
         self.label = ttk.Label(frame, text=utils.setLabel(
             language, self.loading_text[0], self.loading_text[1]), image=self.giflist[0], compound='left')
 
         self.timer_id = None
 
     def setText(self, language, text_pl=None, text_eng=None):
-        if text_pl != None and text_eng != None:
+        if not text_pl is None and not text_eng is None:
             self.loading_text = (text_pl, text_eng)
         self.label['text'] = utils.setLabel(
             language, self.loading_text[0], self.loading_text[1])

@@ -59,7 +59,8 @@ class ChecklistWindow:
             self.sep_top = ttk.Separator(
                 self.button_frame_top2, orient='horizontal')
         else:
-            self.sep_top = ttk.Separator(self.button_frame_top1, orient='horizontal')    
+            self.sep_top = ttk.Separator(
+                self.button_frame_top1, orient='horizontal')
         self.sep_bottom = ttk.Separator(
             self.button_frame_bottom, orient='horizontal')
         self.sep_top.place(relx=0, rely=0.98, relwidth=1)
@@ -123,8 +124,10 @@ class ChecklistWindow:
         self.inner_frame.update()
         self.canvas.update()
         if self.inner_frame.winfo_height() > self.canvas.winfo_height():
-            self.canvas.bind('<Enter>', lambda _: self.canvas.bind_all('<MouseWheel>', lambda event: self.canvas.yview_scroll(int(-1 * (event.delta / 120)), 'units')))
-            self.canvas.bind('<Leave>', lambda _: self.canvas.unbind_all('<MouseWheel>'))
+            self.canvas.bind('<Enter>', lambda _: self.canvas.bind_all(
+                '<MouseWheel>', lambda event: self.canvas.yview_scroll(int(-1 * (event.delta / 120)), 'units')))
+            self.canvas.bind(
+                '<Leave>', lambda _: self.canvas.unbind_all('<MouseWheel>'))
         self.hideLoadingCursor(self.root)
 
     def destroy(self):
@@ -184,7 +187,8 @@ class ChecklistWindow:
         self.selected_list = self.getVars()
         self.total_selected_label['text'] = str(
             self.getNumberOfSelected()) + '/' + str(len(self.selected_list))
-        self.page_choice_var.set(str(self.page_nmb) + '/' + str(self.pages) + (u' \u25fc' if self.isPageSelected() else u' \u25fb' if self.isPageNotSelected() else u' \u25e7'))
+        self.page_choice_var.set(str(self.page_nmb) + '/' + str(self.pages) + (
+            u' \u25fc' if self.isPageSelected() else u' \u25fb' if self.isPageNotSelected() else u' \u25e7'))
         self.page_choice_menu['values'] = list(
             str(i) + '/' + str(self.pages) + (u' \u25fc' if self.isPageSelected(i) else u' \u25fb' if self.isPageNotSelected(i) else u' \u25e7') for i in range(1, self.pages + 1))
         if not self.isAnySelected():

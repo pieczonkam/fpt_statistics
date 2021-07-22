@@ -1,3 +1,4 @@
+from functools import WRAPPER_ASSIGNMENTS
 from imports import *
 from ChecklistWindow import *
 from ComboboxWindow import *
@@ -35,6 +36,9 @@ class Chart:
 
         self.B_engines_nmb = None
         self.B_transition_time = None
+        self.B_station_nmb = None
+        self.B_first_station = None
+        self.B_last_station = None
 
     def setLanguage(self, language):
         self.language = language
@@ -101,7 +105,7 @@ class Chart:
         if data_list_sum == 0:
             return [0 for _ in range(self.bars_nmb)]
         for i in range(len(cdf)):
-            cdf[i] = (cdf[i] / data_list_sum) * 100
+            cdf[i] = round((cdf[i] / data_list_sum) * 100, 2)
         return cdf
 
     def drawChartA(self, chart_drawn=None):
@@ -116,19 +120,22 @@ class Chart:
         date = sorted(self.getColumnUniqueList('Date', 'Date', 2))
 
         if self.chartA_first_draw:
-            self.A_serial_number_selected = self.zerosListWithOne(len(serial_number))
+            self.A_serial_number_selected = self.zerosListWithOne(
+                len(serial_number))
             self.A_station_selected = self.zerosListWithOne(len(station))
-            self.A_operator_name_selected = self.zerosListWithOne(len(operator_name))
-            self.A_date_selected = self.zerosListWithOne(len(date))           
+            self.A_operator_name_selected = self.zerosListWithOne(
+                len(operator_name))
+            self.A_date_selected = self.zerosListWithOne(len(date))
             self.chartA_first_draw = False
-            
+
         #######################################################################################################
 
         self.clearFrame()
         options_frame = ttk.Frame(self.frame)
         chart_frame = ttk.Frame(self.frame)
         options_frame.place(relx=0, rely=0, relwidth=0.85, relheight=0.05)
-        self.refresh_button_frame.place(relx=0.85, rely=0, relwidth=0.15, relheight=0.05)
+        self.refresh_button_frame.place(
+            relx=0.85, rely=0, relwidth=0.15, relheight=0.05)
         chart_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.95)
         ttk.Separator(options_frame, orient='horizontal').place(
             relx=0, rely=0.98, relwidth=1)
@@ -158,7 +165,8 @@ class Chart:
         date = sorted(self.getColumnUniqueList('Date', 'Date', 2))
         shift = sorted(self.getColumnUniqueList('Przesunięcie', 'Shift', 11))
         cycle = sorted(self.getColumnUniqueList('Cycle', 'Cycle', 5))
-        part_number = sorted(self.getColumnUniqueList('Numer części', 'Part number', 9))
+        part_number = sorted(self.getColumnUniqueList(
+            'Numer części', 'Part number', 9))
 
         if self.chartB_first_draw:
             self.B_station_selected = [0, len(station) - 1]
@@ -168,29 +176,53 @@ class Chart:
             self.B_part_number_selected = self.onesList(len(part_number))
             self.chartB_first_draw = False
 
-        if not self.chartB_drawn:      
+        if not self.chartB_drawn:
             self.bars_nmb = 29
             self.B_engines_nmb = [0 for _ in range(self.bars_nmb)]
             self.B_transition_time = ['' for i in range(self.bars_nmb)]
+            self.B_station_nmb = self.B_station_selected[1] - \
+                self.B_station_selected[0] + 1
+            self.B_first_station = station[self.B_station_selected[0]]
+            self.B_last_station = station[self.B_station_selected[1]]
 
             time_elapsed = {}
+            wrong_transition_count = 0
             for sn in self.getColumnUniqueList('Numer seryjny', 'Serial Number', 10):
-                engine_date = self.getColumn('Date', 'Date', 2)[self.getColumn('Numer seryjny', 'Serial Number', 10) == sn].values
-                delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn('Numer seryjny', 'Serial Number', 10) == sn) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
-                time_elapsed[sn] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
+                engine_station = self.getColumn('Stacja', 'Station', 1)[(
+                    self.getColumn('Numer seryjny', 'Serial Number', 10) == sn)].values
+                if len(engine_station) != len(station):
+                    print(engine_station)
+                    wrong_transition_count += 1
+                engine_date = self.getColumn('Date', 'Date', 2)[self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == sn].values
+                delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == sn) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
+                time_elapsed[sn] = (
+                    np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
             time_elapsed_cpy = dict(time_elapsed)
+            print(wrong_transition_count)
 
             for i in range(self.bars_nmb - 1):
-                m, s = divmod(390 + i * 15, 60) # 390s = 6min 30s
+                m, s = divmod(self.B_station_nmb * 45 + i * 15 -
+                              (self.B_station_nmb // 3) * 15, 60)
                 self.B_transition_time[i] = f'{m:02d}:{s:02d}'
                 for key, value in time_elapsed.items():
-                    if value <= 390 + i * 15 and key in time_elapsed_cpy:
+                    if value <= self.B_station_nmb * 45 + i * 15 - (self.B_station_nmb // 3) * 15 and key in time_elapsed_cpy:
                         self.B_engines_nmb[i] += 1
                         time_elapsed_cpy.pop(key, 'None')
             self.B_engines_nmb[-1] = len(time_elapsed_cpy.keys())
             self.cdf_data = self.getCDF(self.B_engines_nmb)
             self.chartB_drawn = True
-        self.B_transition_time[-1] = utils.setLabel(self.language, 'Więcej', 'More')
+
+        self.B_transition_time[-1] = utils.setLabel(
+            self.language, 'Więcej', 'More')
+        self.B_engines_nmb_str = utils.setLabel(
+            self.language, 'Liczba silników', 'Number of engines')
+        self.B_transition_time_str = utils.setLabel(
+            self.language, 'Czas przejścia', 'Transition time')
+        self.B_cdf_str = utils.setLabel(self.language, 'Dystrybuanta', 'CDF')
+        self.B_expected_time = utils.setLabel(
+            self.language, 'Czas projektowy', 'Expected time')
 
         #######################################################################################################
 
@@ -198,35 +230,41 @@ class Chart:
         options_frame = ttk.Frame(self.frame)
         chart_frame = ttk.Frame(self.frame)
         options_frame.place(relx=0, rely=0, relwidth=0.85, relheight=0.05)
-        self.refresh_button_frame.place(relx=0.85, rely=0, relwidth=0.15, relheight=0.05)
+        self.refresh_button_frame.place(
+            relx=0.85, rely=0, relwidth=0.15, relheight=0.05)
         chart_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.95)
         ttk.Separator(options_frame, orient='horizontal').place(
             relx=0, rely=0.98, relwidth=1)
 
-        station_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Stacja \u25bc', u'Station \u25bc'), command=lambda: self.combobox_window.show(self.language, station, self.B_station_selected))
-        date_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Data \u25bc', u'Date \u25bc'), command=lambda: self.checklist_window.show(self.language, date, self.B_date_selected, page_len=250))
-        shift_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Zmiana \u25bc', u'Shift \u25bc'), command=lambda: self.checklist_window.show(self.language, shift, self.B_shift_selected, page_len=250))
-        cycle_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Cykl \u25bc', u'Cycle \u25bc'), command=lambda: self.checklist_window.show(self.language, cycle, self.B_cycle_selected, page_len=250))
-        part_number_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Numer części \u25bc', u'Part number \u25bc'), command=lambda: self.checklist_window.show(self.language, part_number, self.B_part_number_selected, page_len=250))
+        station_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Stacja \u25bc', u'Station \u25bc'),
+                                 command=lambda: self.combobox_window.show(self.language, station, self.B_station_selected))
+        date_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Data \u25bc', u'Date \u25bc'),
+                              command=lambda: self.checklist_window.show(self.language, date, self.B_date_selected, page_len=250))
+        shift_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Zmiana \u25bc', u'Shift \u25bc'),
+                               command=lambda: self.checklist_window.show(self.language, shift, self.B_shift_selected, page_len=250))
+        cycle_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Cykl \u25bc', u'Cycle \u25bc'),
+                               command=lambda: self.checklist_window.show(self.language, cycle, self.B_cycle_selected, page_len=250))
+        part_number_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, u'Numer części \u25bc', u'Part number \u25bc'),
+                                     command=lambda: self.checklist_window.show(self.language, part_number, self.B_part_number_selected, page_len=250))
         station_btn.pack(side=tkinter.LEFT, padx=15)
         date_btn.pack(side=tkinter.LEFT)
         shift_btn.pack(side=tkinter.LEFT, padx=15)
         cycle_btn.pack(side=tkinter.LEFT)
         part_number_btn.pack(side=tkinter.LEFT, padx=15)
-        
+
         #######################################################################################################
 
-        B_engines_nmb_str = utils.setLabel(self.language, 'Liczba silników', 'Number of engines')
-        B_transition_time_str = utils.setLabel(self.language, 'Czas przejścia', 'Transition time')
-        B_cdf_str = utils.setLabel(self.language, 'Dystrybuanta', 'CDF')
         self.figure = plt.Figure()
         self.figure.set_tight_layout(True)
-        
+
         ax1 = self.figure.add_subplot(111)
-        hist = ax1.bar(self.B_transition_time, self.B_engines_nmb, align='edge', width=-0.8)
-        ax1.set_title(utils.setLabel(self.language, 'Histogram czasu przepływu\n' + str(sum(self.B_engines_nmb)) + ' silników', 'Transition time histogram\n' + str(sum(self.B_engines_nmb)) + ' engines'), pad=15, weight='bold')
+        hist = ax1.bar(self.B_transition_time,
+                       self.B_engines_nmb, align='edge', width=-0.8)
+        ax1.set_title(utils.setLabel(self.language, 'Histogram czasu przepływu\n' + str(self.B_station_nmb) + ' stacji: ' + self.B_first_station + ' - ' + self.B_last_station + ', ' + str(sum(self.B_engines_nmb)) +
+                      ' silników', 'Transition time histogram\n' + str(self.B_station_nmb) + ' stations: ' + self.B_first_station + ' - ' + self.B_last_station + ', ' + str(sum(self.B_engines_nmb)) + ' engines'), pad=15, weight='bold')
         ax1.tick_params(labelrotation=90)
-        ax1.set_xlabel(B_transition_time_str)
+        ax1.set_xlabel(self.B_transition_time_str)
+        expected_time = ax1.axvline(x=self.B_station_nmb // 3, color='grey')
         ax2 = ax1.twinx()
         cdf = ax2.plot(self.B_transition_time, self.cdf_data, 'rs-')
         ax2.yaxis.set_major_formatter(mtick.PercentFormatter())
@@ -234,14 +272,17 @@ class Chart:
         for bar, label1, label2 in zip(ax1.patches, self.B_engines_nmb, self.cdf_data):
             if label1 > 0:
                 rotation = 0 if len(str(label1)) < 4 else 45
-                ax1.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + (0.01 * max(self.B_engines_nmb) if rotation == 45 else 0), str(label1), ha='center', va='bottom', rotation=rotation)
-            ax2.text(bar.get_x(), label2, str(round(label2)) + '%', ha='right', va='bottom', color='red', weight='semibold')
-        ax1.legend([hist, cdf[0]], [B_engines_nmb_str, B_cdf_str], bbox_to_anchor=(1, 0.9))
+                ax1.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + (0.01 * max(self.B_engines_nmb)
+                         if rotation == 45 else 0), str(label1), ha='center', va='bottom', rotation=rotation)
+            ax2.text(bar.get_x(), label2, str(round(label2)) + '%',
+                     ha='right', va='bottom', color='red', weight='semibold', fontsize='small')
+        ax1.legend([hist, cdf[0], expected_time], [self.B_engines_nmb_str,
+                   self.B_cdf_str, self.B_expected_time], bbox_to_anchor=(1, 0.97))
 
         canvas = FigureCanvasTkAgg(self.figure, chart_frame)
         canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
         canvas.draw()
-        
+
     def drawChartC(self, chart_drawn=None):
         self.clearFrame()
         chart_frame = ttk.Frame(self.frame)

@@ -28,12 +28,14 @@ class ChecklistWindow:
         self.pages = math.ceil(len(col_list) / page_len)
         self.page_nmb = 1
         self.vars = [tkinter.IntVar(value=i) for i in already_selected_list]
+        self.button_frames_height = 100 if self.pages > 1 else 70
+        height = self.height if self.pages > 1 else self.height - 30
 
         self.checklist_window = tkinter.Toplevel(self.root)
         self.posx = self.root.winfo_x() + (self.root.winfo_width() - self.width) / 2
-        self.posy = self.root.winfo_y() + (self.root.winfo_height() - self.height) / 2
+        self.posy = self.root.winfo_y() + (self.root.winfo_height() - height) / 2
         self.checklist_window.geometry(
-            '%dx%d+%d+%d' % (self.width, self.height, self.posx, self.posy))
+            '%dx%d+%d+%d' % (self.width, height, self.posx, self.posy))
         self.checklist_window.resizable(0, 0)
         self.checklist_window.title('PMS DA')
         self.checklist_window.iconbitmap(utils.resourcePath('applogo.ico'))
@@ -44,16 +46,20 @@ class ChecklistWindow:
         self.button_frame_top2 = ttk.Frame(
             self.checklist_window, width=self.width, height=30)
         self.checklist_frame = ttk.Frame(
-            self.checklist_window, width=self.width, height=self.height - 100)
+            self.checklist_window, width=self.width, height=height - self.button_frames_height)
         self.button_frame_bottom = ttk.Frame(
             self.checklist_window, width=self.width, height=40)
         self.button_frame_top1.pack(side=tkinter.TOP)
-        self.button_frame_top2.pack(side=tkinter.TOP)
+        if self.pages > 1:
+            self.button_frame_top2.pack(side=tkinter.TOP)
         self.checklist_frame.pack(side=tkinter.TOP)
         self.button_frame_bottom.pack(side=tkinter.TOP)
 
-        self.sep_top = ttk.Separator(
-            self.button_frame_top2, orient='horizontal')
+        if self.pages > 1:
+            self.sep_top = ttk.Separator(
+                self.button_frame_top2, orient='horizontal')
+        else:
+            self.sep_top = ttk.Separator(self.button_frame_top1, orient='horizontal')    
         self.sep_bottom = ttk.Separator(
             self.button_frame_bottom, orient='horizontal')
         self.sep_top.place(relx=0, rely=0.98, relwidth=1)
@@ -82,8 +88,12 @@ class ChecklistWindow:
             str(i) + '/' + str(self.pages) + (u' \u25fc' if self.isPageSelected(i) else u' \u25fb' if self.isPageNotSelected(i) else u' \u25e7') for i in range(1, self.pages + 1)), state='readonly')
         self.page_choice_menu.bind(
             '<<ComboboxSelected>>', lambda event: self.handlePageChange())
-        self.total_selected_label = ttk.Label(self.button_frame_top2, text=str(
-            self.getNumberOfSelected()) + '/' + str(len(self.selected_list)))
+        if self.pages > 1:
+            self.total_selected_label = ttk.Label(self.button_frame_top2, text=str(
+                self.getNumberOfSelected()) + '/' + str(len(self.selected_list)))
+        else:
+            self.total_selected_label = ttk.Label(self.button_frame_top1, text=str(
+                self.getNumberOfSelected()) + '/' + str(len(self.selected_list)))
         Hovertip(self.page_choice_menu, utils.setLabel(
             language, 'Numer strony', 'Page number'))
         Hovertip(self.total_selected_label, utils.setLabel(
@@ -105,7 +115,7 @@ class ChecklistWindow:
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.create_window((0, 0), window=self.inner_frame)
         self.inner_frame.bind('<Configure>', lambda event: self.canvas.configure(
-            scrollregion=self.canvas.bbox('all'), width=self.width - 25, height=self.height - 100))
+            scrollregion=self.canvas.bbox('all'), width=self.width - 25, height=height - self.button_frames_height))
         self.scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
         self.canvas.pack(side=tkinter.LEFT)
 

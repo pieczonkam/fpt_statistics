@@ -9,11 +9,10 @@ class Loading:
         self.loading_text = ('Wczytywanie...', 'Loading...')
         self.label = ttk.Label(frame, text=utils.setLabel(
             language, self.loading_text[0], self.loading_text[1]), image=self.giflist[0], compound='left')
-
         self.timer_id = None
 
     def setText(self, language, text_pl=None, text_eng=None):
-        if not text_pl is None and not text_eng is None:
+        if not isinstance(text_pl, type(None)) and not isinstance(text_eng, type(None)):
             self.loading_text = (text_pl, text_eng)
         self.label['text'] = utils.setLabel(
             language, self.loading_text[0], self.loading_text[1])

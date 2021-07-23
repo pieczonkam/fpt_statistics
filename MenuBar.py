@@ -13,11 +13,11 @@ class MenuBar:
     def addMenu(self, main_label, main_command=None,
                 labels=None, commands=None):
         menu = tkinter.Menu(self.menubar, tearoff=0)
-        if not labels is None and not commands is None:
+        if not isinstance(labels, type(None)) and not isinstance(commands, type(None)):
             for label, command in zip(labels, commands):
                 menu.add_command(label=label, command=command)
 
-        if main_command is None:
+        if isinstance(main_command, type(None)):
             self.menubar.add_cascade(label=main_label, menu=menu)
         else:
             self.menubar.add_cascade(label=main_label, command=main_command)

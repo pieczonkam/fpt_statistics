@@ -2,6 +2,7 @@ import tkinter
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import font
+from tkinter import scrolledtext
 from idlelib.tooltip import Hovertip
 import tksheet
 import numpy as np
@@ -19,6 +20,8 @@ import time
 import threading
 import math
 import sys
+import random
+import string
 import utils
 
 

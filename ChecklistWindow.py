@@ -7,18 +7,6 @@ class ChecklistWindow:
         self.width = width
         self.height = height
 
-        self.posx = None
-        self.posy = None
-        self.checklist_window = None
-        self.col_list = None
-        self.already_selected_list = None
-        self.selected_list = None
-        self.page_len = None
-        self.pages = None
-        self.page_nmb = None
-        self.vars = None
-        self.checkbutton_list = []
-
     def show(self, language, col_list, already_selected_list, page_len=500):
         self.showLoadingCursor(self.root)
         self.col_list = col_list
@@ -56,33 +44,28 @@ class ChecklistWindow:
         self.button_frame_bottom.pack(side=tkinter.TOP)
 
         if self.pages > 1:
-            self.sep_top = ttk.Separator(
-                self.button_frame_top2, orient='horizontal')
+            ttk.Separator(self.button_frame_top2, orient='horizontal').place(
+                relx=0, rely=0.98, relwidth=1)
         else:
-            self.sep_top = ttk.Separator(
-                self.button_frame_top1, orient='horizontal')
-        self.sep_bottom = ttk.Separator(
-            self.button_frame_bottom, orient='horizontal')
-        self.sep_top.place(relx=0, rely=0.98, relwidth=1)
-        self.sep_bottom.place(relx=0, rely=0, relwidth=1)
+            ttk.Separator(self.button_frame_top1, orient='horizontal').place(
+                relx=0, rely=0.98, relwidth=1)
+        ttk.Separator(self.button_frame_bottom, orient='horizontal').place(relx=0, rely=0, relwidth=1)
 
         self.ok_button = ttk.Button(
             self.button_frame_bottom, text='OK', command=self.overwriteSelected)
-        self.cancel_button = ttk.Button(self.button_frame_bottom, text=utils.setLabel(
-            language, 'Anuluj', 'Cancel'), command=self.destroy)
         self.ok_button.place(relx=0.05, rely=0.16,
                              relwidth=0.4, relheight=0.70)
-        self.cancel_button.place(relx=0.55, rely=0.16,
-                                 relwidth=0.4, relheight=0.70)
+        ttk.Button(self.button_frame_bottom, text=utils.setLabel(language, 'Anuluj', 'Cancel'),
+                   command=self.checklist_window.destroy).place(relx=0.55, rely=0.16, relwidth=0.4, relheight=0.70)
 
         self.select_all_var = tkinter.IntVar(
             value=1 if self.areAllSelected() else 0)
         self.select_page_var = tkinter.IntVar(
             value=1 if self.isPageSelected() else 0)
-        self.select_all_checkbutton = ttk.Checkbutton(self.button_frame_top1, text=utils.setLabel(
-            language, 'Zaznacz wszystko', 'Select all'), variable=self.select_all_var, command=self.handleSelectAll)
-        self.select_page_checkbutton = ttk.Checkbutton(self.button_frame_top2, text=utils.setLabel(
-            language, 'Zaznacz stronę', 'Select page'), variable=self.select_page_var, command=self.handleSelectPage)
+        ttk.Checkbutton(self.button_frame_top1, text=utils.setLabel(
+            language, 'Zaznacz wszystko', 'Select all'), variable=self.select_all_var, command=self.handleSelectAll).place(relx=0.015, rely=0.1, relwidth=0.49, relheight=0.78)
+        ttk.Checkbutton(self.button_frame_top2, text=utils.setLabel(
+            language, 'Zaznacz stronę', 'Select page'), variable=self.select_page_var, command=self.handleSelectPage).place(relx=0.015, rely=0.1, relwidth=0.49, relheight=0.78)
         self.page_choice_var = tkinter.StringVar(
             value=str(self.page_nmb) + '/' + str(self.pages) + (u' \u25fc' if self.isPageSelected() else u' \u25fb' if self.isPageNotSelected() else u' \u25e7'))
         self.page_choice_menu = ttk.Combobox(self.button_frame_top1, textvariable=self.page_choice_var, values=list(
@@ -99,10 +82,6 @@ class ChecklistWindow:
             language, 'Numer strony', 'Page number'))
         Hovertip(self.total_selected_label, utils.setLabel(
             language, 'Liczba wybranych pozycji', 'Number of selected items'))
-        self.select_all_checkbutton.place(
-            relx=0.015, rely=0.1, relwidth=0.49, relheight=0.78)
-        self.select_page_checkbutton.place(
-            relx=0.015, rely=0.1, relwidth=0.49, relheight=0.78)
         self.page_choice_menu.place(
             relx=0.6, rely=0.1, relwidth=0.385, relheight=0.78)
         self.total_selected_label.place(
@@ -129,21 +108,6 @@ class ChecklistWindow:
             self.canvas.bind(
                 '<Leave>', lambda _: self.canvas.unbind_all('<MouseWheel>'))
         self.hideLoadingCursor(self.root)
-
-    def destroy(self):
-        if not self.checklist_window is None:
-            self.checklist_window.destroy()
-        self.posx = None
-        self.posy = None
-        self.checklist_window = None
-        self.col_list = None
-        self.already_selected_list = None
-        self.selected_list = None
-        self.page_len = None
-        self.pages = None
-        self.page_nmb = None
-        self.vars = None
-        self.checkbutton_list = []
 
     def reloadChecklist(self):
         for child in self.inner_frame.winfo_children():
@@ -216,16 +180,16 @@ class ChecklistWindow:
 
     def getVars(self, i=None, j=None):
         vars = []
-        i = i if not i is None else 0
-        j = j if not j is None else len(self.vars)
+        i = i if not isinstance(i, type(None)) else 0
+        j = j if not isinstance(j, type(None)) else len(self.vars)
         for n in range(i, j):
             if n < len(self.vars):
                 vars.append(self.vars[n].get())
         return vars
 
     def setVars(self, val, i=None, j=None):
-        i = i if not i is None else 0
-        j = j if not j is None else len(self.vars)
+        i = i if not isinstance(i, type(None)) else 0
+        j = j if not isinstance(j, type(None)) else len(self.vars)
         for n in range(i, j):
             if n < len(self.vars):
                 self.vars[n].set(val)
@@ -250,7 +214,7 @@ class ChecklistWindow:
         return True
 
     def isPageSelected(self, page_nmb=None):
-        if page_nmb is None:
+        if isinstance(page_nmb, type(None)):
             page_nmb = self.page_nmb
         offset = (page_nmb - 1) * self.page_len
         for i in range(offset, self.page_len + offset):
@@ -259,7 +223,7 @@ class ChecklistWindow:
         return True
 
     def isPageNotSelected(self, page_nmb=None):
-        if page_nmb is None:
+        if isinstance(page_nmb, type(None)):
             page_nmb = self.page_nmb
         offset = (page_nmb - 1) * self.page_len
         for i in range(offset, self.page_len + offset):
@@ -272,10 +236,10 @@ class ChecklistWindow:
         for i in range(len(self.already_selected_list)):
             self.already_selected_list[i] = self.selected_list[i]
         self.hideLoadingCursor(self.checklist_window)
-        self.destroy()
+        self.checklist_window.destroy()
 
     def showLoadingCursor(self, window, min=None):
-        if min is None or len(self.selected_list) > min:
+        if isinstance(min, type(None)) or len(self.selected_list) > min:
             window.configure(cursor='wait')
             time.sleep(0.1)
             window.update()

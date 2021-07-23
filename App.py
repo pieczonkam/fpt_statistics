@@ -10,12 +10,10 @@ class App:
         self.language = 'polish'
         self.filepath = ''
         self.filename = ''
-        self.excel_all_sheets = [self.setLabel('Brak', 'None')]
-        self.excel_sheet = None
+        self.excel_table_cols_nmb = 12
         self.excel_table = None
         self.table_prev_excel_table = None
         self.chart_prev_excel_table = None
-        self.excel_table_cols_nmb = 12
 
         self.window = tkinter.Tk()
         self.window.title('PMS Data Analysis')
@@ -35,13 +33,6 @@ class App:
 
         self.is_loading = False
 
-        # s = ttk.Style()
-        # gray_color = '#C7CEE1'
-        # light_blue_color = '#748FB0'
-        # s.configure('TFrame', background=gray_color)
-        # s.configure('TLabel', background=gray_color)
-        # s.configure('TButton', background=light_blue_color)
-
         # Frames
         self.frame1 = ttk.Frame(self.window)
         self.frame2_empty = ttk.Frame(self.window)
@@ -58,20 +49,20 @@ class App:
         self.frame4.place(relx=0.85, rely=0, relwidth=0.15, relheight=0.94)
         self.frame5.place(relx=0.85, rely=0.94, relwidth=0.15, relheight=0.06)
 
-        # Separators
-        self.sep1 = ttk.Separator(self.frame4, orient='vertical')
-        self.sep2 = ttk.Separator(self.frame1, orient='horizontal')
-        self.sep3 = ttk.Separator(self.frame3, orient='horizontal')
-        self.sep4 = ttk.Separator(self.frame5, orient='vertical')
-        self.sep5 = ttk.Separator(
-            self.frame2_chart_refresh_button, orient='horizontal')
-        self.sep1.place(relx=0, rely=0, relheight=1)
-        self.sep2.place(relx=0, rely=0.98, relwidth=1)
-        self.sep3.place(relx=0, rely=0, relwidth=1)
-        self.sep4.place(relx=0, rely=0, relheight=1)
-        self.sep5.place(relx=0, rely=0.98, relwidth=1)
+        # Widgets
+        ttk.Separator(self.frame4, orient='vertical').place(relx=0, rely=0, relheight=1)
+        ttk.Separator(self.frame1, orient='horizontal').place(relx=0, rely=0.98, relwidth=1)
+        ttk.Separator(self.frame3, orient='horizontal').place(relx=0, rely=0, relwidth=1)
+        ttk.Separator(self.frame5, orient='vertical').place(relx=0, rely=0, relheight=1)
+        ttk.Separator(self.frame2_chart_refresh_button, orient='horizontal').place(relx=0, rely=0.98, relwidth=1)
+        
+        refresh_icon = tkinter.PhotoImage(
+            file=utils.resourcePath('refreshicon.png'))
+        self.refresh_btn = ttk.Button(self.frame2_chart_refresh_button, text=self.setLabel(
+            'Odśwież', 'Refresh'), compound=tkinter.LEFT, image=refresh_icon, command=lambda: self.redrawChart(False))
+        self.refresh_btn.image = refresh_icon
+        self.refresh_btn.pack(side=tkinter.RIGHT, padx=15)
 
-        # Buttons
         self.btn1 = None
         self.btn2 = None
         self.btn3 = None
@@ -80,24 +71,15 @@ class App:
         self.btn6 = None
         self.btn7 = None
 
-        refresh_icon = tkinter.PhotoImage(
-            file=utils.resourcePath('refreshicon.png'))
-        self.refresh_btn = ttk.Button(self.frame2_chart_refresh_button, text=self.setLabel(
-            'Odśwież', 'Refresh'), compound=tkinter.LEFT, image=refresh_icon, command=lambda: self.redrawChart(False))
-        self.refresh_btn.image = refresh_icon
-        self.refresh_btn.pack(side=tkinter.RIGHT, padx=15)
-        # Labels
         self.label1 = None
         self.label2 = None
-        self.label3 = None
-        # OptionMenus
-        self.opt_menu1 = None
-        self.opt = None
 
+        self.opt_menu1 = None
+        
         # Classes
-        self.menubar = None
         self.table = None
         self.chart = None
+        self.menubar = None
         self.loading = Loading(self.window, self.frame5, self.language)
 
     ##########################################################################
@@ -139,10 +121,9 @@ class App:
 
     def saveChart(self):
         if not self.is_loading:
-            if self.show_chart and not self.chart is None:
-                filename = 'aaa.png'
-                self.runWithLoading(
-                    self.chart.saveChart, 'Zapisywanie wykresu...', 'Saving chart...', filename)
+            if self.show_chart and not isinstance(self.chart, type(None)):
+                filename = filedialog.asksaveasfilename(initialdir='/', title=self.setLabel('Zapisz wykres', 'Save chart'), filetypes=((self.setLabel('Plik PNG', 'PNG file'), '*.png'), (self.setLabel('Plik PDF', 'PDF file'), '*.pdf'), (self.setLabel('Plik EPS', 'EPS file'), '*.eps')), defaultextension='*.png')
+                self.runWithLoading(self.chart.saveChart, 'Zapisywanie wykresu...', 'Saving chart...', filename)
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
                     'Proszę wybrać wykres do zapisania.', 'Please select a chart to save.'))
@@ -163,7 +144,7 @@ class App:
                 self.reloadMenuBar()
                 self.reloadWidgets()
                 self.refresh_btn['text'] = self.setLabel('Odśwież', 'Refresh')
-                if not self.chart is None:
+                if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
                     self.redrawChart()
                 self.loading.setText(self.language)
@@ -178,7 +159,7 @@ class App:
                 self.reloadMenuBar()
                 self.reloadWidgets()
                 self.refresh_btn['text'] = self.setLabel('Odśwież', 'Refresh')
-                if not self.chart is None:
+                if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
                     self.redrawChart()
                 self.loading.setText(self.language)
@@ -220,7 +201,7 @@ class App:
                 self.opt.set(self.excel_sheet)
 
     def reloadMenuBar(self):
-        if not self.menubar is None:
+        if not isinstance(self.menubar, type(None)):
             self.menubar.clear()
         self.menubar = MenuBar(self.window)
         self.menubar.addMenu(self.setLabel('Plik', 'File'), labels=[self.setLabel(
@@ -235,13 +216,13 @@ class App:
     def reloadTable(self):
         if self.show_table:
             if self.filepath != '':
-                if self.table_prev_excel_table is None or not self.excel_table.equals(self.table_prev_excel_table):
+                if isinstance(self.table_prev_excel_table, type(None)) or not self.excel_table.equals(self.table_prev_excel_table):
                     self.table_prev_excel_table = self.excel_table
                     prev_table = self.table
                     self.table = self.runWithLoading(Table(
                         self.frame2_table, self.excel_table).prepareTable, 'Wczytywanie tabeli...', 'Loading table...')
                     self.table.grid(row=0, column=0, sticky='nswe')
-                    if not prev_table is None:
+                    if not isinstance(prev_table, type(None)):
                         prev_table.destroy()
             else:
                 tkinter.messagebox.showerror(
@@ -249,7 +230,7 @@ class App:
                 self.showEmpty()
 
     def reloadChart(self):
-        if self.chart_prev_excel_table is None or not self.excel_table.equals(self.chart_prev_excel_table):
+        if isinstance(self.chart_prev_excel_table, type(None)) or not self.excel_table.equals(self.chart_prev_excel_table):
             self.chart_prev_excel_table = self.excel_table
             self.chart = Chart(self.window, self.frame2_chart,
                                self.frame2_chart_refresh_button, self.excel_table, self.language)
@@ -285,7 +266,6 @@ class App:
         # Labels
         self.destroyWidget(self.label1)
         self.destroyWidget(self.label2)
-        self.destroyWidget(self.label3)
         # OptionMenus
         self.destroyWidget(self.opt_menu1)
 
@@ -342,14 +322,14 @@ class App:
         self.btn7.place(relx=0.05, rely=0.25, relwidth=0.92)
 
     def destroyWidget(self, widget):
-        if not widget is None:
+        if not isinstance(widget, type(None)):
             widget.destroy()
 
     def switchButtons(self, active_btn=None):
         s = ttk.Style()
         for i in range(1, 8):
             s.configure(f'B{i}.TButton', font=font.nametofont('TkDefaultFont'))
-        if not active_btn is None:
+        if not isinstance(active_btn, type(None)):
             s.configure(active_btn + '.TButton', font=('Arial', 10, 'bold'))
 
     @utils.threadpool
@@ -369,7 +349,7 @@ class App:
         return fun_future.result()
 
     def validateTable(self):
-        if not self.excel_table is None:
+        if not isinstance(self.excel_table, type(None)):
             if len(self.excel_table.columns) != self.excel_table_cols_nmb:
                 tkinter.messagebox.showwarning(message=utils.setLabel(self.language, 'Wybrany arkusz ma nieprawidłowy format. Niektóre funkcjonalności mogą nie zadziałać poprawnie.',
                                                'Selected sheet has incorrect format. Some functionalities may not work properly.'))
@@ -385,7 +365,7 @@ class App:
             self.reloadTable()
             if not self.show_empty:
                 self.switchButtons('B1')
-                if not self.chart is None:
+                if not isinstance(self.chart, type(None)):
                     self.chart.clearFrame()
                 self.frame2_empty.place_forget()
                 self.frame2_chart.place_forget()
@@ -395,7 +375,7 @@ class App:
                 self.frame2_table.grid_rowconfigure(0, weight=1)
 
     def showChart(self):
-        if self.chart is None:
+        if isinstance(self.chart, type(None)):
             tkinter.messagebox.showerror(
                 message=self.setLabel('Aby wyświetlić wykres, proszę wczytać plik.', 'In order to show a chart load a file first.'))
             self.showEmpty()
@@ -459,7 +439,7 @@ class App:
             self.show_empty = True
             self.show_table = False
             self.show_chart = self.show_chartA = self.show_chartB = self.show_chartC = self.show_chartD = self.show_chartE = False
-            if not self.chart is None:
+            if not isinstance(self.chart, type(None)):
                 self.chart.clearFrame()
             self.frame2_table.place_forget()
             self.frame2_chart.place_forget()

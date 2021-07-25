@@ -49,7 +49,8 @@ class ChecklistWindow:
         else:
             ttk.Separator(self.button_frame_top1, orient='horizontal').place(
                 relx=0, rely=0.98, relwidth=1)
-        ttk.Separator(self.button_frame_bottom, orient='horizontal').place(relx=0, rely=0, relwidth=1)
+        ttk.Separator(self.button_frame_bottom, orient='horizontal').place(
+            relx=0, rely=0, relwidth=1)
 
         self.ok_button = ttk.Button(
             self.button_frame_bottom, text='OK', command=self.overwriteSelected)

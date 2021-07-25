@@ -21,7 +21,7 @@ class App:
         self.window.minsize(1200, 700)
         self.window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.window.protocol('WM_DELETE_WINDOW', self.exitApp)
-
+    
         self.show_empty = True
         self.show_table = False
         self.show_chart = False
@@ -50,17 +50,25 @@ class App:
         self.frame5.place(relx=0.85, rely=0.94, relwidth=0.15, relheight=0.06)
 
         # Widgets
-        ttk.Separator(self.frame4, orient='vertical').place(relx=0, rely=0, relheight=1)
-        ttk.Separator(self.frame1, orient='horizontal').place(relx=0, rely=0.98, relwidth=1)
-        ttk.Separator(self.frame3, orient='horizontal').place(relx=0, rely=0, relwidth=1)
-        ttk.Separator(self.frame5, orient='vertical').place(relx=0, rely=0, relheight=1)
-        ttk.Separator(self.frame2_chart_refresh_button, orient='horizontal').place(relx=0, rely=0.98, relwidth=1)
+        ttk.Separator(self.frame4, orient='vertical').place(
+            relx=0, rely=0, relheight=1)
+        ttk.Separator(self.frame1, orient='horizontal').place(
+            relx=0, rely=0.98, relwidth=1)
+        ttk.Separator(self.frame3, orient='horizontal').place(
+            relx=0, rely=0, relwidth=1)
+        ttk.Separator(self.frame5, orient='vertical').place(
+            relx=0, rely=0, relheight=1)
+        ttk.Separator(self.frame2_chart_refresh_button, orient='horizontal').place(
+            relx=0, rely=0.98, relwidth=1)
+
+        self.style = ttk.Style()
+        self.style.configure('TButton', font=(None, 9))
+        self.style.configure('TLabel', font=(None, 9))
+        self.style.configure('TMenubutton', font=(None, 9))
+        self.style.configure('TCheckbutton', font=(None, 9))
         
-        refresh_icon = tkinter.PhotoImage(
-            file=utils.resourcePath('refreshicon.png'))
         self.refresh_btn = ttk.Button(self.frame2_chart_refresh_button, text=self.setLabel(
-            'Odśwież', 'Refresh'), compound=tkinter.LEFT, image=refresh_icon, command=lambda: self.redrawChart(False))
-        self.refresh_btn.image = refresh_icon
+            u'\u27f3 Odśwież', u'\u27f3 Refresh'), command=lambda: self.redrawChart(False))
         self.refresh_btn.pack(side=tkinter.RIGHT, padx=15)
 
         self.btn1 = None
@@ -75,7 +83,7 @@ class App:
         self.label2 = None
 
         self.opt_menu1 = None
-        
+
         # Classes
         self.table = None
         self.chart = None
@@ -122,8 +130,10 @@ class App:
     def saveChart(self):
         if not self.is_loading:
             if self.show_chart and not isinstance(self.chart, type(None)):
-                filename = filedialog.asksaveasfilename(initialdir='/', title=self.setLabel('Zapisz wykres', 'Save chart'), filetypes=((self.setLabel('Plik PNG', 'PNG file'), '*.png'), (self.setLabel('Plik PDF', 'PDF file'), '*.pdf'), (self.setLabel('Plik EPS', 'EPS file'), '*.eps')), defaultextension='*.png')
-                self.runWithLoading(self.chart.saveChart, 'Zapisywanie wykresu...', 'Saving chart...', filename)
+                filename = filedialog.asksaveasfilename(initialdir='/', title=self.setLabel('Zapisz wykres', 'Save chart'), filetypes=((self.setLabel(
+                    'Plik PNG', 'PNG file'), '*.png'), (self.setLabel('Plik PDF', 'PDF file'), '*.pdf'), (self.setLabel('Plik EPS', 'EPS file'), '*.eps')), defaultextension='*.png')
+                self.runWithLoading(
+                    self.chart.saveChart, 'Zapisywanie wykresu...', 'Saving chart...', filename)
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
                     'Proszę wybrać wykres do zapisania.', 'Please select a chart to save.'))
@@ -143,10 +153,11 @@ class App:
                 self.language = 'polish'
                 self.reloadMenuBar()
                 self.reloadWidgets()
-                self.refresh_btn['text'] = self.setLabel('Odśwież', 'Refresh')
+                self.switchButtonsState()
+                self.refresh_btn['text'] = self.setLabel(u'\u27f3 Odśwież', u'\u27f3 Refresh')
                 if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
-                    self.redrawChart()
+                    self.redrawChart(False)
                 self.loading.setText(self.language)
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
@@ -158,10 +169,11 @@ class App:
                 self.language = 'english'
                 self.reloadMenuBar()
                 self.reloadWidgets()
-                self.refresh_btn['text'] = self.setLabel('Odśwież', 'Refresh')
+                self.switchButtonsState()
+                self.refresh_btn['text'] = self.setLabel(u'\u27f3 Odśwież', u'\u27f3 Refresh')
                 if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
-                    self.redrawChart()
+                    self.redrawChart(False)
                 self.loading.setText(self.language)
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
@@ -232,26 +244,18 @@ class App:
     def reloadChart(self):
         if isinstance(self.chart_prev_excel_table, type(None)) or not self.excel_table.equals(self.chart_prev_excel_table):
             self.chart_prev_excel_table = self.excel_table
+            chart_is_loading = True if self.show_chart else False
+            if chart_is_loading:
+                self.chart.setIsLoading(True)
+                self.chart.switchButtonsState()
             self.chart = Chart(self.window, self.frame2_chart,
-                               self.frame2_chart_refresh_button, self.excel_table, self.language)
-        self.redrawChart()
+                            self.frame2_chart_refresh_button, self.excel_table, self.language, chart_is_loading)
+        if self.show_chart:
+            self.redrawChart()
 
     def redrawChart(self, chart_drawn=None):
-        if self.show_chartA:
-            self.runWithLoading(
-                self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'A', chart_drawn)
-        elif self.show_chartB:
-            self.runWithLoading(
-                self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'B', chart_drawn)
-        elif self.show_chartC:
-            self.runWithLoading(
-                self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'C', chart_drawn)
-        elif self.show_chartD:
-            self.runWithLoading(
-                self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'D', chart_drawn)
-        elif self.show_chartE:
-            self.runWithLoading(
-                self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'E', chart_drawn)
+        if not isinstance(self.chart, type(None)):
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', self.getCurrentChartName(), chart_drawn) 
 
     def reloadWidgets(self):
         # Destroy widgets if they exist
@@ -326,11 +330,10 @@ class App:
             widget.destroy()
 
     def switchButtons(self, active_btn=None):
-        s = ttk.Style()
         for i in range(1, 8):
-            s.configure(f'B{i}.TButton', font=font.nametofont('TkDefaultFont'))
+            self.style.configure(f'B{i}.TButton', font=(None, 9, 'normal'))
         if not isinstance(active_btn, type(None)):
-            s.configure(active_btn + '.TButton', font=('Arial', 10, 'bold'))
+            self.style.configure(active_btn + '.TButton', font=(None, 9, 'bold'))
 
     @utils.threadpool
     def readExcel(self):
@@ -338,6 +341,10 @@ class App:
 
     def runWithLoading(self, fun, text_pl, text_eng, *args):
         self.is_loading = True
+        self.switchButtonsState()
+        if not isinstance(self.chart, type(None)):
+            self.chart.setIsLoading(True)
+            self.chart.switchButtonsState()
         self.loading.setText(self.language, text_pl, text_eng)
         self.loading.show()
         fun_future = fun(*args)
@@ -346,6 +353,10 @@ class App:
         self.loading.hide()
         self.loading.setText(self.language, 'Wczytywanie...', 'Loading...')
         self.is_loading = False
+        self.switchButtonsState()
+        if not isinstance(self.chart, type(None)):
+            self.chart.setIsLoading(False)
+            self.chart.switchButtonsState()
         return fun_future.result()
 
     def validateTable(self):
@@ -353,6 +364,39 @@ class App:
             if len(self.excel_table.columns) != self.excel_table_cols_nmb:
                 tkinter.messagebox.showwarning(message=utils.setLabel(self.language, 'Wybrany arkusz ma nieprawidłowy format. Niektóre funkcjonalności mogą nie zadziałać poprawnie.',
                                                'Selected sheet has incorrect format. Some functionalities may not work properly.'))
+
+    def switchButtonsState(self):
+        if self.is_loading:
+            self.disableButtons()
+        else:
+            self.enableButtons()
+
+    def disableButtons(self):
+        buttons = [self.btn1, self.btn2, self.btn3,
+                   self.btn4, self.btn5, self.btn6, self.btn7, self.refresh_btn]
+        for button in buttons:
+            if not isinstance(button, type(None)):
+                button.configure(state=tkinter.DISABLED)
+
+    def enableButtons(self):
+        buttons = [self.btn1, self.btn2, self.btn3,
+                   self.btn4, self.btn5, self.btn6, self.btn7, self.refresh_btn]
+        for button in buttons:
+            if not isinstance(button, type(None)):
+                button.configure(state=tkinter.NORMAL)
+
+    def getCurrentChartName(self):
+        if self.show_chartA:
+            return 'A'
+        if self.show_chartB:
+            return 'B'
+        if self.show_chartC:
+            return 'C'
+        if self.show_chartD:
+            return 'D'
+        if self.show_chartE:
+            return 'E'
+        return 'None'
 
     ##########################################################################
     # Content display controllers

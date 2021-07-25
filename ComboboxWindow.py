@@ -8,7 +8,8 @@ class ComboboxWindow:
         self.height = height
 
     def show(self, language, item_list, already_selected_items):
-        self.item_list = item_list
+        self.showLoadingCursor(self.root)
+        self.item_list = [str(item_list[i]) for i in range(len(item_list))]
         self.already_selected_items = already_selected_items
         self.selected_items = already_selected_items.copy()
 
@@ -57,6 +58,8 @@ class ComboboxWindow:
                              relwidth=0.75, relheight=0.34)
         self.combobox2.place(relx=0.22, rely=0.55,
                              relwidth=0.75, relheight=0.34)
+        
+        self.hideLoadingCursor(self.root)
 
     def selectItem1(self, language):
         selected_item = self.var1.get()
@@ -84,6 +87,15 @@ class ComboboxWindow:
         self.already_selected_items[0] = self.selected_items[0]
         self.already_selected_items[1] = self.selected_items[1]
         self.combobox_window.destroy()
+
+    def showLoadingCursor(self, window, min=None):
+        if isinstance(min, type(None)) or len(self.selected_list) > min:
+            window.configure(cursor='wait')
+            time.sleep(0.1)
+            window.update()
+
+    def hideLoadingCursor(self, window):
+        window.configure(cursor='')
 
 
 if __name__ == '__main__':

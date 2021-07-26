@@ -14,8 +14,8 @@ class TextWindow:
         self.posy = self.root.winfo_y() + (self.root.winfo_height() - self.height) / 2
         self.text_window.geometry(
             '%dx%d+%d+%d' % (self.width, self.height, self.posx, self.posy))
-        self.text_window.resizable(0, 0)
-        self.text_window.title('PMS DA')
+        self.text_window.minsize(self.width, self.height)
+        self.text_window.title('PMS Data Analysis')
         self.text_window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.text_window.grab_set()
 
@@ -28,8 +28,10 @@ class TextWindow:
 
         ttk.Separator(self.button_frame, orient='horizontal').place(
             relx=0, rely=0, relwidth=1)
-        ttk.Button(self.button_frame, text='OK', command=self.text_window.destroy).place(
-            relx=0.77, rely=0.16, relwidth=0.2, relheight=0.7)
+        self.ok_button = ttk.Button(self.button_frame, text='OK', command=self.text_window.destroy)
+        self.ok_button.place(x=self.width - 160, rely=0.16, width=140, relheight=0.7)
+
+        self.text_window.bind('<Configure>', self.handleResize)
 
         self.text = scrolledtext.ScrolledText(
             self.text_frame, font=('Courier', 12))
@@ -53,10 +55,19 @@ class TextWindow:
         self.text.configure(state=tkinter.DISABLED)
 
         self.hideLoadingCursor(self.root)
-
+    
     def addSpaces(self, text, expected_len):
         spaces = ''.join([' ' for _ in range(expected_len - len(text))])
         return text + spaces
+
+    def handleResize(self, _):
+        width = self.text_window.winfo_width()
+        height = self.text_window.winfo_height()
+        self.text_frame.place(x=0, y=0, width=width,
+                              height=height - 40)
+        self.button_frame.place(x=0, y=height - 40,
+                                width=width, height=40)
+        self.ok_button.place(x=width - 160, rely=0.16, width=140, relheight=0.7)
 
     def showLoadingCursor(self, window, min=None):
         if isinstance(min, type(None)) or len(self.selected_list) > min:

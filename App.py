@@ -1,3 +1,4 @@
+from utils import threadpool
 from imports import *
 from MenuBar import *
 from Table import *
@@ -123,8 +124,8 @@ class App:
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Wczytywanie arkusza...', 'Loading sheet...')
                 self.validateTable()
-                self.reloadTable()
                 self.reloadChart()
+                self.reloadTable()
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
                 'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
@@ -190,14 +191,12 @@ class App:
 
     # Exit command
     def exitApp(self):
-        if not self.is_loading:
-            if tkinter.messagebox.askquestion(
-                    message=self.setLabel('Czy na pewno chcesz zakończyć?', 'Are you sure you want to exit?')) == 'yes':
-                self.window.destroy()
+        if self.is_loading:
+            tkinter.messagebox.showerror(message=self.setLabel('Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
         else:
-            tkinter.messagebox.showerror(message=self.setLabel(
-                'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
-
+            if tkinter.messagebox.askquestion(message=self.setLabel('Czy na pewno chcesz zakończyć?', 'Are you sure you want to exit?')) == 'yes':
+                self.window.destroy()    
+        
     ##########################################################################
     # Other methods
 
@@ -209,8 +208,8 @@ class App:
                 self.excel_table = self.runWithLoading(
                     self.readExcel, 'Wczytywanie arkusza...', 'Loading sheet...')
                 self.validateTable()
-                self.reloadTable()
                 self.reloadChart()
+                self.reloadTable()
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
                     'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
@@ -245,6 +244,11 @@ class App:
                     message=self.setLabel('Aby wyświetlić tabelę, proszę wczytać plik.', 'In order to show a table load a file first.'))
                 self.showEmpty()
 
+    @utils.threadpool
+    def setChartObject(self, chart_is_loading):
+        self.chart = Chart(self.window, self.frame2_chart,
+                            self.frame2_chart_buttons, self.excel_table, self.language, chart_is_loading)
+
     def reloadChart(self):
         if isinstance(self.chart_prev_excel_table, type(None)) or not self.excel_table.equals(self.chart_prev_excel_table):
             self.chart_prev_excel_table = self.excel_table
@@ -252,8 +256,7 @@ class App:
             if chart_is_loading:
                 self.chart.setIsLoading(True)
                 self.chart.switchButtonsState()
-            self.chart = Chart(self.window, self.frame2_chart,
-                            self.frame2_chart_buttons, self.excel_table, self.language, chart_is_loading)
+            self.runWithLoading(self.setChartObject, 'Wczytywanie arkusza...', 'Loading sheet...', chart_is_loading)
         if self.show_chart:
             self.redrawChart()
 

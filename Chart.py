@@ -1,5 +1,3 @@
-from os import stat
-from tkinter.constants import S
 from imports import *
 from ChecklistWindow import *
 from ComboboxWindow import *
@@ -376,19 +374,23 @@ class Chart:
             time_elapsed = {}
             B_dates_set = set(self.B_dates)
             station_nmb_total = len(self.station)
-            print(station_nmb_total)
             for i in range(len(self.B_engines)):
                 is_engine_valid = True
-                len(self.getColumn('Date', 'Date', 2)[(self.getColumn('Przesunięcie', 'Shift', 11).isin(self.B_shifts))
-                                                & (self.getColumn('Cycle', 'Cycle', 5).isin(self.B_cycles))
-                                                & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))].values)
-                engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
-                    'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.B_stations))].tolist()
-                if self.contains(B_dates_set, engine_date):
-                    delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
-                        'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
-                    time_elapsed[self.B_engines[i]] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
-                else:
+                if len(self.getColumn('Stacja', 'Station', 1)[(self.getColumn('Numer seryjny', 'Serial Number', 10) == self.B_engines[i])
+                        & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.B_shifts))
+                        & (self.getColumn('Cycle', 'Cycle', 5).isin(self.B_cycles))
+                        & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))].values) != station_nmb_total:
+                    is_engine_valid = False
+                if is_engine_valid:
+                    engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
+                        'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.B_stations))].tolist()
+                    if self.contains(B_dates_set, engine_date):
+                        delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
+                            'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
+                        time_elapsed[self.B_engines[i]] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
+                    else:
+                        is_engine_valid = False
+                if not is_engine_valid:
                     self.B_engines[i] = None
             self.B_engines = [e for e in self.B_engines if not e is None]
             time_elapsed_cpy = dict(time_elapsed)

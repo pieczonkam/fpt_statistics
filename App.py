@@ -38,7 +38,7 @@ class App:
         self.frame2_empty = ttk.Frame(self.window)
         self.frame2_table = ttk.Frame(self.window)
         self.frame2_chart = ttk.Frame(self.window)
-        self.frame2_chart_refresh_button = ttk.Frame(self.frame2_chart)
+        self.frame2_chart_buttons = ttk.Frame(self.frame2_chart)
         self.frame3 = ttk.Frame(self.window)
         self.frame4 = ttk.Frame(self.window)
         self.frame5 = ttk.Frame(self.window)
@@ -58,7 +58,7 @@ class App:
             relx=0, rely=0, relwidth=1)
         ttk.Separator(self.frame5, orient='vertical').place(
             relx=0, rely=0, relheight=1)
-        ttk.Separator(self.frame2_chart_refresh_button, orient='horizontal').place(
+        ttk.Separator(self.frame2_chart_buttons, orient='horizontal').place(
             relx=0, rely=0.98, relwidth=1)
 
         self.style = ttk.Style()
@@ -67,9 +67,11 @@ class App:
         self.style.configure('TMenubutton', font=(None, 9))
         self.style.configure('TCheckbutton', font=(None, 9))
         
-        self.refresh_btn = ttk.Button(self.frame2_chart_refresh_button, text=self.setLabel(
+        self.refresh_btn = ttk.Button(self.frame2_chart_buttons, text=self.setLabel(
             u'\u27f3 Odśwież', u'\u27f3 Refresh'), command=lambda: self.redrawChart(False))
+        self.reset_filters_btn = ttk.Button(self.frame2_chart_buttons, text=self.setLabel('Reset filtrów', 'Reset filters'), command=self.resetFilters)
         self.refresh_btn.pack(side=tkinter.RIGHT, padx=15)
+        self.reset_filters_btn.pack(side=tkinter.RIGHT)
 
         self.btn1 = None
         self.btn2 = None
@@ -155,6 +157,7 @@ class App:
                 self.reloadWidgets()
                 self.switchButtonsState()
                 self.refresh_btn['text'] = self.setLabel(u'\u27f3 Odśwież', u'\u27f3 Refresh')
+                self.reset_filters_btn['text'] = self.setLabel('Reset filtrów', 'Reset filters')
                 if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
                     self.redrawChart(False)
@@ -171,6 +174,7 @@ class App:
                 self.reloadWidgets()
                 self.switchButtonsState()
                 self.refresh_btn['text'] = self.setLabel(u'\u27f3 Odśwież', u'\u27f3 Refresh')
+                self.reset_filters_btn['text'] = self.setLabel('Reset filtrów', 'Reset filters')
                 if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
                     self.redrawChart(False)
@@ -249,7 +253,7 @@ class App:
                 self.chart.setIsLoading(True)
                 self.chart.switchButtonsState()
             self.chart = Chart(self.window, self.frame2_chart,
-                            self.frame2_chart_refresh_button, self.excel_table, self.language, chart_is_loading)
+                            self.frame2_chart_buttons, self.excel_table, self.language, chart_is_loading)
         if self.show_chart:
             self.redrawChart()
 
@@ -305,11 +309,11 @@ class App:
         self.btn1 = ttk.Button(self.frame4, text=self.setLabel(
             'Tabela', 'Table'), command=self.showTable, style='B1.TButton')
         self.btn2 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wykres A', 'Chart A'), command=self.showChartA, style='B2.TButton')
+            'Wykres 3D', '3D Chart'), command=self.showChartA, style='B2.TButton')
         self.btn3 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wykres B', 'Chart B'), command=self.showChartB, style='B3.TButton')
+            'Histogram Czasu Przejścia', 'Transition Time Histogram'), command=self.showChartB, style='B3.TButton')
         self.btn4 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wykres C', 'Chart C'), command=self.showChartC, style='B4.TButton')
+            '% Czas Przejścia OK', '% Transition Time OK'), command=self.showChartC, style='B4.TButton')
         self.btn5 = ttk.Button(self.frame4, text=self.setLabel(
             'Wykres D', 'Chart D'), command=self.showChartD, style='B5.TButton')
         self.btn6 = ttk.Button(self.frame4, text=self.setLabel(
@@ -318,9 +322,9 @@ class App:
             'Wyczyść', 'Clear'), command=self.showEmpty)
         # 0.02 for vertical separator
         self.btn1.place(relx=0.05, rely=0.01, relwidth=0.92)
-        self.btn2.place(relx=0.05, rely=0.05, relwidth=0.92)
+        self.btn4.place(relx=0.05, rely=0.05, relwidth=0.92)
         self.btn3.place(relx=0.05, rely=0.09, relwidth=0.92)
-        self.btn4.place(relx=0.05, rely=0.13, relwidth=0.92)
+        self.btn2.place(relx=0.05, rely=0.13, relwidth=0.92)
         self.btn5.place(relx=0.05, rely=0.17, relwidth=0.92)
         self.btn6.place(relx=0.05, rely=0.21, relwidth=0.92)
         self.btn7.place(relx=0.05, rely=0.25, relwidth=0.92)
@@ -373,14 +377,14 @@ class App:
 
     def disableButtons(self):
         buttons = [self.btn1, self.btn2, self.btn3,
-                   self.btn4, self.btn5, self.btn6, self.btn7, self.refresh_btn]
+                   self.btn4, self.btn5, self.btn6, self.btn7, self.refresh_btn, self.reset_filters_btn]
         for button in buttons:
             if not isinstance(button, type(None)):
                 button.configure(state=tkinter.DISABLED)
 
     def enableButtons(self):
         buttons = [self.btn1, self.btn2, self.btn3,
-                   self.btn4, self.btn5, self.btn6, self.btn7, self.refresh_btn]
+                   self.btn4, self.btn5, self.btn6, self.btn7, self.refresh_btn, self.reset_filters_btn]
         for button in buttons:
             if not isinstance(button, type(None)):
                 button.configure(state=tkinter.NORMAL)
@@ -397,6 +401,11 @@ class App:
         if self.show_chartE:
             return 'E'
         return 'None'
+
+    def resetFilters(self):
+        if not isinstance(self.chart, type(None)):
+            self.runWithLoading(self.chart.resetFilters, 'Wczytywanie wykresu...', 'Loading chart...', self.getCurrentChartName())
+            self.redrawChart(False)
 
     ##########################################################################
     # Content display controllers

@@ -7,9 +7,9 @@ from TextWindow import *
 
 
 class Chart:
-    def __init__(self, root, frame, refresh_button_frame, excel_table, language, is_loading):
+    def __init__(self, root, frame, buttons_frame, excel_table, language, is_loading):
         self.frame = frame
-        self.refresh_button_frame = refresh_button_frame
+        self.buttons_frame = buttons_frame
         self.checklist_window = ChecklistWindow(root, 250, 480)
         self.combobox_window = ComboboxWindow(root, 220, 120)
         self.text_window = TextWindow(root, 600, 450)
@@ -110,7 +110,7 @@ class Chart:
 
     def clearFrame(self):
         for child in self.frame.winfo_children():
-            if child != self.refresh_button_frame:
+            if child != self.buttons_frame:
                 child.destroy()
             else:
                 child.place_forget()
@@ -179,6 +179,23 @@ class Chart:
         if not isinstance(self.figure, type(None)):
             self.figure.savefig(filename)
 
+    @utils.threadpool
+    def resetFilters(self, chart_name):
+        if chart_name == 'A':
+            self.A_station_selected = [0, len(self.station) - 1]
+            self.A_date_selected = [0, len(self.date) - 1]
+            self.A_shift_selected = self.onesList(len(self.shift))
+            self.A_cycle_selected = self.onesList(len(self.cycle))
+            self.A_part_number_selected = self.onesList(len(self.part_number))
+        elif chart_name == 'B':
+            self.B_station_selected = [0, len(self.station) - 1]
+            self.B_date_selected = [0, len(self.date) - 1]
+            self.B_shift_selected = self.onesList(len(self.shift))
+            self.B_cycle_selected = self.onesList(len(self.cycle))
+            self.B_part_number_selected = self.onesList(len(self.part_number))
+        else:
+            pass
+
     def disableButtons(self, buttons):
         for button in buttons:
             if not isinstance(button, type(None)):
@@ -229,10 +246,6 @@ class Chart:
         self.show_cdf = not self.show_cdf
         self.drawChart(chart_name)
 
-    def switchFigureText(self, text, figure_text, canvas):
-        figure_text.set_text(text)
-        canvas.draw()
-
     ############################################################################################################
 
     def drawChartA(self, chart_drawn=None):
@@ -279,9 +292,9 @@ class Chart:
         filters_frame = ttk.Frame(self.frame)
         chart_frame = ttk.Frame(self.frame)
         options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
-        filters_frame.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.05)
-        self.refresh_button_frame.place(
-            relx=0.85, rely=0.05, relwidth=0.15, relheight=0.05)
+        filters_frame.place(relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
         if self.chartA_show_filters:
             chart_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.90)
         else:
@@ -312,6 +325,7 @@ class Chart:
         self.A_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.A_cycle_btn.pack(side=tkinter.LEFT)
         self.A_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        ttk.Separator(filters_frame, orient='vertical').pack(side=tkinter.LEFT, fill=tkinter.Y)
 
         #######################################################################################################
 
@@ -320,15 +334,14 @@ class Chart:
         ax1 = self.figure.add_subplot(111, projection='3d')
 
         ax1.plot(list(range(100)), list(range(100)), list(range(100)), 'o')
-        self.A_ax1_text = self.figure.text(0.99, 0.02, 'abc', horizontalalignment='right')
-        self.A_ax1_text.set_text('aaabbbccc')
+        ax1.set_xlabel('a')
+        ax1.set_ylabel('b')
+        ax1.set_zlabel('c')
+        self.figure.text(0.99, 0.02, utils.setLabel(self.language, 'LPM - obrót\nPPM - przybliżenie/oddalenie', 'LMB - rotate\nRMB - zoom in/out'), horizontalalignment='right')
 
         canvas = FigureCanvasTkAgg(self.figure, chart_frame)
         canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
         canvas.draw()
-
-        chart_frame.bind('<Enter>', lambda _: self.A_ax1_text.set_text(utils.setLabel(self.language, 'LPM - obrót\nPPM - przybliżenie/oddalenie', 'LMB - rotate\nRMB - zoom in/out')))
-        chart_frame.bind('<Leave>', lambda _: self.switchFigureText('', self.A_ax1_text, canvas))
 
     def drawChartB(self, chart_drawn=None):
         if not isinstance(chart_drawn, type(None)):
@@ -362,7 +375,13 @@ class Chart:
              
             time_elapsed = {}
             B_dates_set = set(self.B_dates)
+            station_nmb_total = len(self.station)
+            print(station_nmb_total)
             for i in range(len(self.B_engines)):
+                is_engine_valid = True
+                len(self.getColumn('Date', 'Date', 2)[(self.getColumn('Przesunięcie', 'Shift', 11).isin(self.B_shifts))
+                                                & (self.getColumn('Cycle', 'Cycle', 5).isin(self.B_cycles))
+                                                & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))].values)
                 engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
                     'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.B_stations))].tolist()
                 if self.contains(B_dates_set, engine_date):
@@ -421,9 +440,9 @@ class Chart:
         filters_frame = ttk.Frame(self.frame)
         chart_frame = ttk.Frame(self.frame)
         options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
-        filters_frame.place(relx=0, rely=0.05, relwidth=0.85, relheight=0.05)
-        self.refresh_button_frame.place(
-            relx=0.85, rely=0.05, relwidth=0.15, relheight=0.05)
+        filters_frame.place(relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
         if self.chartB_show_filters:
             chart_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.90)
         else:
@@ -467,6 +486,7 @@ class Chart:
         self.B_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.B_cycle_btn.pack(side=tkinter.LEFT)
         self.B_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        ttk.Separator(filters_frame, orient='vertical').pack(side=tkinter.LEFT, fill=tkinter.Y)
 
         #######################################################################################################
 

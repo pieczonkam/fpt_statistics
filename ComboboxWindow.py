@@ -65,23 +65,19 @@ class ComboboxWindow:
         selected_item = self.var1.get()
         selected_item_idx = self.item_list.index(selected_item)
         if self.selected_items[0] != selected_item_idx:
-            if self.selected_items[1] >= selected_item_idx:
-                self.selected_items[0] = selected_item_idx
-            else:
-                tkinter.messagebox.showerror(message=utils.setLabel(
-                    language, 'Wartość początkowa nie może być większa od końcowej.', 'Initial value cannot be greater than the final one.'))
-                self.var1.set(self.item_list[self.selected_items[0]])
+            self.selected_items[0] = selected_item_idx
+            if self.selected_items[1] < selected_item_idx:
+                self.selected_items[1] = selected_item_idx
+                self.var2.set(self.item_list[self.selected_items[1]])
 
     def selectItem2(self, language):
         selected_item = self.var2.get()
         selected_item_idx = self.item_list.index(selected_item)
         if self.selected_items[1] != selected_item_idx:
-            if self.selected_items[0] <= selected_item_idx:
-                self.selected_items[1] = selected_item_idx
-            else:
-                tkinter.messagebox.showerror(message=utils.setLabel(
-                    language, 'Wartość końcowa nie może być mniejsza od początkowej.', 'Final value cannot be lesser than initial one.'))
-                self.var2.set(self.item_list[self.selected_items[1]])
+            self.selected_items[1] = selected_item_idx
+            if self.selected_items[0] > selected_item_idx:
+                self.selected_items[0] = selected_item_idx
+                self.var1.set(self.item_list[self.selected_items[0]])
 
     def overwriteRange(self):
         self.already_selected_items[0] = self.selected_items[0]

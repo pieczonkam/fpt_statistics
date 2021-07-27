@@ -1,4 +1,3 @@
-from utils import threadpool
 from imports import *
 from MenuBar import *
 from Table import *

@@ -16,6 +16,7 @@ class Chart:
         self.cols = len(excel_table.columns)
         self.rows = len(excel_table)
         self.figure = None
+        self.expected_operation_time = 45
 
         # Columns data
         self.ute = sorted(self.getColumnUniqueList('UTE', 'UTE', 0))
@@ -66,7 +67,7 @@ class Chart:
         self.A_cycle_btn = None
         self.A_part_number_btn = None
 
-        # chartB
+        # ChartB
         self.chartB_drawn = False
         self.chartB_first_draw = True
         self.chartB_show_filters = False
@@ -79,6 +80,19 @@ class Chart:
         self.B_shift_btn = None
         self.B_cycle_btn = None
         self.B_part_number_btn = None
+
+        # ChartC
+        self.chartC_drawn = False
+        self.chartC_first_draw = True
+        self.chartC_show_filters = False
+
+        self.C_filters_btn = None
+        self.C_details_btn = None
+        self.C_station_btn = None
+        self.C_date_btn = None
+        self.C_shift_btn = None
+        self.C_cycle_btn = None
+        self.C_part_number_btn = None
 
     def setLanguage(self, language):
         self.language = language
@@ -102,6 +116,17 @@ class Chart:
                     col = pd.Series()
         finally:
             return col
+
+    def getColumnProperName(self, column_name, optional_name):
+        try:
+            self.excel_table[column_name]
+            return column_name
+        except Exception:
+            try:
+                self.excel_table[optional_name]
+                return optional_name
+            except Exception:
+                return False
 
     def getColumnUniqueList(self, column_name, optional_name=None, col_index=None):
         return list(set(self.getColumn(column_name, optional_name, col_index).tolist()))
@@ -128,6 +153,13 @@ class Chart:
         self.B_shift_btn = None
         self.B_cycle_btn = None
         self.B_part_number_btn = None
+        self.C_filters_btn = None
+        self.C_details_btn = None
+        self.C_station_btn = None
+        self.C_date_btn = None
+        self.C_shift_btn = None
+        self.C_cycle_btn = None
+        self.C_part_number_btn = None
     
     def zerosListWithOne(self, length):
         data_list = [0 for _ in range(length)]
@@ -191,6 +223,12 @@ class Chart:
             self.B_shift_selected = self.onesList(len(self.shift))
             self.B_cycle_selected = self.onesList(len(self.cycle))
             self.B_part_number_selected = self.onesList(len(self.part_number))
+        elif chart_name == 'C':
+            self.C_station_selected = self.onesList(len(self.station))
+            self.C_date_selected = [0, len(self.date) - 1]
+            self.C_shift_selected = self.onesList(len(self.shift))
+            self.C_cycle_selected = self.onesList(len(self.cycle))
+            self.C_part_number_selected = self.onesList(len(self.part_number))
         else:
             pass
 
@@ -209,7 +247,8 @@ class Chart:
 
     def switchButtonsState(self):
         buttons = [self.A_filters_btn, self.A_details_btn, self.A_station_btn, self.A_date_btn, self.A_shift_btn, self.A_cycle_btn, self.A_part_number_btn,
-                   self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn]
+                   self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn,
+                   self.C_filters_btn, self.C_details_btn, self.C_station_btn, self.C_date_btn, self.C_shift_btn, self.C_cycle_btn, self.C_part_number_btn]
         if self.is_loading:
             self.disableButtons(buttons)
         else:
@@ -223,7 +262,8 @@ class Chart:
             self.chartB_show_filters = not self.chartB_show_filters
             show_filters = self.chartB_show_filters
         elif chart_name == 'C':
-            pass
+            self.chartC_show_filters = not self.chartC_show_filters
+            show_filters = self.chartC_show_filters
         elif chart_name == 'D':
             pass
         elif chart_name == 'E':
@@ -266,6 +306,7 @@ class Chart:
             self.A_cycles = [self.cycle[i] for i in range(len(self.A_cycle_selected)) if self.A_cycle_selected[i] != 0]
             self.A_part_numbers = [self.part_number[i] for i in range(len(self.A_part_number_selected)) if self.A_part_number_selected[i] != 0]
 
+            self.chartA_drawn = True
 
             ###############
             # Details data
@@ -329,12 +370,14 @@ class Chart:
 
         self.figure = plt.Figure()
         self.figure.set_tight_layout(True)
-        ax1 = self.figure.add_subplot(111, projection='3d')
+        ax = self.figure.add_subplot(111, projection='3d')
 
-        ax1.plot(list(range(100)), list(range(100)), list(range(100)), 'o')
-        ax1.set_xlabel('a')
-        ax1.set_ylabel('b')
-        ax1.set_zlabel('c')
+        ax.set_title(utils.setLabel(self.language, 'Wykres 3D',
+                      '3D Chart'), pad=15, weight='bold')
+        ax.plot(list(range(100)), list(range(100)), list(range(100)), 'o')
+        ax.set_xlabel('a')
+        ax.set_ylabel('b')
+        ax.set_zlabel('c')
         self.figure.text(0.99, 0.02, utils.setLabel(self.language, 'LPM - obrót\nPPM - przybliżenie/oddalenie', 'LMB - rotate\nRMB - zoom in/out'), horizontalalignment='right')
 
         canvas = FigureCanvasTkAgg(self.figure, chart_frame)
@@ -365,42 +408,43 @@ class Chart:
             self.B_cycles = [self.cycle[i] for i in range(len(self.B_cycle_selected)) if self.B_cycle_selected[i] != 0]
             self.B_part_numbers = [self.part_number[i] for i in range(len(self.B_part_number_selected)) if self.B_part_number_selected[i] != 0]
             
-            self.B_engines = list(set(self.getColumn('Numer seryjny', 'Serial Number', 10)[(self.getColumn('Date', 'Date', 2).isin(self.B_dates))
+            self.B_engines_all = sorted(self.getColumn('Numer seryjny', 'Serial Number', 10)[(self.getColumn('Date', 'Date', 2).isin(self.B_dates))
                             & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.B_shifts))
                             & (self.getColumn('Cycle', 'Cycle', 5).isin(self.B_cycles)) 
-                            & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))].values))
+                            & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))].tolist())            
+            self.B_engines_list = []
+            prev_engine = ''
+            j = -1
+            for i in range(len(self.B_engines_all)):
+                engine = self.B_engines_all[i]
+                if engine != prev_engine:
+                    self.B_engines_list.append([])
+                    j += 1
+                self.B_engines_list[j].append(engine)
+                prev_engine = engine
+        
+            self.B_engines = []
+            for engine in self.B_engines_list:
+                if len(engine) > 0:
+                    if len(engine) == len(self.station):
+                        self.B_engines.append(engine[0])
             self.B_engines = [e for e in self.B_engines if e in self.serial_number]
              
             time_elapsed = {}
-            B_dates_set = set(self.B_dates)
-            station_nmb_total = len(self.station)
             for i in range(len(self.B_engines)):
-                is_engine_valid = True
-                if len(self.getColumn('Stacja', 'Station', 1)[(self.getColumn('Numer seryjny', 'Serial Number', 10) == self.B_engines[i])
-                        & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.B_shifts))
-                        & (self.getColumn('Cycle', 'Cycle', 5).isin(self.B_cycles))
-                        & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))].values) != station_nmb_total:
-                    is_engine_valid = False
-                if is_engine_valid:
-                    engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
-                        'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.B_stations))].tolist()
-                    if self.contains(B_dates_set, engine_date):
-                        delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
-                            'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
-                        time_elapsed[self.B_engines[i]] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
-                    else:
-                        is_engine_valid = False
-                if not is_engine_valid:
-                    self.B_engines[i] = None
-            self.B_engines = [e for e in self.B_engines if not e is None]
+                engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.B_stations))].tolist()
+                delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == self.B_engines[i]) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
+                time_elapsed[self.B_engines[i]] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
             time_elapsed_cpy = dict(time_elapsed)
             
             for i in range(self.bars_nmb - 1):
-                m, s = divmod(self.B_station_nmb * 45 + i * 15 -
+                m, s = divmod(self.B_station_nmb * self.expected_operation_time + i * 15 -
                               (self.B_station_nmb // 3) * 15, 60)
                 self.B_transition_time[i] = f'{m:02d}:{s:02d}'
                 for key, value in time_elapsed.items():
-                    if value <= self.B_station_nmb * 45 + i * 15 - (self.B_station_nmb // 3) * 15 and key in time_elapsed_cpy:
+                    if value <= self.B_station_nmb * self.expected_operation_time + i * 15 - (self.B_station_nmb // 3) * 15 and key in time_elapsed_cpy:
                         self.B_engines_nmb[i] += 1
                         time_elapsed_cpy.pop(key, 'None')
             self.B_engines_nmb[-1] = len(time_elapsed_cpy.keys())
@@ -432,7 +476,7 @@ class Chart:
         self.B_transition_time_str = utils.setLabel(
             self.language, 'Czas przejścia', 'Transition time')
         self.B_cdf_str = utils.setLabel(self.language, 'Dystrybuanta', 'CDF')
-        self.B_expected_time = utils.setLabel(
+        self.B_expected_time_str = utils.setLabel(
             self.language, 'Czas projektowy', 'Expected time')
 
         #######################################################################################################
@@ -499,8 +543,8 @@ class Chart:
         hist = ax1.bar(self.B_transition_time,
                        self.B_engines_nmb, align='edge', width=-0.8)
         expected_time = ax1.axvline(x=self.B_station_nmb // 3, color='grey')
-        ax1.set_title(utils.setLabel(self.language, 'Histogram czasu przepływu',
-                      'Transition time histogram'), pad=15, weight='bold')
+        ax1.set_title(utils.setLabel(self.language, 'Histogram Czasu Przejścia',
+                      'Transition Time Histogram'), pad=15, weight='bold')
         ax1.tick_params(labelrotation=90)
         ax1.set_xlabel(self.B_transition_time_str)
         for bar, label in zip(ax1.patches, self.B_engines_nmb):
@@ -519,10 +563,10 @@ class Chart:
                          ha='right', va='bottom', color='red', weight='semibold', fontsize='small')
             lengend_handles = [hist, cdf[0], expected_time]
             legend_labels = [self.B_engines_nmb_str,
-                             self.B_cdf_str, self.B_expected_time]
+                             self.B_cdf_str, self.B_expected_time_str]
         else:
             lengend_handles = [hist, expected_time]
-            legend_labels = [self.B_engines_nmb_str, self.B_expected_time]
+            legend_labels = [self.B_engines_nmb_str, self.B_expected_time_str]
         ax1.legend(lengend_handles, legend_labels, bbox_to_anchor=(
             1, 0.92 + 0.02 * len(lengend_handles)))
 
@@ -531,8 +575,155 @@ class Chart:
         canvas.draw()
 
     def drawChartC(self, chart_drawn=None):
+        if not isinstance(chart_drawn, type(None)):
+            self.chartC_drawn = chart_drawn
+
+        if self.chartC_first_draw:
+            self.C_station_selected = self.onesList(len(self.station))
+            self.C_date_selected = [0, len(self.date) - 1]
+            self.C_shift_selected = self.onesList(len(self.shift))
+            self.C_cycle_selected = self.onesList(len(self.cycle))
+            self.C_part_number_selected = self.onesList(len(self.part_number))
+            self.chartC_first_draw = False
+
+        if not self.chartC_drawn:
+            self.C_stations = [self.station[i] for i in range(len(self.C_station_selected)) if self.C_station_selected[i] != 0]
+            self.C_station_nmb = len(self.C_stations)
+            self.C_dates = self.date[self.C_date_selected[0]:self.C_date_selected[1] + 1]
+            self.C_shifts = [self.shift[i] for i in range(len(self.C_shift_selected)) if self.C_shift_selected[i] != 0]
+            self.C_cycles = [self.cycle[i] for i in range(len(self.C_cycle_selected)) if self.C_cycle_selected[i] != 0]
+            self.C_part_numbers = [self.part_number[i] for i in range(len(self.C_part_number_selected)) if self.C_part_number_selected[i] != 0]
+
+            self.C_engines_ok_percentage = [0 for _ in range(self.C_station_nmb)]
+
+            self.C_engines_all = sorted(self.getColumn('Numer seryjny', 'Serial Number', 10)[(self.getColumn('Date', 'Date', 2).isin(self.C_dates))
+                            & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.C_shifts))
+                            & (self.getColumn('Cycle', 'Cycle', 5).isin(self.C_cycles)) 
+                            & (self.getColumn('Numer części', 'Part Number', 9).isin(self.C_part_numbers))].tolist())
+            self.C_engines_list = []
+            prev_engine = ''
+            j = -1
+            for i in range(len(self.C_engines_all)):
+                engine = self.C_engines_all[i]
+                if engine != prev_engine:
+                    self.C_engines_list.append([])
+                    j += 1
+                self.C_engines_list[j].append(engine)
+                prev_engine = engine
+        
+            self.C_engines = []
+            for engine in self.C_engines_list:
+                if len(engine) > 0:
+                    if len(engine) == len(self.station):
+                        self.C_engines.append(engine[0])
+            self.C_engines = [e for e in self.C_engines if e in self.serial_number]
+
+            time_elapsed = {}
+            a = time.time()
+            for i in range(len(self.C_engines)):
+                engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == self.C_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.C_stations))].tolist()
+                delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == self.C_engines[i]) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
+                time_elapsed[self.C_engines[i]] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
+            print(time.time() - a)
+
+            if len(self.C_engines) > 0:
+                expected_time = self.C_station_nmb * self.expected_operation_time
+                for i in range(self.C_station_nmb):
+                    for te in time_elapsed.values():
+                        if te <= expected_time:
+                            self.C_engines_ok_percentage[i] += 1
+                    self.C_engines_ok_percentage[i] = (self.C_engines_ok_percentage[i] / len(self.C_engines)) * 100
+            self.chartC_drawn = True
+
+            ###############
+            # Details data
+            self.C_details_data = {}
+            self.C_details_data[utils.setLabel(self.language, 'Ilość stacji', 'Number of stations')] = self.C_station_nmb
+            self.C_details_data[utils.setLabel(self.language, 'Wybrane stacje', 'Selected stations')] = self.C_stations
+            self.C_details_data[utils.setLabel(self.language, 'Data początkowa', 'Start date')] = self.date[self.C_date_selected[0]]
+            self.C_details_data[utils.setLabel(self.language, 'Data końcowa', 'End date')] = self.date[self.C_date_selected[1]]
+            self.C_details_data[''] = ''
+            self.C_details_data[utils.setLabel(self.language, 'Wybrane zmiany', 'Selected shifts')] = self.C_shifts
+            self.C_details_data[utils.setLabel(self.language, 'Wybrane cykle', 'Selected cycles')] = self.C_cycles
+            self.C_details_data[utils.setLabel(self.language, 'Wybrane numery części', 'Selected part numbers')] = self.C_part_numbers
+            self.C_details_data[utils.setLabel(self.language, 'Całkowita ilość silników', 'Total number of engines')] = self.serial_number_nmb
+            self.C_details_data[utils.setLabel(self.language, 'Silniki z brakującymi danymi', 'Engines with missing data')] = self.wrong_transition_count
+            self.C_details_data[utils.setLabel(self.language, 'Silniki z poprawnymi danymi', 'Engines with valid data')] = self.serial_number_nmb - self.wrong_transition_count
+            self.C_details_data[' '] = ''
+            self.C_details_data[utils.setLabel(self.language, 'Ilość wybranych silników', 'Number of selected engines')] = len(self.C_engines)
+            ###############
+
+        self.C_station_str = utils.setLabel(self.language, 'Stacje', 'Stations')
+        self.C_transition_time_ok_percent_str = utils.setLabel(self.language, 'Ilość silników z zadowalającym czasem przejścia', 'Number of engines with satisfactory transition time')
+
+        #######################################################################################################
+
         self.clearFrame()
-        print('Empty')
+        options_frame = ttk.Frame(self.frame)
+        filters_frame = ttk.Frame(self.frame)
+        chart_frame = ttk.Frame(self.frame)
+        options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
+        filters_frame.place(relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
+        if self.chartC_show_filters:
+            chart_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.90)
+        else:
+            chart_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.95)
+
+        ttk.Separator(options_frame, orient='horizontal').place(
+            relx=0, rely=0.98, relwidth=1)
+        ttk.Separator(filters_frame, orient='horizontal').place(
+            relx=0, rely=0.98, relwidth=1)
+
+        if self.chartC_show_filters:
+            filters_btn_text = utils.setLabel(
+                self.language, u'Filtry \u25b2', u'Filters \u25b2')
+        else:
+            filters_btn_text = utils.setLabel(
+                self.language, u'Filtry \u25bc', u'Filters \u25bc')
+        buttons_state = tkinter.DISABLED if self.is_loading else tkinter.NORMAL
+        self.C_filters_btn = ttk.Button(options_frame, text=filters_btn_text,
+                                 command=lambda: self.switchFilters('C', chart_frame, self.C_filters_btn), state=buttons_state)
+        self.C_details_btn = ttk.Button(options_frame, text=utils.setLabel(self.language, 'Szczegóły',
+                   'Details'), command=lambda: self.text_window.show(self.C_details_data), state=buttons_state)
+        self.C_filters_btn.pack(side=tkinter.LEFT, padx=15)
+        self.C_details_btn.pack(side=tkinter.LEFT)
+
+        self.C_station_btn = ttk.Button(filters_frame, text=utils.setLabel(self.language, 'Stacja', 'Station'),
+                   command=lambda: self.checklist_window.show(self.language, self.station, self.C_station_selected, page_len=250), state=buttons_state)
+        self.C_date_btn = ttk.Button(filters_frame, text=utils.setLabel(self.language, 'Data', 'Date'),
+                   command=lambda: self.combobox_window.show(self.language, self.date, self.C_date_selected), state=buttons_state)
+        self.C_shift_btn = ttk.Button(filters_frame, text=utils.setLabel(self.language, 'Zmiana', 'Shift'),
+                   command=lambda: self.checklist_window.show(self.language, self.shift, self.C_shift_selected, page_len=250), state=buttons_state)
+        self.C_cycle_btn = ttk.Button(filters_frame, text=utils.setLabel(self.language, 'Cykl', 'Cycle'),
+                   command=lambda: self.checklist_window.show(self.language, self.cycle, self.C_cycle_selected, page_len=250), state=buttons_state)
+        self.C_part_number_btn = ttk.Button(filters_frame, text=utils.setLabel(self.language, 'Numer części', 'Part number'),
+                   command=lambda: self.checklist_window.show(self.language, self.part_number, self.C_part_number_selected, page_len=250), state=buttons_state)
+        self.C_station_btn.pack(side=tkinter.LEFT, padx=15)
+        self.C_date_btn.pack(side=tkinter.LEFT)
+        self.C_shift_btn.pack(side=tkinter.LEFT, padx=15)
+        self.C_cycle_btn.pack(side=tkinter.LEFT)
+        self.C_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        ttk.Separator(filters_frame, orient='vertical').pack(side=tkinter.LEFT, fill=tkinter.Y)
+
+        #######################################################################################################
+
+        self.figure = plt.Figure()
+        ax = self.figure.add_subplot(111)
+
+        hist = ax.bar(self.C_stations, self.C_engines_ok_percentage, label=self.C_transition_time_ok_percent_str)
+        ax.set_title(utils.setLabel(self.language, '% Czas Przejścia OK', '% Transition Time OK'), pad=15, weight='bold')
+        ax.set_xlabel(self.C_station_str)
+        ax.set_ylim(0, 101)
+        ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+        ax.legend()
+
+        canvas = FigureCanvasTkAgg(self.figure, chart_frame)
+        canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
+        canvas.draw()
 
     def drawChartD(self, chart_drawn=None):
         self.clearFrame()

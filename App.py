@@ -160,7 +160,7 @@ class App:
                 self.reset_filters_btn['text'] = self.setLabel('Reset filtrów', 'Reset filters')
                 if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
-                    self.redrawChart(False)
+                    self.redrawChart(False, 'all')
                 self.loading.setText(self.language)
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
@@ -177,7 +177,7 @@ class App:
                 self.reset_filters_btn['text'] = self.setLabel('Reset filtrów', 'Reset filters')
                 if not isinstance(self.chart, type(None)):
                     self.chart.setLanguage(self.language)
-                    self.redrawChart(False)
+                    self.redrawChart(False, 'all')
                 self.loading.setText(self.language)
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
@@ -259,9 +259,9 @@ class App:
         if self.show_chart:
             self.redrawChart()
 
-    def redrawChart(self, chart_drawn=None):
+    def redrawChart(self, chart_drawn=None, mode='single'):
         if not isinstance(self.chart, type(None)):
-            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', self.getCurrentChartName(), chart_drawn) 
+            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', self.getCurrentChartName(), chart_drawn, mode) 
 
     def reloadWidgets(self):
         # Destroy widgets if they exist

@@ -117,17 +117,6 @@ class Chart:
         finally:
             return col
 
-    def getColumnProperName(self, column_name, optional_name):
-        try:
-            self.excel_table[column_name]
-            return column_name
-        except Exception:
-            try:
-                self.excel_table[optional_name]
-                return optional_name
-            except Exception:
-                return False
-
     def getColumnUniqueList(self, column_name, optional_name=None, col_index=None):
         return list(set(self.getColumn(column_name, optional_name, col_index).tolist()))
 
@@ -183,12 +172,6 @@ class Chart:
         for i in range(len(cdf)):
             cdf[i] = round((cdf[i] / data_list_sum) * 100, 2)
         return cdf
-
-    def contains(self, big_set, small_list):
-        for el in small_list:
-            if not el in big_set:
-                return False
-        return True
 
     @utils.threadpool
     def drawChart(self, chart_name='A', chart_drawn=None):
@@ -369,7 +352,6 @@ class Chart:
         #######################################################################################################
 
         self.figure = plt.Figure()
-        self.figure.set_tight_layout(True)
         ax = self.figure.add_subplot(111, projection='3d')
 
         ax.set_title(utils.setLabel(self.language, 'Wykres 3D',
@@ -547,6 +529,8 @@ class Chart:
                       'Transition Time Histogram'), pad=15, weight='bold')
         ax1.tick_params(labelrotation=90)
         ax1.set_xlabel(self.B_transition_time_str)
+        if len(self.B_engines) == 0:
+            ax1.yaxis.set_major_formatter(mtick.NullFormatter())
         for bar, label in zip(ax1.patches, self.B_engines_nmb):
             if label > 0:
                 rotation = 0 if len(str(label)) < 4 else 45
@@ -618,23 +602,19 @@ class Chart:
                         self.C_engines.append(engine[0])
             self.C_engines = [e for e in self.C_engines if e in self.serial_number]
 
-            time_elapsed = {}
-            a = time.time()
-            for i in range(len(self.C_engines)):
-                engine_date = self.getColumn('Date', 'Date', 2)[(self.getColumn(
-                    'Numer seryjny', 'Serial Number', 10) == self.C_engines[i]) & (self.getColumn('Stacja', 'Station', 1).isin(self.C_stations))].tolist()
-                delta_time = np.float64(self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
-                    'Numer seryjny', 'Serial Number', 10) == self.C_engines[i]) & (self.getColumn('Date', 'Date', 2) == np.max(engine_date))].values[0])
-                time_elapsed[self.C_engines[i]] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
-            print(time.time() - a)
+            delta_time = {}
+            for engine in self.C_engines:
+                delta_time[engine] = self.getColumn('Aktualny czas trwania [s]', 'Actual duration [s]', 6)[(self.getColumn(
+                    'Numer seryjny', 'Serial Number', 10) == engine) & (self.getColumn('Stacja', 'Station', 1).isin(self.C_stations))].tolist()
+                delta_time[engine].reverse()
 
             if len(self.C_engines) > 0:
-                expected_time = self.C_station_nmb * self.expected_operation_time
                 for i in range(self.C_station_nmb):
-                    for te in time_elapsed.values():
-                        if te <= expected_time:
+                    for engine in self.C_engines: 
+                        if delta_time[engine][i] <= self.expected_operation_time:
                             self.C_engines_ok_percentage[i] += 1
                     self.C_engines_ok_percentage[i] = (self.C_engines_ok_percentage[i] / len(self.C_engines)) * 100
+            
             self.chartC_drawn = True
 
             ###############
@@ -656,7 +636,7 @@ class Chart:
             ###############
 
         self.C_station_str = utils.setLabel(self.language, 'Stacje', 'Stations')
-        self.C_transition_time_ok_percent_str = utils.setLabel(self.language, 'Ilość silników z zadowalającym czasem przejścia', 'Number of engines with satisfactory transition time')
+        self.C_transition_time_ok_percent_str = utils.setLabel(self.language, 'Ilość silników\nz zadowalającym\nczasem przejścia', 'Number of engines\nwith satisfactory\ntransition time')
 
         #######################################################################################################
 
@@ -712,14 +692,18 @@ class Chart:
         #######################################################################################################
 
         self.figure = plt.Figure()
+        self.figure.set_tight_layout(True)
         ax = self.figure.add_subplot(111)
 
-        hist = ax.bar(self.C_stations, self.C_engines_ok_percentage, label=self.C_transition_time_ok_percent_str)
+        ax.bar(self.C_stations, self.C_engines_ok_percentage, label=self.C_transition_time_ok_percent_str, width=0.6)
         ax.set_title(utils.setLabel(self.language, '% Czas Przejścia OK', '% Transition Time OK'), pad=15, weight='bold')
         ax.set_xlabel(self.C_station_str)
-        ax.set_ylim(0, 101)
+        ax.set_ylim(0, 105)
         ax.yaxis.set_major_formatter(mtick.PercentFormatter())
-        ax.legend()
+        ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+        for bar, label in zip(ax.patches, self.C_engines_ok_percentage):
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(round(label, 2)) + '%', weight='semibold', ha='center', va='bottom')
 
         canvas = FigureCanvasTkAgg(self.figure, chart_frame)
         canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)

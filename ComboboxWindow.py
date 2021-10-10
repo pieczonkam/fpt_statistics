@@ -84,11 +84,10 @@ class ComboboxWindow:
         self.already_selected_items[1] = self.selected_items[1]
         self.combobox_window.destroy()
 
-    def showLoadingCursor(self, window, min=None):
-        if isinstance(min, type(None)) or len(self.selected_list) > min:
-            window.configure(cursor='wait')
-            time.sleep(0.1)
-            window.update()
+    def showLoadingCursor(self, window):
+        window.configure(cursor='wait')
+        time.sleep(0.1)
+        window.update()
 
     def hideLoadingCursor(self, window):
         window.configure(cursor='')

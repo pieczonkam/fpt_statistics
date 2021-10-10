@@ -7,7 +7,7 @@ class TextWindow:
         self.width = width
         self.height = height
 
-    def show(self, data_dict):
+    def show(self, data_dict, language):
         self.showLoadingCursor(self.root)
         self.text_window = tkinter.Toplevel(self.root)
         self.posx = self.root.winfo_x() + (self.root.winfo_width() - self.width) / 2
@@ -15,7 +15,7 @@ class TextWindow:
         self.text_window.geometry(
             '%dx%d+%d+%d' % (self.width, self.height, self.posx, self.posy))
         self.text_window.minsize(self.width, self.height)
-        self.text_window.title('PMS Data Analysis')
+        self.text_window.title(utils.setLabel(language, 'PMS Data Analysis - Szczegóły', 'PMS Data Analysis - Details'))
         self.text_window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.text_window.grab_set()
 
@@ -69,11 +69,10 @@ class TextWindow:
                                 width=width, height=40)
         self.ok_button.place(x=width - 160, rely=0.16, width=140, relheight=0.7)
 
-    def showLoadingCursor(self, window, min=None):
-        if isinstance(min, type(None)) or len(self.selected_list) > min:
-            window.configure(cursor='wait')
-            time.sleep(0.1)
-            window.update()
+    def showLoadingCursor(self, window):
+        window.configure(cursor='wait')
+        time.sleep(0.1)
+        window.update()
 
     def hideLoadingCursor(self, window):
         window.configure(cursor='')

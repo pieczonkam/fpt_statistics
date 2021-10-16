@@ -1,7 +1,7 @@
 class Globals:
     bars_nmb = 29
     bars_resolution = 15
-        
+
     transition_expected_time = 45
     operation_expected_time = 45
 

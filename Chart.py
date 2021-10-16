@@ -25,13 +25,24 @@ class Chart:
         self.A_axis_choice_var = tkinter.StringVar()
         self.A_axis_choice_prev_var = tkinter.StringVar()
         self.A_axis_choice_nmb = 0
-        self.A_axis_choice_list = [utils.setLabel(self.language, 'Stacje', 'Stations'), utils.setLabel(self.language, 'Pracownicy', 'Employees')]
+        self.A_axis_choice_list = [
+            utils.setLabel(
+                self.language, 'Stacje', 'Stations'), utils.setLabel(
+                self.language, 'Pracownicy', 'Employees')]
         self.A_axis_choice_var.trace_id = None
 
         self.A_mode_choice_var = tkinter.StringVar()
         self.A_mode_choice_prev_var = tkinter.StringVar()
         self.A_mode_choice_nmb = 0
-        self.A_mode_choice_list = [utils.setLabel(self.language, 'Czas przejścia', 'Transition time'), utils.setLabel(self.language, 'Czas operacji', 'Operation time')]
+        self.A_mode_choice_list = [
+            utils.setLabel(
+                self.language,
+                'Czas przejścia',
+                'Transition time'),
+            utils.setLabel(
+                self.language,
+                'Czas operacji',
+                'Operation time')]
         self.A_mode_choice_var.trace_id = None
 
         self.A_chart_data = None
@@ -50,7 +61,10 @@ class Chart:
                                         command=lambda: self.switchFilters('A', self.A_chart_frame, self.A_filters_btn))
         self.A_details_btn = ttk.Button(self.A_options_frame, text=utils.setLabel(
             self.language, 'Szczegóły', 'Details'), command=lambda: self.text_window.show(self.A_details_data, self.language))
-        self.A_preview_btn = ttk.Button(self.A_options_frame, text=utils.setLabel(self.language, 'Podgląd', 'Preview'), command=lambda: self.chart_preview.show(self.language, 'A', self.A_chart_data))
+        self.A_preview_btn = ttk.Button(
+            self.A_options_frame, text=utils.setLabel(
+                self.language, 'Podgląd', 'Preview'), command=lambda: self.chart_preview.show(
+                self.language, 'A', self.A_chart_data))
         self.A_station_btn = ttk.Button(self.A_filters_frame, text=utils.setLabel(self.language, 'Stacja', 'Station'), command=lambda: self.checklist_window.show(
             self.language, self.station, self.A_station_selected, page_len=250))
         self.A_employee_btn = ttk.Button(self.A_filters_frame, text=utils.setLabel(self.language, 'Pracownik', 'Employee'), command=lambda: self.checklist_window.show(
@@ -78,9 +92,25 @@ class Chart:
 
         self.A_label = ttk.Label(self.A_options_frame, text=utils.setLabel(
             self.language, 'Oś X:', 'X Axis:'))
-        self.A_option_menu = ttk.OptionMenu(self.A_options_frame, self.A_axis_choice_var, utils.setLabel(self.language, 'Stacje', 'Stations'), *self.A_axis_choice_list)
-        self.A_label2 = ttk.Label(self.A_options_frame, text=utils.setLabel(self.language, 'Oś Z:', 'Z Axis:'))
-        self.A_option_menu2 = ttk.OptionMenu(self.A_options_frame, self.A_mode_choice_var, utils.setLabel(self.language, 'Czas przejścia', 'Transition time'), *self.A_mode_choice_list)
+        self.A_option_menu = ttk.OptionMenu(
+            self.A_options_frame,
+            self.A_axis_choice_var,
+            utils.setLabel(
+                self.language,
+                'Stacje',
+                'Stations'),
+            *self.A_axis_choice_list)
+        self.A_label2 = ttk.Label(
+            self.A_options_frame, text=utils.setLabel(
+                self.language, 'Oś Z:', 'Z Axis:'))
+        self.A_option_menu2 = ttk.OptionMenu(
+            self.A_options_frame,
+            self.A_mode_choice_var,
+            utils.setLabel(
+                self.language,
+                'Czas przejścia',
+                'Transition time'),
+            *self.A_mode_choice_list)
 
         self.A_figure = Figure()
         self.A_canvas = FigureCanvasTkAgg(self.A_figure, self.A_chart_frame)
@@ -90,7 +120,15 @@ class Chart:
         self.B_axis_choice_var = tkinter.StringVar()
         self.B_axis_choice_prev_var = tkinter.StringVar()
         self.B_axis_choice_nmb = 0
-        self.B_axis_choice_list = [utils.setLabel(self.language, 'Czas przejścia', 'Transition time'), utils.setLabel(self.language, 'Czas operacji', 'Operation time')]
+        self.B_axis_choice_list = [
+            utils.setLabel(
+                self.language,
+                'Czas przejścia',
+                'Transition time'),
+            utils.setLabel(
+                self.language,
+                'Czas operacji',
+                'Operation time')]
         self.B_axis_choice_var.trace_id = None
 
         self.B_options_frame = ttk.Frame(self.frame)
@@ -132,7 +170,14 @@ class Chart:
 
         self.B_label = ttk.Label(self.B_options_frame, text=utils.setLabel(
             self.language, 'Tryb:', 'Mode:'))
-        self.B_option_menu = ttk.OptionMenu(self.B_options_frame, self.B_axis_choice_var, utils.setLabel(self.language, 'Czas przejścia', 'Transition time'), *self.B_axis_choice_list)
+        self.B_option_menu = ttk.OptionMenu(
+            self.B_options_frame,
+            self.B_axis_choice_var,
+            utils.setLabel(
+                self.language,
+                'Czas przejścia',
+                'Transition time'),
+            *self.B_axis_choice_list)
 
         self.B_figure = Figure()
         self.B_canvas = FigureCanvasTkAgg(self.B_figure, self.B_chart_frame)
@@ -215,9 +260,108 @@ class Chart:
         self.D_canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
 
         # ChartE
+        self.E_mode_choice_var = tkinter.StringVar()
+        self.E_mode_choice_prev_var = tkinter.StringVar()
+        self.E_mode_choice_nmb = 0
+        self.E_mode_choice_list = [
+            utils.setLabel(
+                self.language, 'Stacje', 'Stations'), utils.setLabel(
+                self.language, 'Pracownicy', 'Employees')]
+        self.E_mode_choice_var.trace_id = None
+
         self.E_options_frame = ttk.Frame(self.frame)
         self.E_filters_frame = ttk.Frame(self.frame)
         self.E_chart_frame = ttk.Frame(self.frame)
+
+        ttk.Separator(
+            self.E_options_frame,
+            orient='horizontal').place(
+            relx=0,
+            rely=0.98,
+            relwidth=1)
+        ttk.Separator(
+            self.E_filters_frame,
+            orient='horizontal').place(
+            relx=0,
+            rely=0.98,
+            relwidth=1)
+        self.E_sep = ttk.Separator(self.E_filters_frame, orient='vertical')
+
+        self.E_filters_btn = ttk.Button(
+            self.E_options_frame,
+            text=utils.setLabel(
+                self.language,
+                u'Filtry \u25bc',
+                u'Filters \u25bc'),
+            command=lambda: self.switchFilters(
+                'E',
+                self.E_chart_frame,
+                self.E_filters_btn))
+        self.E_details_btn = ttk.Button(
+            self.E_options_frame, text=utils.setLabel(
+                self.language, 'Szczegóły', 'Details'), command=lambda: self.text_window.show(
+                self.E_details_data, self.language))
+        self.E_station_btn = ttk.Button(
+            self.E_filters_frame, text=utils.setLabel(
+                self.language, 'Stacja', 'Station'), command=lambda: self.checklist_window.show(
+                self.language, self.station, self.E_station_selected, page_len=250))
+        self.E_employee_btn = ttk.Button(
+            self.E_filters_frame,
+            text=utils.setLabel(
+                self.language,
+                'Pracownik',
+                'Employee'),
+            command=lambda: self.checklist_window.show(
+                self.language,
+                self.operator_name,
+                self.E_employee_selected,
+                page_len=250))
+        self.E_date_btn = ttk.Button(
+            self.E_filters_frame, text=utils.setLabel(
+                self.language, 'Data', 'Date'), command=lambda: self.calendar_window.show(
+                self.language, self.date, self.E_date_selected, 'E'))
+        self.E_shift_btn = ttk.Button(
+            self.E_filters_frame, text=utils.setLabel(
+                self.language, 'Zmiana', 'Shift'), command=lambda: self.checklist_window.show(
+                self.language, self.shift, self.E_shift_selected, page_len=250))
+        self.E_cycle_btn = ttk.Button(
+            self.E_filters_frame, text=utils.setLabel(
+                self.language, 'Cykl', 'Cycle'), command=lambda: self.checklist_window.show(
+                self.language, self.cycle, self.E_cycle_selected, page_len=250))
+        self.E_part_number_btn = ttk.Button(
+            self.E_filters_frame,
+            text=utils.setLabel(
+                self.language,
+                'Numer części',
+                'Part number'),
+            command=lambda: self.checklist_window.show(
+                self.language,
+                self.part_number,
+                self.E_part_number_selected,
+                page_len=250))
+        self.E_filters_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_details_btn.pack(side=tkinter.LEFT)
+        if self.E_mode_choice_nmb == 0:
+            self.E_station_btn.pack(side=tkinter.LEFT, padx=15)
+        else:
+            self.E_employee_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_date_btn.pack(side=tkinter.LEFT)
+        self.E_shift_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_cycle_btn.pack(side=tkinter.LEFT)
+        self.E_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
+
+        self.E_label = ttk.Label(
+            self.E_options_frame, text=utils.setLabel(
+                self.language, 'Tryb:', 'Mode:'))
+        self.E_option_menu = ttk.OptionMenu(
+            self.E_options_frame,
+            self.E_mode_choice_var,
+            utils.setLabel(
+                self.language,
+                'Stacje',
+                'Stations'),
+            *self.E_mode_choice_list)
 
         self.E_figure = Figure()
         self.E_canvas = FigureCanvasTkAgg(self.E_figure, self.E_chart_frame)
@@ -254,9 +398,11 @@ class Chart:
         self.serial_number_nmb = len(self.serial_number)
         self.wrong_transition_count = 0
 
-        engines_stations = self.getColumns(['Numer seryjny', 'Stacja'], ['Serial Number', 'Station'], [10, 1])
-        engines_stations = engines_stations.sort_values(by=[engines_stations.columns[0], engines_stations.columns[1]]).values.tolist()
-        
+        engines_stations = self.getColumns(['Numer seryjny', 'Stacja'], [
+                                           'Serial Number', 'Station'], [10, 1])
+        engines_stations = engines_stations.sort_values(
+            by=[engines_stations.columns[0], engines_stations.columns[1]]).values.tolist()
+
         engines_stations_dict = {}
         prev_engine = ''
         for i in range(len(engines_stations)):
@@ -293,19 +439,35 @@ class Chart:
         self.chartD_first_draw = True
         self.chartD_show_filters = False
 
+        self.chartE_drawn = False
+        self.chartE_first_draw = True
+        self.chartE_show_filters = False
+
         self.A_axis_choice_nmb = 0
         self.A_mode_choice_nmb = 0
         self.B_axis_choice_nmb = 0
+        self.E_mode_choice_nmb = 0
 
         if not isinstance(self.A_axis_choice_var.trace_id, type(None)):
-            self.A_axis_choice_var.trace_vdelete('w', self.A_axis_choice_var.trace_id)
+            self.A_axis_choice_var.trace_vdelete(
+                'w', self.A_axis_choice_var.trace_id)
         if not isinstance(self.A_mode_choice_var.trace_id, type(None)):
-            self.A_mode_choice_var.trace_vdelete('w', self.A_mode_choice_var.trace_id)
+            self.A_mode_choice_var.trace_vdelete(
+                'w', self.A_mode_choice_var.trace_id)
         if not isinstance(self.B_axis_choice_var.trace_id, type(None)):
-            self.B_axis_choice_var.trace_vdelete('w', self.B_axis_choice_var.trace_id)
-        self.A_axis_choice_var.trace_id = self.A_axis_choice_var.trace('w', lambda *args: self.switchChartAAxisX())
-        self.A_mode_choice_var.trace_id = self.A_mode_choice_var.trace('w', lambda *args: self.switchChartAMode())
-        self.B_axis_choice_var.trace_id = self.B_axis_choice_var.trace('w', lambda *args: self.switchChartBMode())
+            self.B_axis_choice_var.trace_vdelete(
+                'w', self.B_axis_choice_var.trace_id)
+        if not isinstance(self.E_mode_choice_var.trace_id, type(None)):
+            self.E_mode_choice_var.trace_vdelete(
+                'w', self.E_mode_choice_var.trace_id)
+        self.A_axis_choice_var.trace_id = self.A_axis_choice_var.trace(
+            'w', lambda *args: self.switchChartAAxisX())
+        self.A_mode_choice_var.trace_id = self.A_mode_choice_var.trace(
+            'w', lambda *args: self.switchChartAMode())
+        self.B_axis_choice_var.trace_id = self.B_axis_choice_var.trace(
+            'w', lambda *args: self.switchChartBMode())
+        self.E_mode_choice_var.trace_id = self.E_mode_choice_var.trace(
+            'w', lambda *args: self.switchChartEMode())
 
         Globals.chartA_start_date = None
         Globals.chartA_end_date = None
@@ -341,7 +503,8 @@ class Chart:
         finally:
             return col
 
-    def getColumns(self, column_names=None, optional_names=None, col_indexes=None):
+    def getColumns(self, column_names=None,
+                   optional_names=None, col_indexes=None):
         try:
             cols = self.excel_table[column_names].copy()
         except Exception:
@@ -355,8 +518,10 @@ class Chart:
         finally:
             return cols
 
-    def getColumnUniqueList(self, column_name=None, optional_name=None, col_index=None):
-        return list(set(self.getColumn(column_name, optional_name, col_index).tolist()))
+    def getColumnUniqueList(self, column_name=None,
+                            optional_name=None, col_index=None):
+        return list(
+            set(self.getColumn(column_name, optional_name, col_index).tolist()))
 
     def clearFrame(self, chart_name):
         self.buttons_frame.place_forget()
@@ -407,6 +572,17 @@ class Chart:
             self.E_filters_frame.place_forget()
             self.E_chart_frame.place_forget()
 
+            self.E_station_btn.pack_forget()
+            self.E_employee_btn.pack_forget()
+            self.E_date_btn.pack_forget()
+            self.E_shift_btn.pack_forget()
+            self.E_cycle_btn.pack_forget()
+            self.E_part_number_btn.pack_forget()
+            self.E_sep.pack_forget()
+
+            self.E_label.pack_forget()
+            self.E_option_menu.pack_forget()
+
         if chart_name == 'A':
             self.A_options_frame.place_forget()
             self.A_filters_frame.place_forget()
@@ -443,6 +619,17 @@ class Chart:
             self.E_options_frame.place_forget()
             self.E_filters_frame.place_forget()
             self.E_chart_frame.place_forget()
+
+            self.E_station_btn.pack_forget()
+            self.E_employee_btn.pack_forget()
+            self.E_date_btn.pack_forget()
+            self.E_shift_btn.pack_forget()
+            self.E_cycle_btn.pack_forget()
+            self.E_part_number_btn.pack_forget()
+            self.E_sep.pack_forget()
+
+            self.E_label.pack_forget()
+            self.E_option_menu.pack_forget()
 
     def zerosListWithOne(self, length):
         data_list = [0 for _ in range(length)]
@@ -483,6 +670,7 @@ class Chart:
             self.chartB_drawn = False
             self.chartC_drawn = False
             self.chartD_drawn = False
+            self.chartE_drawn = False
 
         if chart_name != 'None':
             chartChoice(chart_name)(chart_drawn)
@@ -539,6 +727,16 @@ class Chart:
 
             Globals.chartD_start_date = None
             Globals.chartD_end_date = None
+        elif chart_name == 'E':
+            self.E_station_selected = self.onesList(len(self.station))
+            self.E_employee_selected = self.onesList(len(self.operator_name))
+            self.E_date_selected = [0, len(self.date) - 1]
+            self.E_shift_selected = self.onesList(len(self.shift))
+            self.E_cycle_selected = self.onesList(len(self.cycle))
+            self.E_part_number_selected = self.onesList(len(self.part_number))
+
+            Globals.chartE_start_date = None
+            Globals.chartE_end_date = None
         else:
             pass
 
@@ -552,14 +750,15 @@ class Chart:
             if not isinstance(button, type(None)):
                 button.configure(state=tkinter.NORMAL)
 
-    ############################################################################################################
+    ##########################################################################
     # Switches
 
     def switchButtonsState(self):
         buttons = [self.A_filters_btn, self.A_details_btn, self.A_preview_btn, self.A_station_btn, self.A_employee_btn, self.A_date_btn, self.A_shift_btn, self.A_cycle_btn, self.A_part_number_btn, self.A_label, self.A_option_menu, self.A_label2, self.A_option_menu2,
                    self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn, self.B_label, self.B_option_menu,
                    self.C_filters_btn, self.C_details_btn, self.C_station_btn, self.C_date_btn, self.C_shift_btn, self.C_cycle_btn, self.C_part_number_btn,
-                   self.D_filters_btn, self.D_details_btn, self.D_station_btn, self.D_date_btn, self.D_shift_btn, self.D_cycle_btn, self.D_part_number_btn]
+                   self.D_filters_btn, self.D_details_btn, self.D_station_btn, self.D_date_btn, self.D_shift_btn, self.D_cycle_btn, self.D_part_number_btn,
+                   self.E_filters_btn, self.E_details_btn, self.E_station_btn, self.E_employee_btn, self.E_date_btn, self.E_shift_btn, self.E_cycle_btn, self.E_part_number_btn, self.E_label, self.E_option_menu]
         if self.is_loading:
             self.disableButtons(buttons)
         else:
@@ -579,7 +778,8 @@ class Chart:
             self.chartD_show_filters = not self.chartD_show_filters
             show_filters = self.chartD_show_filters
         elif chart_name == 'E':
-            pass
+            self.chartE_show_filters = not self.chartE_show_filters
+            show_filters = self.chartE_show_filters
         else:
             pass
 
@@ -601,23 +801,50 @@ class Chart:
             self.A_axis_choice_prev_var.set(self.A_axis_choice_var.get())
             self.A_axis_choice_nmb = (self.A_axis_choice_nmb + 1) % 2
             if not self.is_loading:
-                self.rwlFun(self.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'A', False)
+                self.rwlFun(
+                    self.drawChart,
+                    'Wczytywanie wykresu...',
+                    'Loading chart...',
+                    'A',
+                    False)
 
     def switchChartAMode(self):
         if self.A_mode_choice_var.get() != self.A_mode_choice_prev_var.get():
             self.A_mode_choice_prev_var.set(self.A_mode_choice_var.get())
             self.A_mode_choice_nmb = (self.A_mode_choice_nmb + 1) % 2
             if not self.is_loading:
-                self.rwlFun(self.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'A', False)
+                self.rwlFun(
+                    self.drawChart,
+                    'Wczytywanie wykresu...',
+                    'Loading chart...',
+                    'A',
+                    False)
 
     def switchChartBMode(self):
         if self.B_axis_choice_var.get() != self.B_axis_choice_prev_var.get():
             self.B_axis_choice_prev_var.set(self.B_axis_choice_var.get())
             self.B_axis_choice_nmb = (self.B_axis_choice_nmb + 1) % 2
             if not self.is_loading:
-                self.rwlFun(self.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', 'B', False)
+                self.rwlFun(
+                    self.drawChart,
+                    'Wczytywanie wykresu...',
+                    'Loading chart...',
+                    'B',
+                    False)
 
-    ############################################################################################################
+    def switchChartEMode(self):
+        if self.E_mode_choice_var.get() != self.E_mode_choice_prev_var.get():
+            self.E_mode_choice_prev_var.set(self.E_mode_choice_var.get())
+            self.E_mode_choice_nmb = (self.E_mode_choice_nmb + 1) % 2
+            if not self.is_loading:
+                self.rwlFun(
+                    self.drawChart,
+                    'Wczytywanie wykresu...',
+                    'Loading chart...',
+                    'E',
+                    False)
+
+    ##########################################################################
 
     def drawChartA(self, chart_drawn=None):
         if not isinstance(chart_drawn, type(None)):
@@ -639,7 +866,8 @@ class Chart:
             self.A_employees = [self.operator_name[i] for i in range(
                 len(self.A_employee_selected)) if self.A_employee_selected[i] != 0]
             self.A_employee_nmb = len(self.A_employees)
-            self.A_dates = self.date[self.A_date_selected[0]:self.A_date_selected[1] + 1]
+            self.A_dates = self.date[self.A_date_selected[0]
+                :self.A_date_selected[1] + 1]
             self.A_shifts = [self.shift[i] for i in range(
                 len(self.A_shift_selected)) if self.A_shift_selected[i] != 0]
             self.A_cycles = [self.cycle[i] for i in range(
@@ -648,11 +876,12 @@ class Chart:
                 len(self.A_part_number_selected)) if self.A_part_number_selected[i] != 0]
 
             engines_data = self.getColumns(['Numer seryjny', 'Date', 'Stacja', 'Operator Name', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Station', 'Operator Name', 'Actual duration [s]'], [10, 2, 1, 4, 6])[(self.getColumn('Date', 'Date', 2).isin(self.A_dates))
-                                                                                                                                                                                        & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.A_shifts))
-                                                                                                                                                                                        & (self.getColumn('Cycle', 'Cycle', 5).isin(self.A_cycles))
-                                                                                                                                                                                        & (self.getColumn('Numer części', 'Part Number', 9).isin(self.A_part_numbers))]
+                                                                                                                                                                                                                              & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.A_shifts))
+                                                                                                                                                                                                                              & (self.getColumn('Cycle', 'Cycle', 5).isin(self.A_cycles))
+                                                                                                                                                                                                                              & (self.getColumn('Numer części', 'Part Number', 9).isin(self.A_part_numbers))]
 
-            engines_data = engines_data.sort_values(by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
+            engines_data = engines_data.sort_values(
+                by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
 
             engines_data_dict = {}
             prev_engine = ''
@@ -672,7 +901,8 @@ class Chart:
             engines_data_dict_cpy = dict(engines_data_dict)
 
             for key, value in engines_data_dict_cpy.items():
-                if len(value[0]) != len(self.station) or not key in self.serial_number:
+                if len(value[0]) != len(
+                        self.station) or not key in self.serial_number:
                     engines_data_dict.pop(key, None)
 
             if self.A_mode_choice_nmb == 1:
@@ -687,9 +917,10 @@ class Chart:
                             station = data[1][i]
                             if station in self.A_stations:
                                 stations_data_dict[station][0].append(dates[i])
-                                stations_data_dict[station][1].append(durations[i])
+                                stations_data_dict[station][1].append(
+                                    durations[i])
                                 stations_data_dict[station][2].append(station)
-                    
+
                     stations_data_dict_cpy = dict(stations_data_dict)
                     for station, data in stations_data_dict_cpy.items():
                         stations_data_dict[station] = []
@@ -697,7 +928,8 @@ class Chart:
                         durations = data[1]
                         stations = data[2]
                         for i in range(len(dates)):
-                            stations_data_dict[station].append([dates[i], durations[i], stations[i]])
+                            stations_data_dict[station].append(
+                                [dates[i], durations[i], stations[i]])
                         stations_data_dict[station].sort(key=itemgetter(0))
                     chart_data_dict = dict(stations_data_dict)
                 else:
@@ -710,9 +942,12 @@ class Chart:
                         for i in range(len(data[2])):
                             employee = data[2][i]
                             if employee in self.A_employees:
-                                employees_data_dict[employee][0].append(dates[i])
-                                employees_data_dict[employee][1].append(durations[i])
-                                employees_data_dict[employee][2].append(employee)
+                                employees_data_dict[employee][0].append(
+                                    dates[i])
+                                employees_data_dict[employee][1].append(
+                                    durations[i])
+                                employees_data_dict[employee][2].append(
+                                    employee)
 
                     employees_data_dict_cpy = dict(employees_data_dict)
                     for employee, data in employees_data_dict_cpy.items():
@@ -721,7 +956,8 @@ class Chart:
                         durations = data[1]
                         employees = data[2]
                         for i in range(len(dates)):
-                            employees_data_dict[employee].append([dates[i], durations[i], employees[i]])
+                            employees_data_dict[employee].append(
+                                [dates[i], durations[i], employees[i]])
                         employees_data_dict[employee].sort(key=itemgetter(0))
                     chart_data_dict = dict(employees_data_dict)
             else:
@@ -733,15 +969,17 @@ class Chart:
                         durations = []
                         dates = data[0]
                         for i in range(len(dates) - 1):
-                            durations.append((dates[i + 1] - dates[i]) / np.timedelta64(1, 's'))
+                            durations.append(
+                                (dates[i + 1] - dates[i]) / np.timedelta64(1, 's'))
                         durations.append(data[3][-1])
                         for i in range(len(data[1])):
                             station = data[1][i]
                             if station in self.A_stations:
                                 stations_data_dict[station][0].append(dates[i])
-                                stations_data_dict[station][1].append(durations[i])
+                                stations_data_dict[station][1].append(
+                                    durations[i])
                                 stations_data_dict[station][2].append(station)
-                    
+
                     stations_data_dict_cpy = dict(stations_data_dict)
                     for station, data in stations_data_dict_cpy.items():
                         stations_data_dict[station] = []
@@ -749,7 +987,8 @@ class Chart:
                         durations = data[1]
                         stations = data[2]
                         for i in range(len(dates)):
-                            stations_data_dict[station].append([dates[i], durations[i], stations[i]])
+                            stations_data_dict[station].append(
+                                [dates[i], durations[i], stations[i]])
                         stations_data_dict[station].sort(key=itemgetter(0))
                     chart_data_dict = dict(stations_data_dict)
                 else:
@@ -760,14 +999,18 @@ class Chart:
                         durations = []
                         dates = data[0]
                         for i in range(len(dates) - 1):
-                            durations.append((dates[i + 1] - dates[i]) / np.timedelta64(1, 's'))
+                            durations.append(
+                                (dates[i + 1] - dates[i]) / np.timedelta64(1, 's'))
                         durations.append(data[3][-1])
                         for i in range(len(data[2])):
                             employee = data[2][i]
                             if employee in self.A_employees:
-                                employees_data_dict[employee][0].append(dates[i])
-                                employees_data_dict[employee][1].append(durations[i])
-                                employees_data_dict[employee][2].append(employee)
+                                employees_data_dict[employee][0].append(
+                                    dates[i])
+                                employees_data_dict[employee][1].append(
+                                    durations[i])
+                                employees_data_dict[employee][2].append(
+                                    employee)
 
                     employees_data_dict_cpy = dict(employees_data_dict)
                     for employee, data in employees_data_dict_cpy.items():
@@ -776,34 +1019,43 @@ class Chart:
                         durations = data[1]
                         employees = data[2]
                         for i in range(len(dates)):
-                            employees_data_dict[employee].append([dates[i], durations[i], employees[i]])
+                            employees_data_dict[employee].append(
+                                [dates[i], durations[i], employees[i]])
                         employees_data_dict[employee].sort(key=itemgetter(0))
                     chart_data_dict = dict(employees_data_dict)
-            
+
             first_date = None
             last_date = None
             for value in chart_data_dict.values():
                 if len(value) > 0:
-                    if isinstance(first_date, type(None)) or value[0][0] < first_date:
+                    if isinstance(first_date, type(
+                            None)) or value[0][0] < first_date:
                         first_date = value[0][0]
-                    if isinstance(last_date, type(None)) or value[-1][0] > last_date:
+                    if isinstance(last_date, type(
+                            None)) or value[-1][0] > last_date:
                         last_date = value[-1][0]
-
-            self.A_resolution = np.ceil((last_date - first_date) / np.timedelta64(1, 's') / Globals.chartA_bars_nmb)
 
             self.A_dates_list = []
             self.A_avg_data_dict = {}
             current_date = first_date
 
             if not isinstance(current_date, type(None)):
+                self.A_resolution = np.ceil(
+                    (last_date -
+                     first_date) /
+                    np.timedelta64(
+                        1,
+                        's') /
+                    Globals.chartA_bars_nmb)
+
                 while current_date < last_date:
                     self.A_dates_list.append(current_date)
                     current_date += pd.Timedelta(seconds=self.A_resolution)
                 self.A_dates_list.append(current_date)
-            
+
                 for key, value in chart_data_dict.items():
                     self.A_avg_data_dict[key] = []
-                    
+
                     for i in range(len(self.A_dates_list) - 1):
                         avg_dates = []
                         start = self.A_dates_list[i]
@@ -815,7 +1067,8 @@ class Chart:
                             avg_date = sum(avg_dates) / len(avg_dates)
                         else:
                             avg_date = 0
-                        self.A_avg_data_dict[key].append([self.A_dates_list[i], round(avg_date, 1), key])
+                        self.A_avg_data_dict[key].append(
+                            [self.A_dates_list[i], round(avg_date, 1), key])
 
             self.chartA_drawn = True
 
@@ -830,9 +1083,12 @@ class Chart:
             else:
                 self.A_details_data[utils.setLabel(
                     self.language, 'Ilość pracowników', 'Number of employees')] = self.A_employee_nmb
-                self.A_details_data[utils.setLabel(self.language, 'Wybrani pracownicy', 'Selected employees')] = self.A_employees
-            self.A_details_data[utils.setLabel(self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
-            self.A_details_data[utils.setLabel(self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
+                self.A_details_data[utils.setLabel(
+                    self.language, 'Wybrani pracownicy', 'Selected employees')] = self.A_employees
+            self.A_details_data[utils.setLabel(
+                self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
+            self.A_details_data[utils.setLabel(
+                self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
             self.A_details_data[' '] = ''
             self.A_details_data[utils.setLabel(
                 self.language, 'Wybrana data początkowa', 'Chosen start date')] = self.date[self.A_date_selected[0]] if isinstance(Globals.chartA_start_date, type(None)) else Globals.chartA_start_date
@@ -845,7 +1101,9 @@ class Chart:
                 self.language, 'Wybrane cykle', 'Selected cycles')] = self.A_cycles
             self.A_details_data[utils.setLabel(
                 self.language, 'Wybrane numery części', 'Selected part numbers')] = self.A_part_numbers
-            self.A_details_data[utils.setLabel(self.language, 'Rozdzielczość słupków na wykresie [s]', 'Bars resolution on the chart [s]')] = self.A_resolution
+            self.A_details_data[utils.setLabel(self.language,
+                                               'Rozdzielczość słupków na wykresie [s]',
+                                               'Bars resolution on the chart [s]')] = self.A_resolution
             self.A_details_data['   '] = ''
             self.A_details_data[utils.setLabel(
                 self.language, 'Całkowita ilość silników', 'Total number of engines')] = self.serial_number_nmb
@@ -854,24 +1112,47 @@ class Chart:
             self.A_details_data[utils.setLabel(self.language, 'Silniki z poprawnymi danymi',
                                                'Engines with valid data')] = self.serial_number_nmb - self.wrong_transition_count
             self.A_details_data['    '] = ''
-            self.A_details_data[utils.setLabel(self.language, 'Ilość wybranych silników', 'Number of selected engines')] = len(engines_data_dict)
+            self.A_details_data[utils.setLabel(self.language,
+                                               'Ilość wybranych silników',
+                                               'Number of selected engines')] = len(engines_data_dict)
             ###############
 
-            self.A_axis_choice_list = [utils.setLabel(self.language, 'Stacje', 'Stations'), utils.setLabel(self.language, 'Pracownicy', 'Employees')]
-            self.A_label['text'] = utils.setLabel(self.language, 'Oś X:', 'X Axis:')
-            self.A_mode_choice_list = [utils.setLabel(self.language, 'Czas przejścia', 'Transition time'), utils.setLabel(self.language, 'Czas operacji', 'Operation time')]
-            self.A_label2['text'] = utils.setLabel(self.language, 'Oś Z:', 'Z Axis:')
+            self.A_axis_choice_list = [
+                utils.setLabel(
+                    self.language, 'Stacje', 'Stations'), utils.setLabel(
+                    self.language, 'Pracownicy', 'Employees')]
+            self.A_label['text'] = utils.setLabel(
+                self.language, 'Oś X:', 'X Axis:')
+            self.A_mode_choice_list = [
+                utils.setLabel(
+                    self.language,
+                    'Czas przejścia',
+                    'Transition time'),
+                utils.setLabel(
+                    self.language,
+                    'Czas operacji',
+                    'Operation time')]
+            self.A_label2['text'] = utils.setLabel(
+                self.language, 'Oś Z:', 'Z Axis:')
 
-            self.A_axis_choice_var.trace_vdelete('w', self.A_axis_choice_var.trace_id)
-            self.A_axis_choice_var.set(self.A_axis_choice_list[self.A_axis_choice_nmb])
-            self.A_axis_choice_prev_var.set(self.A_axis_choice_list[self.A_axis_choice_nmb])
-            self.A_axis_choice_var.trace_id = self.A_axis_choice_var.trace('w', lambda *args: self.switchChartAAxisX())
+            self.A_axis_choice_var.trace_vdelete(
+                'w', self.A_axis_choice_var.trace_id)
+            self.A_axis_choice_var.set(
+                self.A_axis_choice_list[self.A_axis_choice_nmb])
+            self.A_axis_choice_prev_var.set(
+                self.A_axis_choice_list[self.A_axis_choice_nmb])
+            self.A_axis_choice_var.trace_id = self.A_axis_choice_var.trace(
+                'w', lambda *args: self.switchChartAAxisX())
 
-            self.A_mode_choice_var.trace_vdelete('w', self.A_mode_choice_var.trace_id)
-            self.A_mode_choice_var.set(self.A_mode_choice_list[self.A_mode_choice_nmb])
-            self.A_mode_choice_prev_var.set(self.A_mode_choice_list[self.A_mode_choice_nmb])
-            self.A_mode_choice_var.trace_id = self.A_mode_choice_var.trace('w', lambda *args: self.switchChartAMode())
-            
+            self.A_mode_choice_var.trace_vdelete(
+                'w', self.A_mode_choice_var.trace_id)
+            self.A_mode_choice_var.set(
+                self.A_mode_choice_list[self.A_mode_choice_nmb])
+            self.A_mode_choice_prev_var.set(
+                self.A_mode_choice_list[self.A_mode_choice_nmb])
+            self.A_mode_choice_var.trace_id = self.A_mode_choice_var.trace(
+                'w', lambda *args: self.switchChartAMode())
+
             menu = self.A_option_menu['menu']
             menu.delete(0, 'end')
             for s in self.A_axis_choice_list:
@@ -882,13 +1163,17 @@ class Chart:
             for s in self.A_mode_choice_list:
                 menu.add_radiobutton(label=s, variable=self.A_mode_choice_var)
 
-        #######################################################################################################
+        #######################################################################
 
         self.clearFrame('A')
         self.A_options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
         self.A_filters_frame.place(
             relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
-        self.buttons_frame.place(relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7,
+            rely=0.05,
+            relwidth=0.3,
+            relheight=0.05)
         if self.chartA_show_filters:
             self.A_chart_frame.place(
                 relx=0, rely=0.1, relwidth=1, relheight=0.90)
@@ -912,7 +1197,8 @@ class Chart:
         self.A_filters_btn['text'] = filters_btn_text
         self.A_details_btn['text'] = utils.setLabel(
             self.language, 'Szczegóły', 'Details')
-        self.A_preview_btn['text'] = utils.setLabel(self.language, 'Podgląd', 'Preview')
+        self.A_preview_btn['text'] = utils.setLabel(
+            self.language, 'Podgląd', 'Preview')
         self.A_station_btn['text'] = utils.setLabel(
             self.language, 'Stacja', 'Station')
         self.A_employee_btn['text'] = utils.setLabel(
@@ -945,7 +1231,7 @@ class Chart:
         self.A_part_number_btn.pack(side=tkinter.LEFT, padx=15)
         self.A_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
 
-        #######################################################################################################
+        #######################################################################
 
         self.A_figure.clear()
 
@@ -966,7 +1252,7 @@ class Chart:
                 Y_labels_chosen_nmb.append(i * step)
                 i += 1
             Y_labels_chosen_nmb.append(len(Y_labels) - 1)
-            
+
         Y_labels_chosen = [Y_labels[i] for i in Y_labels_chosen_nmb]
 
         for i in range(len(Y_labels_chosen)):
@@ -982,28 +1268,49 @@ class Chart:
         for i in range(len(Y_labels)):
             for value in self.A_avg_data_dict.values():
                 Z.append(value[i][1])
-        
+
         if len(X) > 0 and len(Y) > 0 and len(Z) > 0:
-            self.A_poly3d = ax.bar3d(X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True)
+            self.A_poly3d = ax.bar3d(
+                X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True)
             self.A_poly3d._facecolors2d = self.A_poly3d._facecolor3d
-            self.A_poly3d._edgecolors2d = self.A_poly3d._edgecolor3d      
+            self.A_poly3d._edgecolors2d = self.A_poly3d._edgecolor3d
 
             ax.set_xticks(np.arange(0.5, len(X_labels), 1))
             ax.set_xticklabels(X_labels, rotation=90)
-            
+
             ax.set_yticks(Y_labels_chosen_nmb)
             ax.set_yticklabels(Y_labels_chosen, rotation=90)
+
+            if self.A_axis_choice_nmb == 0:
+                ax.set_xlabel(
+                    utils.setLabel(
+                        self.language,
+                        '\n\n\n\n\nStacje',
+                        '\n\n\n\n\nStations'))
+            else:
+                ax.set_xlabel(utils.setLabel(
+                    self.language, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPracownicy', '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEmployees'))
+            ax.set_ylabel(
+                utils.setLabel(
+                    self.language,
+                    '\n\n\n\n\n\n\n\n\n\n\n\n\nData',
+                    '\n\n\n\n\n\n\n\n\n\n\n\n\nDate'))
+            ax.set_zlabel(self.A_mode_choice_list[self.A_mode_choice_nmb])
+        else:
+            ax.set_xticks([])
+            ax.set_xticklabels([])
+            ax.set_yticks([])
+            ax.set_yticklabels([])
+            ax.set_zticks([])
+            ax.set_zticklabels([])
+
+            ax.set_xlabel('')
+            ax.set_ylabel('')
+            ax.set_zlabel('')
 
         ax.set_box_aspect((2, 2, 1), zoom=1.2)
         ax.set_title(utils.setLabel(self.language, 'Wykres 3D',
                                     '3D Chart'), pad=15, weight='bold')
-        if self.A_axis_choice_nmb == 0:
-            ax.set_xlabel(utils.setLabel(self.language, '\n\n\n\n\nStacje', '\n\n\n\n\nStations'))
-        else:
-            ax.set_xlabel(utils.setLabel(
-                self.language, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPracownicy', '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEmployees'))
-        ax.set_ylabel(utils.setLabel(self.language, '\n\n\n\n\n\n\n\n\n\n\n\n\nData', '\n\n\n\n\n\n\n\n\n\n\n\n\nDate'))
-        ax.set_zlabel(self.A_mode_choice_list[self.A_mode_choice_nmb])
         self.A_figure.text(0.99, 0.02, utils.setLabel(self.language, 'LPM - obrót\nŚPM - przesunięcie\nPPM - przybliżenie/oddalenie',
                            'LMB - rotate\nMMB - move\nRMB - zoom in/out'), horizontalalignment='right')
 
@@ -1016,8 +1323,17 @@ class Chart:
         self.A_chart_data['X_labels'] = X_labels
         self.A_chart_data['Y_labels'] = Y_labels_chosen
         self.A_chart_data['Y_labels_nmb'] = Y_labels_chosen_nmb
-        self.A_chart_data['xlabel'] = utils.setLabel(self.language, '\n\n\n\n\nStacje', '\n\n\n\n\nStations') if self.A_axis_choice_nmb == 0 else utils.setLabel(self.language, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPracownicy', '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEmployees')
-        self.A_chart_data['ylabel'] = utils.setLabel(self.language, '\n\n\n\n\n\n\n\n\n\n\n\n\nData', '\n\n\n\n\n\n\n\n\n\n\n\n\nDate')
+        self.A_chart_data['xlabel'] = utils.setLabel(
+            self.language,
+            '\n\n\n\n\nStacje',
+            '\n\n\n\n\nStations') if self.A_axis_choice_nmb == 0 else utils.setLabel(
+            self.language,
+            '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPracownicy',
+            '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEmployees')
+        self.A_chart_data['ylabel'] = utils.setLabel(
+            self.language,
+            '\n\n\n\n\n\n\n\n\n\n\n\n\nData',
+            '\n\n\n\n\n\n\n\n\n\n\n\n\nDate')
         self.A_chart_data['zlabel'] = self.A_mode_choice_list[self.A_mode_choice_nmb]
 
     def drawChartB(self, chart_drawn=None):
@@ -1038,10 +1354,8 @@ class Chart:
 
             self.B_station_nmb = self.B_station_selected[1] - \
                 self.B_station_selected[0] + 1
-            self.B_stations = self.station[self.B_station_selected[0]
-                :self.B_station_selected[1] + 1]
-            self.B_dates = self.date[self.B_date_selected[0]
-                :self.B_date_selected[1] + 1]
+            self.B_stations = self.station[self.B_station_selected[0]                                           :self.B_station_selected[1] + 1]
+            self.B_dates = self.date[self.B_date_selected[0]                                     :self.B_date_selected[1] + 1]
             self.B_shifts = [self.shift[i] for i in range(
                 len(self.B_shift_selected)) if self.B_shift_selected[i] != 0]
             self.B_cycles = [self.cycle[i] for i in range(
@@ -1070,7 +1384,8 @@ class Chart:
             engines_data_dict_cpy = dict(engines_data_dict)
 
             for key, value in engines_data_dict_cpy.items():
-                if len(value[0]) != len(self.station) or not key in self.serial_number:
+                if len(value[0]) != len(
+                        self.station) or not key in self.serial_number:
                     engines_data_dict.pop(key, None)
 
             time_elapsed = {}
@@ -1080,7 +1395,8 @@ class Chart:
                         len(engine_data[0])) if self.station[i] in self.B_stations]
                     delta_time = np.float64([engine_data[1][i] for i in range(
                         len(engine_data[1])) if self.station[i] in self.B_stations][-1])
-                    time_elapsed[engine] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
+                    time_elapsed[engine] = (
+                        np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's') + delta_time
                 elif self.B_station_nmb == 1:
                     if self.B_axis_choice_nmb == 0:
                         if self.B_stations[0] != self.station[-1]:
@@ -1088,12 +1404,14 @@ class Chart:
                                 self.B_stations[0]] + [self.station[self.B_station_selected[0] + 1]]
                             engine_date = [engine_data[0][i] for i in range(
                                 len(engine_data[0])) if self.station[i] in current_stations]
-                            time_elapsed[engine] = (np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's')
+                            time_elapsed[engine] = (
+                                np.max(engine_date) - np.min(engine_date)) / np.timedelta64(1, 's')
                         else:
                             time_elapsed[engine] = np.float64([engine_data[1][i] for i in range(
                                 len(engine_data[1])) if self.station[i] in self.B_stations][-1])
                     elif self.B_axis_choice_nmb == 1:
-                        time_elapsed[engine] = np.float64([engine_data[1][i] for i in range(len(engine_data[1])) if self.station[i] in self.B_stations][-1])
+                        time_elapsed[engine] = np.float64([engine_data[1][i] for i in range(
+                            len(engine_data[1])) if self.station[i] in self.B_stations][-1])
             time_elapsed_cpy = dict(time_elapsed)
 
             if self.B_station_nmb == 1 and self.B_axis_choice_nmb == 1:
@@ -1106,7 +1424,8 @@ class Chart:
                               (self.B_station_nmb // 3) * Globals.bars_resolution, 60)
                 self.B_transition_time[i] = f'{m:02d}:{s:02d}'
                 for key, value in time_elapsed.items():
-                    if value <= self.B_station_nmb * time_expected + i * Globals.bars_resolution - (self.B_station_nmb // 3) * Globals.bars_resolution and key in time_elapsed_cpy:
+                    if value <= self.B_station_nmb * time_expected + i * Globals.bars_resolution - \
+                            (self.B_station_nmb // 3) * Globals.bars_resolution and key in time_elapsed_cpy:
                         self.B_engines_nmb[i] += 1
                         time_elapsed_cpy.pop(key, 'None')
             self.B_engines_nmb[-1] = len(time_elapsed_cpy.keys())
@@ -1120,8 +1439,10 @@ class Chart:
                 self.language, 'Ilość stacji', 'Number of stations')] = self.B_station_nmb
             self.B_details_data[utils.setLabel(
                 self.language, 'Wybrane stacje', 'Selected stations')] = self.B_stations
-            self.B_details_data[utils.setLabel(self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
-            self.B_details_data[utils.setLabel(self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
+            self.B_details_data[utils.setLabel(
+                self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
+            self.B_details_data[utils.setLabel(
+                self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
             self.B_details_data[''] = ''
             self.B_details_data[utils.setLabel(
                 self.language, 'Wybrana data początkowa', 'Chosen start date')] = self.date[self.B_date_selected[0]] if isinstance(Globals.chartB_start_date, type(None)) else Globals.chartB_start_date
@@ -1145,13 +1466,26 @@ class Chart:
                 self.language, 'Ilość wybranych silników', 'Number of selected engines')] = len(engines_data_dict)
             ###############
 
-            self.B_axis_choice_list = [utils.setLabel(self.language, 'Czas przejścia', 'Transition time'), utils.setLabel(self.language, 'Czas operacji', 'Operation time')]
-            self.B_label['text'] = utils.setLabel(self.language, 'Tryb:', 'Mode:')
-            
-            self.B_axis_choice_var.trace_vdelete('w', self.B_axis_choice_var.trace_id)
-            self.B_axis_choice_var.set(self.B_axis_choice_list[self.B_axis_choice_nmb])
-            self.B_axis_choice_prev_var.set(self.B_axis_choice_list[self.B_axis_choice_nmb])
-            self.B_axis_choice_var.trace_id = self.B_axis_choice_var.trace('w', lambda *args: self.switchChartBMode())
+            self.B_axis_choice_list = [
+                utils.setLabel(
+                    self.language,
+                    'Czas przejścia',
+                    'Transition time'),
+                utils.setLabel(
+                    self.language,
+                    'Czas operacji',
+                    'Operation time')]
+            self.B_label['text'] = utils.setLabel(
+                self.language, 'Tryb:', 'Mode:')
+
+            self.B_axis_choice_var.trace_vdelete(
+                'w', self.B_axis_choice_var.trace_id)
+            self.B_axis_choice_var.set(
+                self.B_axis_choice_list[self.B_axis_choice_nmb])
+            self.B_axis_choice_prev_var.set(
+                self.B_axis_choice_list[self.B_axis_choice_nmb])
+            self.B_axis_choice_var.trace_id = self.B_axis_choice_var.trace(
+                'w', lambda *args: self.switchChartBMode())
 
             menu = self.B_option_menu['menu']
             menu.delete(0, 'end')
@@ -1161,22 +1495,28 @@ class Chart:
         self.B_transition_time[-1] = utils.setLabel(
             self.language, 'Więcej', 'More')
         self.B_engines_nmb_str = utils.setLabel(
-            self.language, 'Liczba silników', 'Number of engines')    
+            self.language, 'Liczba silników', 'Number of engines')
         if self.B_station_nmb == 1 and self.B_axis_choice_nmb == 1:
-            self.B_transition_time_str = utils.setLabel(self.language, 'Czas operacji', 'Operation time')
+            self.B_transition_time_str = utils.setLabel(
+                self.language, 'Czas operacji', 'Operation time')
         else:
-            self.B_transition_time_str = utils.setLabel(self.language, 'Czas przejścia', 'Transition time')
+            self.B_transition_time_str = utils.setLabel(
+                self.language, 'Czas przejścia', 'Transition time')
         self.B_cdf_str = utils.setLabel(self.language, 'Dystrybuanta', 'CDF')
         self.B_expected_time_str = utils.setLabel(
             self.language, 'Czas projektowy', 'Expected time')
 
-        #######################################################################################################
+        #######################################################################
 
         self.clearFrame('B')
         self.B_options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
         self.B_filters_frame.place(
             relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
-        self.buttons_frame.place(relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7,
+            rely=0.05,
+            relwidth=0.3,
+            relheight=0.05)
         if self.chartB_show_filters:
             self.B_chart_frame.place(
                 relx=0, rely=0.1, relwidth=1, relheight=0.90)
@@ -1220,7 +1560,7 @@ class Chart:
         self.B_cycle_btn['state'] = buttons_state
         self.B_part_number_btn['state'] = buttons_state
 
-        #######################################################################################################
+        #######################################################################
 
         self.B_figure.clear()
 
@@ -1231,9 +1571,21 @@ class Chart:
                        self.B_engines_nmb, align='edge', width=-0.8)
         expected_time = ax1.axvline(x=self.B_station_nmb // 3, color='grey')
         if self.B_station_nmb == 1 and self.B_axis_choice_nmb == 1:
-            ax1.set_title(utils.setLabel(self.language, 'Histogram czasu operacji', 'Operation time histogram'), pad=15, weight='bold')
+            ax1.set_title(
+                utils.setLabel(
+                    self.language,
+                    'Histogram czasu operacji',
+                    'Operation time histogram'),
+                pad=15,
+                weight='bold')
         else:
-            ax1.set_title(utils.setLabel(self.language, 'Histogram czasu przejścia', 'Transition time histogram'), pad=15, weight='bold')
+            ax1.set_title(
+                utils.setLabel(
+                    self.language,
+                    'Histogram czasu przejścia',
+                    'Transition time histogram'),
+                pad=15,
+                weight='bold')
         ax1.tick_params(labelrotation=90)
         ax1.set_xlabel(self.B_transition_time_str)
         if self.B_details_data[utils.setLabel(
@@ -1280,8 +1632,7 @@ class Chart:
             self.C_stations = [self.station[i] for i in range(
                 len(self.C_station_selected)) if self.C_station_selected[i] != 0]
             self.C_station_nmb = len(self.C_stations)
-            self.C_dates = self.date[self.C_date_selected[0]
-                :self.C_date_selected[1] + 1]
+            self.C_dates = self.date[self.C_date_selected[0]                                     :self.C_date_selected[1] + 1]
             self.C_shifts = [self.shift[i] for i in range(
                 len(self.C_shift_selected)) if self.C_shift_selected[i] != 0]
             self.C_cycles = [self.cycle[i] for i in range(
@@ -1311,7 +1662,8 @@ class Chart:
             engines_data_dict_cpy = dict(engines_data_dict)
 
             for key, value in engines_data_dict_cpy.items():
-                if len(value) != len(self.station) or not key in self.serial_number:
+                if len(value) != len(
+                        self.station) or not key in self.serial_number:
                     engines_data_dict.pop(key, None)
 
             delta_time = {}
@@ -1336,8 +1688,10 @@ class Chart:
                 self.language, 'Ilość stacji', 'Number of stations')] = self.C_station_nmb
             self.C_details_data[utils.setLabel(
                 self.language, 'Wybrane stacje', 'Selected stations')] = self.C_stations
-            self.C_details_data[utils.setLabel(self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
-            self.C_details_data[utils.setLabel(self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
+            self.C_details_data[utils.setLabel(
+                self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
+            self.C_details_data[utils.setLabel(
+                self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
             self.C_details_data[''] = ''
             self.C_details_data[utils.setLabel(
                 self.language, 'Wybrana data początkowa', 'Chosen start date')] = self.date[self.C_date_selected[0]] if isinstance(Globals.chartC_start_date, type(None)) else Globals.chartC_start_date
@@ -1364,13 +1718,17 @@ class Chart:
         self.C_station_str = utils.setLabel(
             self.language, 'Stacje', 'Stations')
 
-        #######################################################################################################
+        #######################################################################
 
         self.clearFrame('C')
         self.C_options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
         self.C_filters_frame.place(
             relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
-        self.buttons_frame.place(relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7,
+            rely=0.05,
+            relwidth=0.3,
+            relheight=0.05)
         if self.chartC_show_filters:
             self.C_chart_frame.place(
                 relx=0, rely=0.1, relwidth=1, relheight=0.90)
@@ -1407,7 +1765,7 @@ class Chart:
         self.C_cycle_btn['state'] = buttons_state
         self.C_part_number_btn['state'] = buttons_state
 
-        #######################################################################################################
+        #######################################################################
 
         self.C_figure.clear()
 
@@ -1443,8 +1801,7 @@ class Chart:
             self.D_stations = [self.station[i] for i in range(
                 len(self.D_station_selected)) if self.D_station_selected[i] != 0]
             self.D_station_nmb = len(self.D_stations)
-            self.D_dates = self.date[self.D_date_selected[0]
-                :self.D_date_selected[1] + 1]
+            self.D_dates = self.date[self.D_date_selected[0]                                     :self.D_date_selected[1] + 1]
             self.D_shifts = [self.shift[i] for i in range(
                 len(self.D_shift_selected)) if self.D_shift_selected[i] != 0]
             self.D_cycles = [self.cycle[i] for i in range(
@@ -1476,7 +1833,8 @@ class Chart:
             engines_data_dict_cpy = dict(engines_data_dict)
 
             for key, value in engines_data_dict_cpy.items():
-                if len(value[0]) != len(self.station) or not key in self.serial_number:
+                if len(value[0]) != len(
+                        self.station) or not key in self.serial_number:
                     engines_data_dict.pop(key, None)
 
             delta_time = {}
@@ -1504,8 +1862,10 @@ class Chart:
                 self.language, 'Ilość stacji', 'Number of stations')] = self.D_station_nmb
             self.D_details_data[utils.setLabel(
                 self.language, 'Wybrane stacje', 'Selected stations')] = self.D_stations
-            self.D_details_data[utils.setLabel(self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
-            self.D_details_data[utils.setLabel(self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
+            self.D_details_data[utils.setLabel(
+                self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
+            self.D_details_data[utils.setLabel(
+                self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
             self.D_details_data[''] = ''
             self.D_details_data[utils.setLabel(
                 self.language, 'Wybrana data początkowa', 'Chosen start date')] = self.date[self.D_date_selected[0]] if isinstance(Globals.chartD_start_date, type(None)) else Globals.chartD_start_date
@@ -1532,13 +1892,17 @@ class Chart:
         self.D_station_str = utils.setLabel(
             self.language, 'Stacje', 'Stations')
 
-        #######################################################################################################
+        #######################################################################
 
         self.clearFrame('D')
         self.D_options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
         self.D_filters_frame.place(
             relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
-        self.buttons_frame.place(relx=0.7, rely=0.05, relwidth=0.3, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7,
+            rely=0.05,
+            relwidth=0.3,
+            relheight=0.05)
         if self.chartD_show_filters:
             self.D_chart_frame.place(
                 relx=0, rely=0.1, relwidth=1, relheight=0.90)
@@ -1575,7 +1939,7 @@ class Chart:
         self.D_cycle_btn['state'] = buttons_state
         self.D_part_number_btn['state'] = buttons_state
 
-        #######################################################################################################
+        #######################################################################
 
         self.D_figure.clear()
 
@@ -1596,8 +1960,187 @@ class Chart:
         self.D_canvas.draw()
 
     def drawChartE(self, chart_drawn=None):
+        if not isinstance(chart_drawn, type(None)):
+            self.chartE_drawn = chart_drawn
+
+        if self.chartE_first_draw:
+            self.E_station_selected = self.onesList(len(self.station))
+            self.E_employee_selected = self.onesList(len(self.operator_name))
+            self.E_date_selected = [0, len(self.date) - 1]
+            self.E_shift_selected = self.onesList(len(self.shift))
+            self.E_cycle_selected = self.onesList(len(self.cycle))
+            self.E_part_number_selected = self.onesList(len(self.part_number))
+            self.chartE_first_draw = False
+
+        if not self.chartE_drawn:
+            self.E_stations = [self.station[i] for i in range(
+                len(self.E_station_selected)) if self.E_station_selected[i] != 0]
+            self.E_station_nmb = len(self.E_stations)
+            self.E_employees = [self.operator_name[i] for i in range(
+                len(self.E_employee_selected)) if self.E_employee_selected[i] != 0]
+            self.E_employee_nmb = len(self.E_employees)
+            self.E_dates = self.date[self.E_date_selected[0]
+                :self.E_date_selected[1] + 1]
+            self.E_shifts = [self.shift[i] for i in range(
+                len(self.E_shift_selected)) if self.E_shift_selected[i] != 0]
+            self.E_cycles = [self.cycle[i] for i in range(
+                len(self.E_cycle_selected)) if self.E_cycle_selected[i] != 0]
+            self.E_part_numbers = [self.part_number[i] for i in range(
+                len(self.E_part_number_selected)) if self.E_part_number_selected[i] != 0]
+
+            ###
+
+            engines_data_dict = {}
+
+            ###
+
+            self.chartE_drawn = True
+
+            ###############
+            # Details data
+            self.E_details_data = {}
+            if self.E_mode_choice_nmb == 0:
+                self.E_details_data[utils.setLabel(
+                    self.language, 'Ilość stacji', 'Number of stations')] = self.E_station_nmb
+                self.E_details_data[utils.setLabel(
+                    self.language, 'Wybrane stacje', 'Selected stations')] = self.E_stations
+            else:
+                self.E_details_data[utils.setLabel(
+                    self.language, 'Ilość pracowników', 'Number of employees')] = self.E_employee_nmb
+                self.E_details_data[utils.setLabel(
+                    self.language, 'Wybrani pracownicy', 'Selected employees')] = self.E_employees
+            self.E_details_data[utils.setLabel(
+                self.language, 'Data początkowa (z pliku)', 'Start date (from file)')] = self.date[0]
+            self.E_details_data[utils.setLabel(
+                self.language, 'Data końcowa (z pliku)', 'End date (from file)')] = self.date[-1]
+            self.E_details_data[' '] = ''
+            self.E_details_data[utils.setLabel(self.language, 'Wybrana data początkowa', 'Chosen start date')] = self.date[self.E_date_selected[0]] if isinstance(
+                Globals.chartE_start_date, type(None)) else Globals.chartE_start_date
+            self.E_details_data[utils.setLabel(self.language, 'Wybrana data końcowa', 'Chosen end date')] = self.date[self.E_date_selected[1]] if isinstance(
+                Globals.chartE_end_date, type(None)) else Globals.chartE_end_date
+            self.E_details_data['  '] = ''
+            self.E_details_data[utils.setLabel(
+                self.language, 'Wybrane zmiany', 'Selected shifts')] = self.E_shifts
+            self.E_details_data[utils.setLabel(
+                self.language, 'Wybrane cykle', 'Selected cycles')] = self.E_cycles
+            self.E_details_data[utils.setLabel(
+                self.language, 'Wybrane numery części', 'Selected part numbers')] = self.E_part_numbers
+            self.E_details_data[utils.setLabel(self.language,
+                                               'Całkowita ilość silników',
+                                               'Total number of engines')] = self.serial_number_nmb
+            self.E_details_data[utils.setLabel(self.language,
+                                               'Silniki z brakującymi danymi',
+                                               'Engines with missing data')] = self.wrong_transition_count
+            self.E_details_data[utils.setLabel(self.language, 'Silniki z poprawnymi danymi',
+                                               'Engines with valid data')] = self.serial_number_nmb - self.wrong_transition_count
+            self.E_details_data['   '] = ''
+            self.E_details_data[utils.setLabel(self.language,
+                                               'Ilość wybranych silników',
+                                               'Number of selected engines')] = len(engines_data_dict)
+            ###############
+
+            self.E_mode_choice_list = [
+                utils.setLabel(
+                    self.language, 'Stacje', 'Stations'), utils.setLabel(
+                    self.language, 'Pracownicy', 'Employees')]
+            self.E_label['text'] = utils.setLabel(
+                self.language, 'Tryb:', 'Mode:')
+
+            self.E_mode_choice_var.trace_vdelete(
+                'w', self.E_mode_choice_var.trace_id)
+            self.E_mode_choice_var.set(
+                self.E_mode_choice_list[self.E_mode_choice_nmb])
+            self.E_mode_choice_prev_var.set(
+                self.E_mode_choice_list[self.E_mode_choice_nmb])
+            self.E_mode_choice_var.trace_id = self.E_mode_choice_var.trace(
+                'w', lambda *args: self.switchChartEMode())
+
+            menu = self.E_option_menu['menu']
+            menu.delete(0, 'end')
+            for s in self.E_mode_choice_list:
+                menu.add_radiobutton(label=s, variable=self.E_mode_choice_var)
+
+        #######################################################################
+
         self.clearFrame('E')
-        print('Empty')
+        self.E_options_frame.place(relx=0, rely=0, relwidth=1, relheight=0.05)
+        self.E_filters_frame.place(
+            relx=0, rely=0.05, relwidth=0.7, relheight=0.05)
+        self.buttons_frame.place(
+            relx=0.7,
+            rely=0.05,
+            relwidth=0.3,
+            relheight=0.05)
+        if self.chartE_show_filters:
+            self.E_chart_frame.place(
+                relx=0, rely=0.1, relwidth=1, relheight=0.9)
+        else:
+            self.E_chart_frame.place(
+                relx=0, rely=0.05, relwidth=1, relheight=0.95)
+
+        if self.chartE_show_filters:
+            filters_btn_text = utils.setLabel(
+                self.language, u'Filtry \u25b2', u'Filters \u25b2')
+        else:
+            filters_btn_text = utils.setLabel(
+                self.language, u'Filtry \u25bc', u'Filters \u25bc')
+        buttons_state = tkinter.DISABLED if self.is_loading else tkinter.NORMAL
+
+        self.E_label.pack(side=tkinter.LEFT, padx=(15, 0))
+        self.E_option_menu.pack(side=tkinter.LEFT)
+
+        self.E_filters_btn['text'] = filters_btn_text
+        self.E_details_btn['text'] = utils.setLabel(
+            self.language, 'Szczegóły', 'Details')
+        self.E_station_btn['text'] = utils.setLabel(
+            self.language, 'Stacja', 'Station')
+        self.E_employee_btn['text'] = utils.setLabel(
+            self.language, 'Pracownik', 'Employee')
+        self.E_date_btn['text'] = utils.setLabel(self.language, 'Data', 'Date')
+        self.E_shift_btn['text'] = utils.setLabel(
+            self.language, 'Zmiana', 'Shift')
+        self.E_cycle_btn['text'] = utils.setLabel(
+            self.language, 'Cykl', 'Cycle')
+        self.E_part_number_btn['text'] = utils.setLabel(
+            self.language, 'Numer części', 'Part number')
+
+        self.E_filters_btn['state'] = buttons_state
+        self.E_details_btn['state'] = buttons_state
+        self.E_station_btn['state'] = buttons_state
+        self.E_employee_btn['state'] = buttons_state
+        self.E_date_btn['state'] = buttons_state
+        self.E_shift_btn['state'] = buttons_state
+        self.E_cycle_btn['state'] = buttons_state
+        self.E_part_number_btn['state'] = buttons_state
+
+        if self.E_mode_choice_nmb == 0:
+            self.E_station_btn.pack(side=tkinter.LEFT, padx=15)
+        else:
+            self.E_employee_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_date_btn.pack(side=tkinter.LEFT)
+        self.E_shift_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_cycle_btn.pack(side=tkinter.LEFT)
+        self.E_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
+
+        #######################################################################
+
+        self.E_figure.clear()
+
+        self.E_figure.set_tight_layout(True)
+        ax = self.E_figure.add_subplot(111)
+
+        ax.bar(self.E_stations, [random.uniform(0, 100)
+               for _ in range(len(self.E_stations))], width=0.6)
+        ax.set_title(
+            utils.setLabel(
+                self.language,
+                'Wydajność pracy',
+                'Work efficency'),
+            pad=15,
+            weight='bold')
+
+        self.E_canvas.draw()
 
 
 if __name__ == '__main__':

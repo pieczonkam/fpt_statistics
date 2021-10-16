@@ -58,7 +58,7 @@ class ComboboxWindow:
                              relwidth=0.75, relheight=0.34)
         self.combobox2.place(relx=0.22, rely=0.55,
                              relwidth=0.75, relheight=0.34)
-        
+
         self.hideLoadingCursor(self.root)
 
     def selectItem1(self, language):

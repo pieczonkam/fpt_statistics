@@ -28,10 +28,12 @@ def threadpool(f, executor=None):
         return (executor or _DEFAULT_POOL).submit(f, *args, **kwargs)
     return wrap
 
+
 def addZero(s):
     if len(s) == 1:
         return '0' + s
     return s
+
 
 if __name__ == '__main__':
     pass

@@ -14,7 +14,8 @@ class Loading:
         self.is_shown = False
 
     def setText(self, language, text_pl=None, text_eng=None):
-        if not isinstance(text_pl, type(None)) and not isinstance(text_eng, type(None)):
+        if not isinstance(text_pl, type(None)) and not isinstance(
+                text_eng, type(None)):
             self.loading_text = (text_pl, text_eng)
         self.label['text'] = utils.setLabel(
             language, self.loading_text[0], self.loading_text[1])

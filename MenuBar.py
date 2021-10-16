@@ -13,7 +13,8 @@ class MenuBar:
     def addMenu(self, main_label, main_command=None,
                 labels=None, commands=None):
         menu = tkinter.Menu(self.menubar, tearoff=0)
-        if not isinstance(labels, type(None)) and not isinstance(commands, type(None)):
+        if not isinstance(labels, type(None)) and not isinstance(
+                commands, type(None)):
             for label, command in zip(labels, commands):
                 menu.add_command(label=label, command=command)
 

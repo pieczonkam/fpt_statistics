@@ -22,7 +22,7 @@ class App:
         self.window.minsize(1200, 700)
         self.window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.window.protocol('WM_DELETE_WINDOW', self.exitApp)
-    
+
         self.show_empty = True
         self.show_table = False
         self.show_chart = False
@@ -67,10 +67,15 @@ class App:
         self.style.configure('TLabel', font=(None, 9))
         self.style.configure('TMenubutton', font=(None, 9))
         self.style.configure('TCheckbutton', font=(None, 9))
-        
+
         self.refresh_btn = ttk.Button(self.frame2_chart_buttons, text=self.setLabel(
             u'\u27f3 Odśwież', u'\u27f3 Refresh'), command=lambda: self.redrawChart(False))
-        self.reset_filters_btn = ttk.Button(self.frame2_chart_buttons, text=self.setLabel('Reset filtrów', 'Reset filters'), command=self.resetFilters)
+        self.reset_filters_btn = ttk.Button(
+            self.frame2_chart_buttons,
+            text=self.setLabel(
+                'Reset filtrów',
+                'Reset filters'),
+            command=self.resetFilters)
         self.refresh_btn.pack(side=tkinter.RIGHT, padx=15)
         self.reset_filters_btn.pack(side=tkinter.RIGHT)
 
@@ -89,7 +94,12 @@ class App:
 
         # Classes
         self.table = None
-        self.chart = Chart(self.window, self.frame2_chart, self.frame2_chart_buttons, self.language, self.runWithLoading)
+        self.chart = Chart(
+            self.window,
+            self.frame2_chart,
+            self.frame2_chart_buttons,
+            self.language,
+            self.runWithLoading)
         self.menubar = None
         self.loading = Loading(self.window, self.frame5, self.language)
         self.settings_window = SettingsWindow(self.window, 400, 315)
@@ -153,7 +163,7 @@ class App:
                 message=self.setLabel('Instrukcja obsługi.', 'Manual.'))
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
-                    'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
+                'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
 
     # Language commands
     def setPolish(self):
@@ -163,8 +173,10 @@ class App:
                 self.reloadMenuBar()
                 self.reloadWidgets()
                 self.switchButtonsState()
-                self.refresh_btn['text'] = self.setLabel(u'\u27f3 Odśwież', u'\u27f3 Refresh')
-                self.reset_filters_btn['text'] = self.setLabel('Reset filtrów', 'Reset filters')
+                self.refresh_btn['text'] = self.setLabel(
+                    u'\u27f3 Odśwież', u'\u27f3 Refresh')
+                self.reset_filters_btn['text'] = self.setLabel(
+                    'Reset filtrów', 'Reset filters')
                 self.chart.setLanguage(self.language)
                 self.redrawChart(False, 'all', silent=True)
                 self.loading.setText(self.language)
@@ -179,8 +191,10 @@ class App:
                 self.reloadMenuBar()
                 self.reloadWidgets()
                 self.switchButtonsState()
-                self.refresh_btn['text'] = self.setLabel(u'\u27f3 Odśwież', u'\u27f3 Refresh')
-                self.reset_filters_btn['text'] = self.setLabel('Reset filtrów', 'Reset filters')
+                self.refresh_btn['text'] = self.setLabel(
+                    u'\u27f3 Odśwież', u'\u27f3 Refresh')
+                self.reset_filters_btn['text'] = self.setLabel(
+                    'Reset filtrów', 'Reset filters')
                 self.chart.setLanguage(self.language)
                 self.redrawChart(False, 'all', silent=True)
                 self.loading.setText(self.language)
@@ -196,11 +210,15 @@ class App:
     # Exit command
     def exitApp(self):
         if self.is_loading:
-            tkinter.messagebox.showerror(message=self.setLabel('Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
+            tkinter.messagebox.showerror(
+                message=self.setLabel(
+                    'Proszę zaczekać na ukończenie wczytywania.',
+                    'Please wait until loading is finished.'))
         else:
-            if tkinter.messagebox.askquestion(message=self.setLabel('Czy na pewno chcesz zakończyć?', 'Are you sure you want to exit?')) == 'yes':
-                self.window.destroy()    
-        
+            if tkinter.messagebox.askquestion(message=self.setLabel(
+                    'Czy na pewno chcesz zakończyć?', 'Are you sure you want to exit?')) == 'yes':
+                self.window.destroy()
+
     ##########################################################################
     # Other methods
 
@@ -229,14 +247,27 @@ class App:
             'Instrukcja obsługi', 'Manual')], commands=[self.printInfo])
         self.menubar.addMenu(self.setLabel('Język', 'Language'), labels=[self.setLabel(u'\u2713 Polski', '     Polish'), self.setLabel(
             '     Angielski', u'\u2713 English')], commands=[self.setPolish, self.setEnglish])
-        self.menubar.addMenu(self.setLabel('Ustawienia', 'Settings'), main_command=lambda: self.settings_window.show(self.language, lambda: self.redrawChart(False, 'all', silent=True)) if not self.is_loading else tkinter.messagebox.showerror(message=self.setLabel('Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.')))
+        self.menubar.addMenu(
+            self.setLabel(
+                'Ustawienia',
+                'Settings'),
+            main_command=lambda: self.settings_window.show(
+                self.language,
+                lambda: self.redrawChart(
+                    False,
+                    'all',
+                    silent=True)) if not self.is_loading else tkinter.messagebox.showerror(
+                message=self.setLabel(
+                    'Proszę zaczekać na ukończenie wczytywania.',
+                    'Please wait until loading is finished.')))
         self.menubar.addMenu(self.setLabel(
             'Zakończ', 'Exit'), main_command=self.exitApp)
 
     def reloadTable(self):
         if self.show_table:
             if self.filepath != '':
-                if isinstance(self.table_prev_excel_table, type(None)) or not self.excel_table.equals(self.table_prev_excel_table):
+                if isinstance(self.table_prev_excel_table, type(
+                        None)) or not self.excel_table.equals(self.table_prev_excel_table):
                     self.table_prev_excel_table = self.excel_table
                     prev_table = self.table
                     self.table = self.runWithLoading(Table(
@@ -250,21 +281,40 @@ class App:
                 self.showEmpty()
 
     def reloadChart(self):
-        if isinstance(self.chart_prev_excel_table, type(None)) or not self.excel_table.equals(self.chart_prev_excel_table):
+        if isinstance(self.chart_prev_excel_table, type(
+                None)) or not self.excel_table.equals(self.chart_prev_excel_table):
             self.chart_prev_excel_table = self.excel_table
             chart_is_loading = True if self.show_chart else False
             if chart_is_loading:
                 self.chart.setIsLoading(True)
                 self.chart.switchButtonsState()
-            self.runWithLoading(self.chart.setExcelTable, 'Wczytywanie arkusza...', 'Loading sheet...', self.excel_table, self.language, chart_is_loading)
+            self.runWithLoading(
+                self.chart.setExcelTable,
+                'Wczytywanie arkusza...',
+                'Loading sheet...',
+                self.excel_table,
+                self.language,
+                chart_is_loading)
         if self.show_chart:
             self.redrawChart()
 
     def redrawChart(self, chart_drawn=None, mode='single', silent=False):
         if not silent:
-            self.runWithLoading(self.chart.drawChart, 'Wczytywanie wykresu...', 'Loading chart...', self.getCurrentChartName(), chart_drawn, mode) 
+            self.runWithLoading(
+                self.chart.drawChart,
+                'Wczytywanie wykresu...',
+                'Loading chart...',
+                self.getCurrentChartName(),
+                chart_drawn,
+                mode)
         else:
-            self.runWithLoading(self.chart.drawChart, 'Wczytywanie...', 'Loading...', self.getCurrentChartName(), chart_drawn, mode) 
+            self.runWithLoading(
+                self.chart.drawChart,
+                'Wczytywanie...',
+                'Loading...',
+                self.getCurrentChartName(),
+                chart_drawn,
+                mode)
 
     def reloadWidgets(self):
         # Destroy widgets if they exist
@@ -322,7 +372,7 @@ class App:
         self.btn5 = ttk.Button(self.frame4, text=self.setLabel(
             '% Czas PRZEJŚCIA OK', '% TRANSITION Time OK'), command=self.showChartD, style='B5.TButton')
         self.btn6 = ttk.Button(self.frame4, text=self.setLabel(
-            'Wykres E', 'Chart E'), command=self.showChartE, style='B6.TButton')
+            'Wydajność Pracy', 'Work Efficency'), command=self.showChartE, style='B6.TButton')
         self.btn7 = ttk.Button(self.frame4, text=self.setLabel(
             'Wyczyść', 'Clear'), command=self.showEmpty)
         # 0.02 for vertical separator
@@ -330,9 +380,9 @@ class App:
         self.btn5.place(relx=0.05, rely=0.07, relwidth=0.92)
         self.btn4.place(relx=0.05, rely=0.11, relwidth=0.92)
         self.btn3.place(relx=0.05, rely=0.15, relwidth=0.92)
-        self.btn2.place(relx=0.05, rely=0.21, relwidth=0.92)
-        self.btn6.place(relx=0.05, rely=0.25, relwidth=0.92)
-        self.btn7.place(relx=0.05, rely=0.32, relwidth=0.92)
+        self.btn6.place(relx=0.05, rely=0.19, relwidth=0.92)
+        self.btn2.place(relx=0.05, rely=0.23, relwidth=0.92)
+        self.btn7.place(relx=0.05, rely=0.29, relwidth=0.92)
 
     def destroyWidget(self, widget):
         if not isinstance(widget, type(None)):
@@ -342,7 +392,13 @@ class App:
         for i in range(1, 8):
             self.style.configure(f'B{i}.TButton', font=(None, 9, 'normal'))
         if not isinstance(active_btn, type(None)):
-            self.style.configure(active_btn + '.TButton', font=(None, 9, 'bold'))
+            self.style.configure(
+                active_btn +
+                '.TButton',
+                font=(
+                    None,
+                    9,
+                    'bold'))
 
     @utils.threadpool
     def readExcel(self):
@@ -408,7 +464,11 @@ class App:
         return 'None'
 
     def resetFilters(self):
-        self.runWithLoading(self.chart.resetFilters, 'Wczytywanie wykresu...', 'Loading chart...', self.getCurrentChartName())
+        self.runWithLoading(
+            self.chart.resetFilters,
+            'Wczytywanie wykresu...',
+            'Loading chart...',
+            self.getCurrentChartName())
         self.redrawChart(False)
 
     ##########################################################################

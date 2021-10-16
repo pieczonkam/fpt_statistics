@@ -15,7 +15,11 @@ class TextWindow:
         self.text_window.geometry(
             '%dx%d+%d+%d' % (self.width, self.height, self.posx, self.posy))
         self.text_window.minsize(self.width, self.height)
-        self.text_window.title(utils.setLabel(language, 'PMS Data Analysis - Szczegóły', 'PMS Data Analysis - Details'))
+        self.text_window.title(
+            utils.setLabel(
+                language,
+                'PMS Data Analysis - Szczegóły',
+                'PMS Data Analysis - Details'))
         self.text_window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.text_window.grab_set()
 
@@ -28,8 +32,15 @@ class TextWindow:
 
         ttk.Separator(self.button_frame, orient='horizontal').place(
             relx=0, rely=0, relwidth=1)
-        self.ok_button = ttk.Button(self.button_frame, text='OK', command=self.text_window.destroy)
-        self.ok_button.place(x=self.width - 160, rely=0.16, width=140, relheight=0.7)
+        self.ok_button = ttk.Button(
+            self.button_frame,
+            text='OK',
+            command=self.text_window.destroy)
+        self.ok_button.place(
+            x=self.width - 160,
+            rely=0.16,
+            width=140,
+            relheight=0.7)
 
         self.text_window.bind('<Configure>', self.handleResize)
 
@@ -55,7 +66,7 @@ class TextWindow:
         self.text.configure(state=tkinter.DISABLED)
 
         self.hideLoadingCursor(self.root)
-    
+
     def addSpaces(self, text, expected_len):
         spaces = ''.join([' ' for _ in range(expected_len - len(text))])
         return text + spaces
@@ -67,7 +78,11 @@ class TextWindow:
                               height=height - 40)
         self.button_frame.place(x=0, y=height - 40,
                                 width=width, height=40)
-        self.ok_button.place(x=width - 160, rely=0.16, width=140, relheight=0.7)
+        self.ok_button.place(
+            x=width - 160,
+            rely=0.16,
+            width=140,
+            relheight=0.7)
 
     def showLoadingCursor(self, window):
         window.configure(cursor='wait')

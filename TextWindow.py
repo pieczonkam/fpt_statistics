@@ -7,7 +7,7 @@ class TextWindow:
         self.width = width
         self.height = height
 
-    def show(self, data_dict, language):
+    def show(self, data_dict, language, title):
         self.showLoadingCursor(self.root)
         self.text_window = tkinter.Toplevel(self.root)
         self.posx = self.root.winfo_x() + (self.root.winfo_width() - self.width) / 2
@@ -18,8 +18,8 @@ class TextWindow:
         self.text_window.title(
             utils.setLabel(
                 language,
-                'PMS Data Analysis - Szczegóły',
-                'PMS Data Analysis - Details'))
+                'PMS Data Analysis - ' + title,
+                'PMS Data Analysis - ' + title))
         self.text_window.iconbitmap(utils.resourcePath('applogo.ico'))
         self.text_window.grab_set()
 

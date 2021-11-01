@@ -4,6 +4,7 @@ from Table import *
 from Chart import *
 from Loading import *
 from SettingsWindow import *
+from TextWindow import *
 
 
 class App:
@@ -102,7 +103,8 @@ class App:
             self.runWithLoading)
         self.menubar = None
         self.loading = Loading(self.window, self.frame5, self.language)
-        self.settings_window = SettingsWindow(self.window, 400, 315)
+        self.settings_window = SettingsWindow(self.window, 400, 410)
+        self.definitions_window = TextWindow(self.window, 800, 400)
 
     ##########################################################################
     # Menu bar commands
@@ -152,15 +154,6 @@ class App:
             else:
                 tkinter.messagebox.showerror(message=self.setLabel(
                     'Proszę wybrać wykres do zapisania.', 'Please select a chart to save.'))
-        else:
-            tkinter.messagebox.showerror(message=self.setLabel(
-                'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
-
-    # Help commands
-    def printInfo(self):
-        if not self.is_loading:
-            tkinter.messagebox.showinfo(
-                message=self.setLabel('Instrukcja obsługi.', 'Manual.'))
         else:
             tkinter.messagebox.showerror(message=self.setLabel(
                 'Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))
@@ -222,6 +215,23 @@ class App:
     ##########################################################################
     # Other methods
 
+    def getDefinitionsDict(self):
+        definitions_dict = {}
+        definitions_dict[utils.setLabel(self.language, 'Czas przejścia', 'Transition time')] = utils.setLabel(self.language,
+                                                                                            'różnica między datą wejścia silnika na dwie kolejne stacje (obliczana na podstawie kolumny "Date"). Uwaga: dla ostatniej stacji czas przejścia jest zastąpiony czasem operacji (z racji na brak stacji następnej).', 
+                                                                                            'difference between engine\'s entry date at two following stations (calculations are made based on "Date" column). Note: for the last station, transition time was replaced with operation time (due to lack of following station).')
+        definitions_dict[' '] = ''
+        definitions_dict['  '] = ''
+        definitions_dict[utils.setLabel(self.language, 'Czas operacji', 'Operation time')] = utils.setLabel(self.language, 
+                                                                                            'długość wykonywania operacji na danej stacji (kolumna "Aktualny czas trwania [s])".', 
+                                                                                            'duration of operation execution at given station ("Actual duration [s] column).')
+        definitions_dict['   '] = ''
+        definitions_dict['    '] = ''
+        definitions_dict[utils.setLabel(self.language, 'Czas pasywny', 'Passive time')] = utils.setLabel(self.language,
+                                                                                        'różnica między czasem przejścia i czasem operacji.',
+                                                                                        'difference between transition time and operation time.')
+        return definitions_dict
+
     # opt_menu1
     def selectSheet(self, selected_sheet):
         if self.excel_sheet != selected_sheet:
@@ -244,7 +254,7 @@ class App:
         self.menubar.addMenu(self.setLabel('Plik', 'File'), labels=[self.setLabel(
             'Wczytaj arkusz', 'Load sheet'), self.setLabel('Zapisz wykres', 'Save chart')], commands=[self.loadFile, self.saveChart])
         self.menubar.addMenu(self.setLabel('Pomoc', 'Help'), labels=[self.setLabel(
-            'Instrukcja obsługi', 'Manual')], commands=[self.printInfo])
+            'Definicje', 'Definitions')], commands=[lambda: self.definitions_window.show(self.getDefinitionsDict(), self.language, utils.setLabel(self.language, 'Definicje', 'Definitions')) if not self.is_loading else tkinter.messagebox.showerror(message=self.setLabel('Proszę zaczekać na ukończenie wczytywania.', 'Please wait until loading is finished.'))])
         self.menubar.addMenu(self.setLabel('Język', 'Language'), labels=[self.setLabel(u'\u2713 Polski', '     Polish'), self.setLabel(
             '     Angielski', u'\u2713 English')], commands=[self.setPolish, self.setEnglish])
         self.menubar.addMenu(

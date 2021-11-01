@@ -47,7 +47,7 @@ class ChartPreview:
 
         if len(X) > 0 and len(Y) > 0 and len(Z) > 0:
             self.A_poly3d = ax.bar3d(
-                X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True)
+                X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True, color=Globals.primary_color)
             self.A_poly3d._facecolors2d = self.A_poly3d._facecolor3d
             self.A_poly3d._edgecolors2d = self.A_poly3d._edgecolor3d
 

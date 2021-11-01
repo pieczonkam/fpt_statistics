@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import font
 from tkinter import scrolledtext
+from tkinter.colorchooser import askcolor
 from idlelib.tooltip import Hovertip
 import tksheet
 import tkcalendar

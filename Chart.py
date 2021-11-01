@@ -8,6 +8,7 @@ from ChartPreview import *
 
 class Chart:
     def __init__(self, root, frame, buttons_frame, language, rwlFun):
+        self.root = root
         self.frame = frame
         self.buttons_frame = buttons_frame
         self.checklist_window = ChecklistWindow(root, 250, 520)
@@ -60,7 +61,7 @@ class Chart:
         self.A_filters_btn = ttk.Button(self.A_options_frame, text=utils.setLabel(self.language, u'Filtry \u25bc', u'Filters \u25bc'),
                                         command=lambda: self.switchFilters('A', self.A_chart_frame, self.A_filters_btn))
         self.A_details_btn = ttk.Button(self.A_options_frame, text=utils.setLabel(
-            self.language, 'Szczegóły', 'Details'), command=lambda: self.text_window.show(self.A_details_data, self.language))
+            self.language, 'Szczegóły', 'Details'), command=lambda: self.text_window.show(self.A_details_data, self.language, utils.setLabel(self.language, 'Szczegóły', 'Details')))
         self.A_preview_btn = ttk.Button(
             self.A_options_frame, text=utils.setLabel(
                 self.language, 'Podgląd', 'Preview'), command=lambda: self.chart_preview.show(
@@ -117,6 +118,8 @@ class Chart:
         self.A_canvas.get_tk_widget().place(relx=0, rely=0, relwidth=1, relheight=1)
 
         # ChartB
+        self.B_two_color = False
+
         self.B_axis_choice_var = tkinter.StringVar()
         self.B_axis_choice_prev_var = tkinter.StringVar()
         self.B_axis_choice_nmb = 0
@@ -143,10 +146,12 @@ class Chart:
         self.B_filters_btn = ttk.Button(self.B_options_frame, text=utils.setLabel(self.language, u'Filtry \u25bc', u'Filters \u25bc'),
                                         command=lambda: self.switchFilters('B', self.B_chart_frame, self.B_filters_btn))
         self.B_details_btn = ttk.Button(self.B_options_frame, text=utils.setLabel(self.language, 'Szczegóły',
-                                                                                  'Details'), command=lambda: self.text_window.show(self.B_details_data, self.language))
+                                                                                  'Details'), command=lambda: self.text_window.show(self.B_details_data, self.language, utils.setLabel(self.language, 'Szczegóły', 'Details')))
         self.show_cdf_var = tkinter.IntVar(value=1 if self.show_cdf else 0)
         self.B_cdf_checkbtn = ttk.Checkbutton(self.B_options_frame, text=utils.setLabel(self.language, 'Pokaż dystrybuantę', 'Show CDF'),
                                               variable=self.show_cdf_var, command=lambda: self.switchShowCDFVar('B'))
+        self.B_two_color_var = tkinter.IntVar(value=1 if self.B_two_color else 0)
+        self.B_two_color_checkbtn = ttk.Checkbutton(self.B_options_frame, text=utils.setLabel(self.language, 'Tryb dwukolorowy', 'Two-color mode'), variable=self.B_two_color_var, command=lambda: self.switchTwoColorMode('B'))
         self.B_station_btn = ttk.Button(self.B_filters_frame, text=utils.setLabel(self.language, 'Stacja', 'Station'),
                                         command=lambda: self.combobox_window.show(self.language, self.station, self.B_station_selected))
         self.B_date_btn = ttk.Button(self.B_filters_frame, text=utils.setLabel(self.language, 'Data', 'Date'),
@@ -160,6 +165,7 @@ class Chart:
         self.B_filters_btn.pack(side=tkinter.LEFT, padx=15)
         self.B_details_btn.pack(side=tkinter.LEFT)
         self.B_cdf_checkbtn.pack(side=tkinter.LEFT, padx=15)
+        self.B_two_color_checkbtn.pack(side=tkinter.LEFT)
         self.B_station_btn.pack(side=tkinter.LEFT, padx=15)
         self.B_date_btn.pack(side=tkinter.LEFT)
         self.B_shift_btn.pack(side=tkinter.LEFT, padx=15)
@@ -196,7 +202,7 @@ class Chart:
         self.C_filters_btn = ttk.Button(self.C_options_frame, text=utils.setLabel(self.language, u'Filtry \u25bc', u'Filters \u25bc'),
                                         command=lambda: self.switchFilters('C', self.C_chart_frame, self.C_filters_btn))
         self.C_details_btn = ttk.Button(self.C_options_frame, text=utils.setLabel(self.language, 'Szczegóły',
-                                                                                  'Details'), command=lambda: self.text_window.show(self.C_details_data, self.language))
+                                                                                  'Details'), command=lambda: self.text_window.show(self.C_details_data, self.language, utils.setLabel(self.language, 'Szczegóły', 'Details')))
         self.C_station_btn = ttk.Button(self.C_filters_frame, text=utils.setLabel(self.language, 'Stacja', 'Station'),
                                         command=lambda: self.checklist_window.show(self.language, self.station, self.C_station_selected, page_len=250))
         self.C_date_btn = ttk.Button(self.C_filters_frame, text=utils.setLabel(self.language, 'Data', 'Date'),
@@ -234,7 +240,7 @@ class Chart:
         self.D_filters_btn = ttk.Button(self.D_options_frame, text=utils.setLabel(self.language, u'Filtry \u25bc', u'Filters \u25bc'),
                                         command=lambda: self.switchFilters('D', self.D_chart_frame, self.D_filters_btn))
         self.D_details_btn = ttk.Button(self.D_options_frame, text=utils.setLabel(self.language, 'Szczegóły',
-                                                                                  'Details'), command=lambda: self.text_window.show(self.D_details_data, self.language))
+                                                                                  'Details'), command=lambda: self.text_window.show(self.D_details_data, self.language, utils.setLabel(self.language, 'Szczegóły', 'Details')))
         self.D_station_btn = ttk.Button(self.D_filters_frame, text=utils.setLabel(self.language, 'Stacja', 'Station'),
                                         command=lambda: self.checklist_window.show(self.language, self.station, self.D_station_selected, page_len=250))
         self.D_date_btn = ttk.Button(self.D_filters_frame, text=utils.setLabel(self.language, 'Data', 'Date'),
@@ -300,7 +306,7 @@ class Chart:
         self.E_details_btn = ttk.Button(
             self.E_options_frame, text=utils.setLabel(
                 self.language, 'Szczegóły', 'Details'), command=lambda: self.text_window.show(
-                self.E_details_data, self.language))
+                self.E_details_data, self.language, utils.setLabel(self.language, 'Szczegóły', 'Details')))
         self.E_station_btn = ttk.Button(
             self.E_filters_frame, text=utils.setLabel(
                 self.language, 'Stacja', 'Station'), command=lambda: self.checklist_window.show(
@@ -422,6 +428,10 @@ class Chart:
 
         # Charts
         self.show_cdf = True
+        self.B_two_color = False
+
+        self.show_cdf_var.set(1)
+        self.B_two_color_var.set(0)
 
         self.chartA_drawn = False
         self.chartA_first_draw = True
@@ -755,7 +765,7 @@ class Chart:
 
     def switchButtonsState(self):
         buttons = [self.A_filters_btn, self.A_details_btn, self.A_preview_btn, self.A_station_btn, self.A_employee_btn, self.A_date_btn, self.A_shift_btn, self.A_cycle_btn, self.A_part_number_btn, self.A_label, self.A_option_menu, self.A_label2, self.A_option_menu2,
-                   self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn, self.B_label, self.B_option_menu,
+                   self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_two_color_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn, self.B_label, self.B_option_menu,
                    self.C_filters_btn, self.C_details_btn, self.C_station_btn, self.C_date_btn, self.C_shift_btn, self.C_cycle_btn, self.C_part_number_btn,
                    self.D_filters_btn, self.D_details_btn, self.D_station_btn, self.D_date_btn, self.D_shift_btn, self.D_cycle_btn, self.D_part_number_btn,
                    self.E_filters_btn, self.E_details_btn, self.E_station_btn, self.E_employee_btn, self.E_date_btn, self.E_shift_btn, self.E_cycle_btn, self.E_part_number_btn, self.E_label, self.E_option_menu]
@@ -794,6 +804,11 @@ class Chart:
 
     def switchShowCDFVar(self, chart_name):
         self.show_cdf = not self.show_cdf
+        self.drawChart(chart_name)
+
+    def switchTwoColorMode(self, chart_name):
+        if chart_name == 'B':
+            self.B_two_color = not self.B_two_color
         self.drawChart(chart_name)
 
     def switchChartAAxisX(self):
@@ -1271,7 +1286,7 @@ class Chart:
 
         if len(X) > 0 and len(Y) > 0 and len(Z) > 0:
             self.A_poly3d = ax.bar3d(
-                X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True)
+                X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True, color=Globals.primary_color)
             self.A_poly3d._facecolors2d = self.A_poly3d._facecolor3d
             self.A_poly3d._edgecolors2d = self.A_poly3d._edgecolor3d
 
@@ -1295,7 +1310,7 @@ class Chart:
                     self.language,
                     '\n\n\n\n\n\n\n\n\n\n\n\n\nData',
                     '\n\n\n\n\n\n\n\n\n\n\n\n\nDate'))
-            ax.set_zlabel(self.A_mode_choice_list[self.A_mode_choice_nmb])
+            ax.set_zlabel(self.A_mode_choice_list[self.A_mode_choice_nmb] + ' [s]')
         else:
             ax.set_xticks([])
             ax.set_xticklabels([])
@@ -1334,7 +1349,7 @@ class Chart:
             self.language,
             '\n\n\n\n\n\n\n\n\n\n\n\n\nData',
             '\n\n\n\n\n\n\n\n\n\n\n\n\nDate')
-        self.A_chart_data['zlabel'] = self.A_mode_choice_list[self.A_mode_choice_nmb]
+        self.A_chart_data['zlabel'] = self.A_mode_choice_list[self.A_mode_choice_nmb] + ' [s]'
 
     def drawChartB(self, chart_drawn=None):
         if not isinstance(chart_drawn, type(None)):
@@ -1533,7 +1548,7 @@ class Chart:
         buttons_state = tkinter.DISABLED if self.is_loading else tkinter.NORMAL
 
         if self.B_station_nmb == 1:
-            self.B_label.pack(side=tkinter.LEFT)
+            self.B_label.pack(side=tkinter.LEFT, padx=(15, 0))
             self.B_option_menu.pack(side=tkinter.LEFT)
 
         self.B_filters_btn['text'] = filters_btn_text
@@ -1541,6 +1556,7 @@ class Chart:
             self.language, 'Szczegóły', 'Details')
         self.B_cdf_checkbtn['text'] = utils.setLabel(
             self.language, 'Pokaż dystrybuantę', 'Show CDF')
+        self.B_two_color_checkbtn['text'] = utils.setLabel(self.language, 'Tryb dwukolorowy', 'Two-color mode')
         self.B_station_btn['text'] = utils.setLabel(
             self.language, 'Stacja', 'Station')
         self.B_date_btn['text'] = utils.setLabel(self.language, 'Data', 'Date')
@@ -1554,6 +1570,7 @@ class Chart:
         self.B_filters_btn['state'] = buttons_state
         self.B_details_btn['state'] = buttons_state
         self.B_cdf_checkbtn['state'] = buttons_state
+        self.B_two_color_checkbtn['state'] = buttons_state
         self.B_station_btn['state'] = buttons_state
         self.B_date_btn['state'] = buttons_state
         self.B_shift_btn['state'] = buttons_state
@@ -1568,7 +1585,7 @@ class Chart:
         ax1 = self.B_figure.add_subplot(111)
 
         hist = ax1.bar(self.B_transition_time,
-                       self.B_engines_nmb, align='edge', width=-0.8)
+                       self.B_engines_nmb, align='edge', width=-0.8, edgecolor='k', color=Globals.primary_color)
         expected_time = ax1.axvline(x=self.B_station_nmb // 3, color='grey')
         if self.B_station_nmb == 1 and self.B_axis_choice_nmb == 1:
             ax1.set_title(
@@ -1591,6 +1608,12 @@ class Chart:
         if self.B_details_data[utils.setLabel(
                 self.language, 'Ilość wybranych silników', 'Number of selected engines')] == 0:
             ax1.yaxis.set_major_formatter(mtick.NullFormatter())
+
+        if self.B_two_color:
+            for bar, i in zip(ax1.patches, range(len(ax1.patches))):
+                if i % 2 == 1:
+                    bar.set_facecolor(Globals.secondary_color)
+
         for bar, label in zip(ax1.patches, self.B_engines_nmb):
             if label > 0:
                 rotation = 0 if len(str(label)) < 4 else 45
@@ -1605,14 +1628,14 @@ class Chart:
             for bar, label in zip(ax1.patches, self.cdf_data):
                 ax2.text(bar.get_x(), label, str(round(label)) + '%',
                          ha='right', va='bottom', color='red', weight='semibold', fontsize='small')
-            lengend_handles = [hist, cdf[0], expected_time]
+            legend_handles = [hist, cdf[0], expected_time]
             legend_labels = [self.B_engines_nmb_str,
                              self.B_cdf_str, self.B_expected_time_str]
         else:
-            lengend_handles = [hist, expected_time]
+            legend_handles = [hist, expected_time]
             legend_labels = [self.B_engines_nmb_str, self.B_expected_time_str]
-        ax1.legend(lengend_handles, legend_labels, bbox_to_anchor=(
-            1, 0.92 + 0.02 * len(lengend_handles)))
+        ax1.legend(legend_handles, legend_labels, bbox_to_anchor=(
+            1, 0.92 + 0.02 * len(legend_handles)))
 
         self.B_canvas.draw()
 
@@ -1772,7 +1795,7 @@ class Chart:
         self.C_figure.set_tight_layout(True)
         ax = self.C_figure.add_subplot(111)
 
-        ax.bar(self.C_stations, self.C_engines_ok_percentage, width=0.6)
+        ax.bar(self.C_stations, self.C_engines_ok_percentage, width=0.8, edgecolor='k', color=Globals.primary_color)
         ax.set_title(utils.setLabel(self.language, f'Procentowy udział silników z czasem OPERACJI \u2264 {Globals.operation_expected_time}s dla poszczególnych stacji',
                      f'Percentage of engines with OPERATION time \u2264 {Globals.operation_expected_time}s grouped by stations'), pad=15, weight='bold')
         ax.set_xlabel(self.C_station_str)
@@ -1946,7 +1969,7 @@ class Chart:
         self.D_figure.set_tight_layout(True)
         ax = self.D_figure.add_subplot(111)
 
-        ax.bar(self.D_stations, self.D_engines_ok_percentage, width=0.6)
+        ax.bar(self.D_stations, self.D_engines_ok_percentage, width=0.8, edgecolor='k', color=Globals.primary_color)
         ax.set_title(utils.setLabel(self.language, f'Procentowy udział silników z czasem PRZEJŚCIA \u2264 {Globals.transition_expected_time}s dla poszczególnych stacji',
                      f'Percentage of engines with TRANSITION time \u2264 {Globals.transition_expected_time}s grouped by stations'), pad=15, weight='bold')
         ax.set_xlabel(self.D_station_str)
@@ -1988,11 +2011,67 @@ class Chart:
             self.E_part_numbers = [self.part_number[i] for i in range(
                 len(self.E_part_number_selected)) if self.E_part_number_selected[i] != 0]
 
-            ###
+            engines_data = self.getColumns(['Numer seryjny', 'Date', 'Stacja', 'Operator Name', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Station', 'Operator Name', 'Actual duration [s]'], [10, 2, 1, 4, 6])[(self.getColumn('Date', 'Date', 2).isin(self.E_dates))
+                                                                                                                                                                                                                              & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.E_shifts))
+                                                                                                                                                                                                                              & (self.getColumn('Cycle', 'Cycle', 5).isin(self.E_cycles))
+                                                                                                                                                                                                                              & (self.getColumn('Numer części', 'Part Number', 9).isin(self.E_part_numbers))]
+
+            engines_data = engines_data.sort_values(by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
 
             engines_data_dict = {}
+            prev_engine = ''
+            for i in range(len(engines_data)):
+                engine = engines_data[i][0]
+                date = engines_data[i][1]
+                station = engines_data[i][2]
+                employee = engines_data[i][3]
+                duration = engines_data[i][4]
+                if engine != prev_engine:
+                    engines_data_dict[engine] = ([], [], [], [])
+                engines_data_dict[engine][0].append(date)
+                engines_data_dict[engine][1].append(station)
+                engines_data_dict[engine][2].append(employee)
+                engines_data_dict[engine][3].append(duration)
+                prev_engine = engine
+            engines_data_dict_cpy = dict(engines_data_dict)
 
-            ###
+            for key, value in engines_data_dict_cpy.items():
+                if len(value[0]) != len(self.station) or not key in self.serial_number:
+                    engines_data_dict.pop(key, None)
+
+            self.E_chart_data_dict = {}
+            if self.E_mode_choice_nmb == 0:
+                for station in self.E_stations:
+                    self.E_chart_data_dict[station] = [0, 0, 0, 0] # operation time sum | operation time len | transition time sum | transition time len
+            else:
+                for employee in self.E_employees:
+                    self.E_chart_data_dict[employee] = [0, 0, 0, 0] # operation time sum | operation time len | transition time sum | transition time len
+
+            for data in engines_data_dict.values():
+                dates = data[0]
+                durations = data[3]
+                if self.E_mode_choice_nmb == 0:
+                    keys = data[1]
+                else:
+                    keys = data[2]
+                for i in range(len(keys)):
+                    if keys[i] in self.E_chart_data_dict.keys():
+                        # Operation time
+                        self.E_chart_data_dict[keys[i]][0] += durations[i]
+                        self.E_chart_data_dict[keys[i]][1] += 1
+                        # Transition time
+                        if i == len(keys) - 1:
+                            self.E_chart_data_dict[keys[i]][2] += durations[i]
+                            self.E_chart_data_dict[keys[i]][3] += 1
+                        else:
+                            self.E_chart_data_dict[keys[i]][2] += (dates[i + 1] - dates[i]) / np.timedelta64(1, 's')
+                            self.E_chart_data_dict[keys[i]][3] += 1
+
+            for data in self.E_chart_data_dict.values():
+                if data[1] != 0:
+                    data[0] = round(data[0] / data[1], 2)
+                if data[3] != 0:
+                    data[2] = round(data[2] / data[3], 2)
 
             self.chartE_drawn = True
 
@@ -2130,13 +2209,48 @@ class Chart:
         self.E_figure.set_tight_layout(True)
         ax = self.E_figure.add_subplot(111)
 
-        ax.bar(self.E_stations, [random.uniform(0, 100)
-               for _ in range(len(self.E_stations))], width=0.6)
+        keys_list = []
+        operation_time_list = []
+        transition_time_list = []
+        passive_time_list = []
+        for key, data in self.E_chart_data_dict.items():
+            keys_list.append(key)
+            operation_time_list.append(data[0])
+            transition_time_list.append(data[2])
+            passive_time_list.append(round(data[2] - data[0], 2))
+
+        ax.bar(keys_list, operation_time_list, width=0.8, edgecolor='k', label=utils.setLabel(self.language, 'Czas operacji [s]', 'Operation time [s]'), color=Globals.primary_color)
+        ax.bar(keys_list, passive_time_list, bottom=operation_time_list, width=0.8, edgecolor='k', label=utils.setLabel(self.language, 'Czas pasywny [s]', 'Passive time [s]'), color=Globals.secondary_color)
+        if self.E_mode_choice_nmb == 1 and len(self.E_chart_data_dict.keys()) > 5:
+            if len(self.E_chart_data_dict.keys()) <= 15:
+                ax.tick_params(labelrotation=45)
+                ax.legend(loc='upper right', bbox_to_anchor=(1, 1.1))
+            else:
+                ax.tick_params(labelrotation=90)
+                ax.legend(loc='upper right', bbox_to_anchor=(1, 1.12))
+        else:
+            ax.legend(loc='upper right', bbox_to_anchor=(1, 1.08))
+        ax.set_xlabel(self.E_mode_choice_list[self.E_mode_choice_nmb])
+       
+        if self.E_details_data[utils.setLabel(
+                    self.language, 'Ilość wybranych silników', 'Number of selected engines')] == 0:
+                ax.yaxis.set_major_formatter(mtick.NullFormatter())
+
+        for bar, label, height in zip(ax.patches, operation_time_list + passive_time_list, operation_time_list + transition_time_list):
+            if self.E_mode_choice_nmb == 1:
+                rotation = 0 if len(keys_list) <= 5 else 45 if len(keys_list) <= 15 else 90
+                offset = 0 if len(keys_list) <= 5 else 0.01 * max(transition_time_list)
+            else:
+                rotation = 0
+                offset = 0
+            if label > 0:
+                ax.text(bar.get_x() + bar.get_width() / 2, height + offset, str(label) + ' s', weight='semibold', ha='center', va='bottom', rotation=rotation)
+
         ax.set_title(
             utils.setLabel(
                 self.language,
-                'Wydajność pracy',
-                'Work efficency'),
+                'Czas operacji vs czas pasywny',
+                'Operation time vs passive time'),
             pad=15,
             weight='bold')
 

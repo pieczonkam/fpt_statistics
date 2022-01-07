@@ -255,16 +255,13 @@ class CalendarWindow:
         self.showLoadingCursor(self.calendar_window)
         year = str(
             dateutil.parser.parse(
-                self.cal.get_date(),
-                dayfirst=True).year)
+                self.cal.get_date()).year)
         month = str(
             dateutil.parser.parse(
-                self.cal.get_date(),
-                dayfirst=True).month)
+                self.cal.get_date()).month)
         day = str(
             dateutil.parser.parse(
-                self.cal.get_date(),
-                dayfirst=True).day)
+                self.cal.get_date()).day)
         hour = self.hour_var.get()
         minute = self.minute_var.get()
         second = self.second_var.get()

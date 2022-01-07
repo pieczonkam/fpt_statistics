@@ -45,7 +45,7 @@ class TextWindow:
         self.text_window.bind('<Configure>', self.handleResize)
 
         self.text = scrolledtext.ScrolledText(
-            self.text_frame, font=('Courier', 12))
+            self.text_frame, font=('Courier', 12), wrap=tkinter.WORD)
         self.text.place(relx=0, rely=0, relwidth=1, relheight=1)
 
         key_max_len = 0

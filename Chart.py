@@ -78,6 +78,8 @@ class Chart:
             self.language, self.cycle, self.A_cycle_selected, page_len=250))
         self.A_part_number_btn = ttk.Button(self.A_filters_frame, text=utils.setLabel(self.language, 'Numer części', 'Part number'), command=lambda: self.checklist_window.show(
             self.language, self.part_number, self.A_part_number_selected, page_len=250))
+        self.A_serial_number_btn = ttk.Button(self.A_filters_frame, text=utils.setLabel(self.language, 'Numer seryjny', 'Serial number'), command=lambda: self.checklist_window.show(
+            self.language, self.serial_number, self.A_serial_number_selected, page_len=250))
         self.A_filters_btn.pack(side=tkinter.LEFT, padx=15)
         self.A_details_btn.pack(side=tkinter.LEFT)
         self.A_preview_btn.pack(side=tkinter.LEFT, padx=15)
@@ -89,6 +91,7 @@ class Chart:
         self.A_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.A_cycle_btn.pack(side=tkinter.LEFT)
         self.A_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.A_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         self.A_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
 
         self.A_label = ttk.Label(self.A_options_frame, text=utils.setLabel(
@@ -162,6 +165,8 @@ class Chart:
                                       command=lambda: self.checklist_window.show(self.language, self.cycle, self.B_cycle_selected, page_len=250))
         self.B_part_number_btn = ttk.Button(self.B_filters_frame, text=utils.setLabel(self.language, 'Numer części', 'Part number'),
                                             command=lambda: self.checklist_window.show(self.language, self.part_number, self.B_part_number_selected, page_len=250))
+        self.B_serial_number_btn = ttk.Button(self.B_filters_frame, text=utils.setLabel(self.language, 'Numer seryjny', 'Serial number'), command=lambda: self.checklist_window.show(
+            self.language, self.serial_number, self.B_serial_number_selected, page_len=250))
         self.B_filters_btn.pack(side=tkinter.LEFT, padx=15)
         self.B_details_btn.pack(side=tkinter.LEFT)
         self.B_cdf_checkbtn.pack(side=tkinter.LEFT, padx=15)
@@ -171,6 +176,7 @@ class Chart:
         self.B_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.B_cycle_btn.pack(side=tkinter.LEFT)
         self.B_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.B_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         ttk.Separator(self.B_filters_frame, orient='vertical').pack(
             side=tkinter.LEFT, fill=tkinter.Y)
 
@@ -213,6 +219,8 @@ class Chart:
                                       command=lambda: self.checklist_window.show(self.language, self.cycle, self.C_cycle_selected, page_len=250))
         self.C_part_number_btn = ttk.Button(self.C_filters_frame, text=utils.setLabel(self.language, 'Numer części', 'Part number'),
                                             command=lambda: self.checklist_window.show(self.language, self.part_number, self.C_part_number_selected, page_len=250))
+        self.C_serial_number_btn = ttk.Button(self.C_filters_frame, text=utils.setLabel(self.language, 'Numer seryjny', 'Serial number'), command=lambda: self.checklist_window.show(
+            self.language, self.serial_number, self.C_serial_number_selected, page_len=250))
         self.C_filters_btn.pack(side=tkinter.LEFT, padx=15)
         self.C_details_btn.pack(side=tkinter.LEFT)
         self.C_station_btn.pack(side=tkinter.LEFT, padx=15)
@@ -220,6 +228,7 @@ class Chart:
         self.C_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.C_cycle_btn.pack(side=tkinter.LEFT)
         self.C_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.C_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         ttk.Separator(self.C_filters_frame, orient='vertical').pack(
             side=tkinter.LEFT, fill=tkinter.Y)
 
@@ -251,6 +260,8 @@ class Chart:
                                       command=lambda: self.checklist_window.show(self.language, self.cycle, self.D_cycle_selected, page_len=250))
         self.D_part_number_btn = ttk.Button(self.D_filters_frame, text=utils.setLabel(self.language, 'Numer części', 'Part number'),
                                             command=lambda: self.checklist_window.show(self.language, self.part_number, self.D_part_number_selected, page_len=250))
+        self.D_serial_number_btn = ttk.Button(self.D_filters_frame, text=utils.setLabel(self.language, 'Numer seryjny', 'Serial number'), command=lambda: self.checklist_window.show(
+            self.language, self.serial_number, self.D_serial_number_selected, page_len=250))
         self.D_filters_btn.pack(side=tkinter.LEFT, padx=15)
         self.D_details_btn.pack(side=tkinter.LEFT)
         self.D_station_btn.pack(side=tkinter.LEFT, padx=15)
@@ -258,6 +269,7 @@ class Chart:
         self.D_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.D_cycle_btn.pack(side=tkinter.LEFT)
         self.D_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.D_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         ttk.Separator(self.D_filters_frame, orient='vertical').pack(
             side=tkinter.LEFT, fill=tkinter.Y)
 
@@ -345,6 +357,8 @@ class Chart:
                 self.part_number,
                 self.E_part_number_selected,
                 page_len=250))
+        self.E_serial_number_btn = ttk.Button(self.E_filters_frame, text=utils.setLabel(self.language, 'Numer seryjny', 'Serial number'), command=lambda: self.checklist_window.show(
+            self.language, self.serial_number, self.E_serial_number_selected, page_len=250))
         self.E_filters_btn.pack(side=tkinter.LEFT, padx=15)
         self.E_details_btn.pack(side=tkinter.LEFT)
         if self.E_mode_choice_nmb == 0:
@@ -355,6 +369,7 @@ class Chart:
         self.E_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.E_cycle_btn.pack(side=tkinter.LEFT)
         self.E_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         self.E_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
 
         self.E_label = ttk.Label(
@@ -548,6 +563,7 @@ class Chart:
             self.A_shift_btn.pack_forget()
             self.A_cycle_btn.pack_forget()
             self.A_part_number_btn.pack_forget()
+            self.A_serial_number_btn.pack_forget()
             self.A_sep.pack_forget()
 
             self.A_label.pack_forget()
@@ -588,6 +604,7 @@ class Chart:
             self.E_shift_btn.pack_forget()
             self.E_cycle_btn.pack_forget()
             self.E_part_number_btn.pack_forget()
+            self.E_serial_number_btn.pack_forget()
             self.E_sep.pack_forget()
 
             self.E_label.pack_forget()
@@ -604,6 +621,7 @@ class Chart:
             self.A_shift_btn.pack_forget()
             self.A_cycle_btn.pack_forget()
             self.A_part_number_btn.pack_forget()
+            self.A_serial_number_btn.pack_forget()
             self.A_sep.pack_forget()
 
             self.A_label.pack_forget()
@@ -636,6 +654,7 @@ class Chart:
             self.E_shift_btn.pack_forget()
             self.E_cycle_btn.pack_forget()
             self.E_part_number_btn.pack_forget()
+            self.E_serial_number_btn.pack_forget()
             self.E_sep.pack_forget()
 
             self.E_label.pack_forget()
@@ -707,6 +726,7 @@ class Chart:
             self.A_shift_selected = self.onesList(len(self.shift))
             self.A_cycle_selected = self.onesList(len(self.cycle))
             self.A_part_number_selected = self.onesList(len(self.part_number))
+            self.A_serial_number_selected = self.onesList(len(self.serial_number))
 
             Globals.chartA_start_date = None
             Globals.chartA_end_date = None
@@ -716,6 +736,7 @@ class Chart:
             self.B_shift_selected = self.onesList(len(self.shift))
             self.B_cycle_selected = self.onesList(len(self.cycle))
             self.B_part_number_selected = self.onesList(len(self.part_number))
+            self.B_serial_number_selected = self.onesList(len(self.serial_number))
 
             Globals.chartB_start_date = None
             Globals.chartB_end_date = None
@@ -725,6 +746,7 @@ class Chart:
             self.C_shift_selected = self.onesList(len(self.shift))
             self.C_cycle_selected = self.onesList(len(self.cycle))
             self.C_part_number_selected = self.onesList(len(self.part_number))
+            self.C_serial_number_selected = self.onesList(len(self.serial_number))
 
             Globals.chartC_start_date = None
             Globals.chartC_end_date = None
@@ -734,6 +756,7 @@ class Chart:
             self.D_shift_selected = self.onesList(len(self.shift))
             self.D_cycle_selected = self.onesList(len(self.cycle))
             self.D_part_number_selected = self.onesList(len(self.part_number))
+            self.D_serial_number_selected = self.onesList(len(self.serial_number))
 
             Globals.chartD_start_date = None
             Globals.chartD_end_date = None
@@ -744,6 +767,7 @@ class Chart:
             self.E_shift_selected = self.onesList(len(self.shift))
             self.E_cycle_selected = self.onesList(len(self.cycle))
             self.E_part_number_selected = self.onesList(len(self.part_number))
+            self.E_serial_number_selected = self.onesList(len(self.serial_number))
 
             Globals.chartE_start_date = None
             Globals.chartE_end_date = None
@@ -764,11 +788,11 @@ class Chart:
     # Switches
 
     def switchButtonsState(self):
-        buttons = [self.A_filters_btn, self.A_details_btn, self.A_preview_btn, self.A_station_btn, self.A_employee_btn, self.A_date_btn, self.A_shift_btn, self.A_cycle_btn, self.A_part_number_btn, self.A_label, self.A_option_menu, self.A_label2, self.A_option_menu2,
-                   self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_two_color_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn, self.B_label, self.B_option_menu,
-                   self.C_filters_btn, self.C_details_btn, self.C_station_btn, self.C_date_btn, self.C_shift_btn, self.C_cycle_btn, self.C_part_number_btn,
-                   self.D_filters_btn, self.D_details_btn, self.D_station_btn, self.D_date_btn, self.D_shift_btn, self.D_cycle_btn, self.D_part_number_btn,
-                   self.E_filters_btn, self.E_details_btn, self.E_station_btn, self.E_employee_btn, self.E_date_btn, self.E_shift_btn, self.E_cycle_btn, self.E_part_number_btn, self.E_label, self.E_option_menu]
+        buttons = [self.A_filters_btn, self.A_details_btn, self.A_preview_btn, self.A_station_btn, self.A_employee_btn, self.A_date_btn, self.A_shift_btn, self.A_cycle_btn, self.A_part_number_btn, self.A_serial_number_btn, self.A_label, self.A_option_menu, self.A_label2, self.A_option_menu2,
+                   self.B_filters_btn, self.B_details_btn, self.B_cdf_checkbtn, self.B_two_color_checkbtn, self.B_station_btn, self.B_date_btn, self.B_shift_btn, self.B_cycle_btn, self.B_part_number_btn, self.B_serial_number_btn, self.B_label, self.B_option_menu,
+                   self.C_filters_btn, self.C_details_btn, self.C_station_btn, self.C_date_btn, self.C_shift_btn, self.C_cycle_btn, self.C_part_number_btn, self.C_serial_number_btn,
+                   self.D_filters_btn, self.D_details_btn, self.D_station_btn, self.D_date_btn, self.D_shift_btn, self.D_cycle_btn, self.D_part_number_btn, self.D_serial_number_btn,
+                   self.E_filters_btn, self.E_details_btn, self.E_station_btn, self.E_employee_btn, self.E_date_btn, self.E_shift_btn, self.E_cycle_btn, self.E_part_number_btn, self.E_serial_number_btn, self.E_label, self.E_option_menu]
         if self.is_loading:
             self.disableButtons(buttons)
         else:
@@ -872,6 +896,7 @@ class Chart:
             self.A_shift_selected = self.onesList(len(self.shift))
             self.A_cycle_selected = self.onesList(len(self.cycle))
             self.A_part_number_selected = self.onesList(len(self.part_number))
+            self.A_serial_number_selected = self.onesList(len(self.serial_number))
             self.chartA_first_draw = False
 
         if not self.chartA_drawn:
@@ -889,11 +914,14 @@ class Chart:
                 len(self.A_cycle_selected)) if self.A_cycle_selected[i] != 0]
             self.A_part_numbers = [self.part_number[i] for i in range(
                 len(self.A_part_number_selected)) if self.A_part_number_selected[i] != 0]
+            self.A_serial_numbers = [self.serial_number[i] for i in range(
+                len(self.A_serial_number_selected)) if self.A_serial_number_selected[i] != 0]
 
             engines_data = self.getColumns(['Numer seryjny', 'Date', 'Stacja', 'Operator Name', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Station', 'Operator Name', 'Actual duration [s]'], [10, 2, 1, 4, 6])[(self.getColumn('Date', 'Date', 2).isin(self.A_dates))
                                                                                                                                                                                                                               & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.A_shifts))
                                                                                                                                                                                                                               & (self.getColumn('Cycle', 'Cycle', 5).isin(self.A_cycles))
-                                                                                                                                                                                                                              & (self.getColumn('Numer części', 'Part Number', 9).isin(self.A_part_numbers))]
+                                                                                                                                                                                                                              & (self.getColumn('Numer części', 'Part Number', 9).isin(self.A_part_numbers))
+                                                                                                                                                                                                                              & (self.getColumn('Numer seryjny', 'Serial Number', 10).isin(self.A_serial_numbers))]
 
             engines_data = engines_data.sort_values(
                 by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
@@ -1130,6 +1158,10 @@ class Chart:
             self.A_details_data[utils.setLabel(self.language,
                                                'Ilość wybranych silników',
                                                'Number of selected engines')] = len(engines_data_dict)
+            if len(engines_data_dict.keys()) <= 20:
+                self.A_details_data[utils.setLabel(self.language,
+                                                    'Wybrane silniki',
+                                                    'Selected engines')] = [i for i in engines_data_dict.keys()]                                                    
             ###############
 
             self.A_axis_choice_list = [
@@ -1225,6 +1257,8 @@ class Chart:
             self.language, 'Cykl', 'Cycle')
         self.A_part_number_btn['text'] = utils.setLabel(
             self.language, 'Numer części', 'Part number')
+        self.A_serial_number_btn['text'] = utils.setLabel(
+            self.language, 'Numer seryjny', 'Serial number')
 
         self.A_filters_btn['state'] = buttons_state
         self.A_details_btn['state'] = buttons_state
@@ -1235,6 +1269,7 @@ class Chart:
         self.A_shift_btn['state'] = buttons_state
         self.A_cycle_btn['state'] = buttons_state
         self.A_part_number_btn['state'] = buttons_state
+        self.A_serial_number_btn['state'] = buttons_state
 
         if self.A_axis_choice_nmb == 0:
             self.A_station_btn.pack(side=tkinter.LEFT, padx=15)
@@ -1244,6 +1279,7 @@ class Chart:
         self.A_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.A_cycle_btn.pack(side=tkinter.LEFT)
         self.A_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.A_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         self.A_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
 
         #######################################################################
@@ -1280,13 +1316,21 @@ class Chart:
         X, Y = _XX.ravel(), _YY.ravel()
 
         Z = []
+        X_cleared = []
+        Y_cleared = []
+
+        j = 0
         for i in range(len(Y_labels)):
             for value in self.A_avg_data_dict.values():
-                Z.append(value[i][1])
+                if value[i][1] > 0.0:
+                    X_cleared.append(X[j])
+                    Y_cleared.append(Y[j])
+                    Z.append(value[i][1])
+                j += 1
 
         if len(X) > 0 and len(Y) > 0 and len(Z) > 0:
             self.A_poly3d = ax.bar3d(
-                X, Y, np.zeros_like(Z), 0.9, 1, Z, shade=True, color=Globals.primary_color)
+                X_cleared, Y_cleared, np.zeros_like(Z), 0.9, 1, Z, shade=True, color=Globals.primary_color)
             self.A_poly3d._facecolors2d = self.A_poly3d._facecolor3d
             self.A_poly3d._edgecolors2d = self.A_poly3d._edgecolor3d
 
@@ -1332,8 +1376,8 @@ class Chart:
         self.A_canvas.draw()
 
         self.A_chart_data = {}
-        self.A_chart_data['X'] = X
-        self.A_chart_data['Y'] = Y
+        self.A_chart_data['X'] = X_cleared
+        self.A_chart_data['Y'] = Y_cleared
         self.A_chart_data['Z'] = Z
         self.A_chart_data['X_labels'] = X_labels
         self.A_chart_data['Y_labels'] = Y_labels_chosen
@@ -1361,6 +1405,7 @@ class Chart:
             self.B_shift_selected = self.onesList(len(self.shift))
             self.B_cycle_selected = self.onesList(len(self.cycle))
             self.B_part_number_selected = self.onesList(len(self.part_number))
+            self.B_serial_number_selected = self.onesList(len(self.serial_number))
             self.chartB_first_draw = False
 
         if not self.chartB_drawn:
@@ -1377,11 +1422,14 @@ class Chart:
                 len(self.B_cycle_selected)) if self.B_cycle_selected[i] != 0]
             self.B_part_numbers = [self.part_number[i] for i in range(
                 len(self.B_part_number_selected)) if self.B_part_number_selected[i] != 0]
+            self.B_serial_numbers = [self.serial_number[i] for i in range(
+                len(self.B_serial_number_selected)) if self.B_serial_number_selected[i] != 0]
 
             engines_data = self.getColumns(['Numer seryjny', 'Date', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Actual duration [s]'], [10, 2, 6])[(self.getColumn('Date', 'Date', 2).isin(self.B_dates))
                                                                                                                                                                  & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.B_shifts))
                                                                                                                                                                  & (self.getColumn('Cycle', 'Cycle', 5).isin(self.B_cycles))
-                                                                                                                                                                 & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))]
+                                                                                                                                                                 & (self.getColumn('Numer części', 'Part Number', 9).isin(self.B_part_numbers))
+                                                                                                                                                                 & (self.getColumn('Numer seryjny', 'Serial Number', 10).isin(self.B_serial_numbers))]
             engines_data = engines_data.sort_values(
                 by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
 
@@ -1479,6 +1527,10 @@ class Chart:
             self.B_details_data['  '] = ''
             self.B_details_data[utils.setLabel(
                 self.language, 'Ilość wybranych silników', 'Number of selected engines')] = len(engines_data_dict)
+            if len(engines_data_dict.keys()) <= 20:
+                self.B_details_data[utils.setLabel(self.language,
+                                                    'Wybrane silniki',
+                                                    'Selected engines')] = [i for i in engines_data_dict.keys()]
             ###############
 
             self.B_axis_choice_list = [
@@ -1566,6 +1618,8 @@ class Chart:
             self.language, 'Cykl', 'Cycle')
         self.B_part_number_btn['text'] = utils.setLabel(
             self.language, 'Numer części', 'Part number')
+        self.B_serial_number_btn['text'] = utils.setLabel(
+            self.language, 'Numer seryjny', 'Serial number')
 
         self.B_filters_btn['state'] = buttons_state
         self.B_details_btn['state'] = buttons_state
@@ -1576,6 +1630,7 @@ class Chart:
         self.B_shift_btn['state'] = buttons_state
         self.B_cycle_btn['state'] = buttons_state
         self.B_part_number_btn['state'] = buttons_state
+        self.B_serial_number_btn['state'] = buttons_state
 
         #######################################################################
 
@@ -1649,6 +1704,7 @@ class Chart:
             self.C_shift_selected = self.onesList(len(self.shift))
             self.C_cycle_selected = self.onesList(len(self.cycle))
             self.C_part_number_selected = self.onesList(len(self.part_number))
+            self.C_serial_number_selected = self.onesList(len(self.serial_number))
             self.chartC_first_draw = False
 
         if not self.chartC_drawn:
@@ -1662,6 +1718,8 @@ class Chart:
                 len(self.C_cycle_selected)) if self.C_cycle_selected[i] != 0]
             self.C_part_numbers = [self.part_number[i] for i in range(
                 len(self.C_part_number_selected)) if self.C_part_number_selected[i] != 0]
+            self.C_serial_numbers = [self.serial_number[i] for i in range(
+                len(self.C_serial_number_selected)) if self.C_serial_number_selected[i] != 0]
 
             self.C_engines_ok_percentage = [
                 0 for _ in range(self.C_station_nmb)]
@@ -1669,7 +1727,8 @@ class Chart:
             engines_data = self.getColumns(['Numer seryjny', 'Date', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Actual duration [s]'], [10, 2, 6])[(self.getColumn('Date', 'Date', 2).isin(self.C_dates))
                                                                                                                                                                  & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.C_shifts))
                                                                                                                                                                  & (self.getColumn('Cycle', 'Cycle', 5).isin(self.C_cycles))
-                                                                                                                                                                 & (self.getColumn('Numer części', 'Part Number', 9).isin(self.C_part_numbers))]
+                                                                                                                                                                 & (self.getColumn('Numer części', 'Part Number', 9).isin(self.C_part_numbers))
+                                                                                                                                                                 & (self.getColumn('Numer seryjny', 'Serial Number', 10).isin(self.C_serial_numbers))]
             engines_data = engines_data.sort_values(
                 by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
 
@@ -1736,6 +1795,10 @@ class Chart:
             self.C_details_data['  '] = ''
             self.C_details_data[utils.setLabel(
                 self.language, 'Ilość wybranych silników', 'Number of selected engines')] = len(engines_data_dict)
+            if len(engines_data_dict.keys()) <= 20:
+                self.C_details_data[utils.setLabel(self.language,
+                                                    'Wybrane silniki',
+                                                    'Selected engines')] = [i for i in engines_data_dict.keys()]
             ###############
 
         self.C_station_str = utils.setLabel(
@@ -1779,6 +1842,8 @@ class Chart:
             self.language, 'Cykl', 'Cycle')
         self.C_part_number_btn['text'] = utils.setLabel(
             self.language, 'Numer części', 'Part number')
+        self.C_serial_number_btn['text'] = utils.setLabel(
+            self.language, 'Numer seryjny', 'Serial number')
 
         self.C_filters_btn['state'] = buttons_state
         self.C_details_btn['state'] = buttons_state
@@ -1787,6 +1852,7 @@ class Chart:
         self.C_shift_btn['state'] = buttons_state
         self.C_cycle_btn['state'] = buttons_state
         self.C_part_number_btn['state'] = buttons_state
+        self.C_serial_number_btn['state'] = buttons_state
 
         #######################################################################
 
@@ -1818,6 +1884,7 @@ class Chart:
             self.D_shift_selected = self.onesList(len(self.shift))
             self.D_cycle_selected = self.onesList(len(self.cycle))
             self.D_part_number_selected = self.onesList(len(self.part_number))
+            self.D_serial_number_selected = self.onesList(len(self.serial_number))
             self.chartD_first_draw = False
 
         if not self.chartD_drawn:
@@ -1831,6 +1898,8 @@ class Chart:
                 len(self.D_cycle_selected)) if self.D_cycle_selected[i] != 0]
             self.D_part_numbers = [self.part_number[i] for i in range(
                 len(self.D_part_number_selected)) if self.D_part_number_selected[i] != 0]
+            self.D_serial_numbers = [self.serial_number[i] for i in range(
+                len(self.D_serial_number_selected)) if self.D_serial_number_selected[i] != 0]
 
             self.D_engines_ok_percentage = [
                 0 for _ in range(self.D_station_nmb)]
@@ -1838,7 +1907,8 @@ class Chart:
             engines_data = self.getColumns(['Numer seryjny', 'Date', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Actual duration [s]'], [10, 2, 6])[(self.getColumn('Date', 'Date', 2).isin(self.D_dates))
                                                                                                                                                                  & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.D_shifts))
                                                                                                                                                                  & (self.getColumn('Cycle', 'Cycle', 5).isin(self.D_cycles))
-                                                                                                                                                                 & (self.getColumn('Numer części', 'Part Number', 9).isin(self.D_part_numbers))]
+                                                                                                                                                                 & (self.getColumn('Numer części', 'Part Number', 9).isin(self.D_part_numbers))
+                                                                                                                                                                 & (self.getColumn('Numer seryjny', 'Serial Number', 10).isin(self.D_serial_numbers))]
             engines_data = engines_data.sort_values(
                 by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
 
@@ -1910,6 +1980,10 @@ class Chart:
             self.D_details_data['  '] = ''
             self.D_details_data[utils.setLabel(
                 self.language, 'Ilość wybranych silników', 'Number of selected engines')] = len(engines_data_dict)
+            if len(engines_data_dict.keys()) <= 20:
+                self.D_details_data[utils.setLabel(self.language,
+                                                    'Wybrane silniki',
+                                                    'Selected engines')] = [i for i in engines_data_dict.keys()]
             ###############
 
         self.D_station_str = utils.setLabel(
@@ -1953,6 +2027,8 @@ class Chart:
             self.language, 'Cykl', 'Cycle')
         self.D_part_number_btn['text'] = utils.setLabel(
             self.language, 'Numer części', 'Part number')
+        self.D_serial_number_btn['text'] = utils.setLabel(
+            self.language, 'Numer seryjny', 'Serial number')
 
         self.D_filters_btn['state'] = buttons_state
         self.D_details_btn['state'] = buttons_state
@@ -1961,6 +2037,7 @@ class Chart:
         self.D_shift_btn['state'] = buttons_state
         self.D_cycle_btn['state'] = buttons_state
         self.D_part_number_btn['state'] = buttons_state
+        self.D_serial_number_btn['state'] = buttons_state
 
         #######################################################################
 
@@ -1993,6 +2070,7 @@ class Chart:
             self.E_shift_selected = self.onesList(len(self.shift))
             self.E_cycle_selected = self.onesList(len(self.cycle))
             self.E_part_number_selected = self.onesList(len(self.part_number))
+            self.E_serial_number_selected = self.onesList(len(self.serial_number))
             self.chartE_first_draw = False
 
         if not self.chartE_drawn:
@@ -2010,11 +2088,14 @@ class Chart:
                 len(self.E_cycle_selected)) if self.E_cycle_selected[i] != 0]
             self.E_part_numbers = [self.part_number[i] for i in range(
                 len(self.E_part_number_selected)) if self.E_part_number_selected[i] != 0]
+            self.E_serial_numbers = [self.serial_number[i] for i in range(
+                len(self.E_serial_number_selected)) if self.E_serial_number_selected[i] != 0]
 
             engines_data = self.getColumns(['Numer seryjny', 'Date', 'Stacja', 'Operator Name', 'Aktualny czas trwania [s]'], ['Serial Number', 'Date', 'Station', 'Operator Name', 'Actual duration [s]'], [10, 2, 1, 4, 6])[(self.getColumn('Date', 'Date', 2).isin(self.E_dates))
                                                                                                                                                                                                                               & (self.getColumn('Przesunięcie', 'Shift', 11).isin(self.E_shifts))
                                                                                                                                                                                                                               & (self.getColumn('Cycle', 'Cycle', 5).isin(self.E_cycles))
-                                                                                                                                                                                                                              & (self.getColumn('Numer części', 'Part Number', 9).isin(self.E_part_numbers))]
+                                                                                                                                                                                                                              & (self.getColumn('Numer części', 'Part Number', 9).isin(self.E_part_numbers))
+                                                                                                                                                                                                                              & (self.getColumn('Numer seryjny', 'Serial Number', 10).isin(self.E_serial_numbers))]
 
             engines_data = engines_data.sort_values(by=[engines_data.columns[0], engines_data.columns[1]]).values.tolist()
 
@@ -2116,6 +2197,10 @@ class Chart:
             self.E_details_data[utils.setLabel(self.language,
                                                'Ilość wybranych silników',
                                                'Number of selected engines')] = len(engines_data_dict)
+            if len(engines_data_dict.keys()) <= 20:
+                self.E_details_data[utils.setLabel(self.language,
+                                                    'Wybrane silniki',
+                                                    'Selected engines')] = [i for i in engines_data_dict.keys()]
             ###############
 
             self.E_mode_choice_list = [
@@ -2182,6 +2267,8 @@ class Chart:
             self.language, 'Cykl', 'Cycle')
         self.E_part_number_btn['text'] = utils.setLabel(
             self.language, 'Numer części', 'Part number')
+        self.E_serial_number_btn['text'] = utils.setLabel(
+            self.language, 'Numer seryjny', 'Serial number')
 
         self.E_filters_btn['state'] = buttons_state
         self.E_details_btn['state'] = buttons_state
@@ -2191,6 +2278,7 @@ class Chart:
         self.E_shift_btn['state'] = buttons_state
         self.E_cycle_btn['state'] = buttons_state
         self.E_part_number_btn['state'] = buttons_state
+        self.E_serial_number_btn['state'] = buttons_state
 
         if self.E_mode_choice_nmb == 0:
             self.E_station_btn.pack(side=tkinter.LEFT, padx=15)
@@ -2200,6 +2288,7 @@ class Chart:
         self.E_shift_btn.pack(side=tkinter.LEFT, padx=15)
         self.E_cycle_btn.pack(side=tkinter.LEFT)
         self.E_part_number_btn.pack(side=tkinter.LEFT, padx=15)
+        self.E_serial_number_btn.pack(side=tkinter.LEFT, padx=(0, 15))
         self.E_sep.pack(side=tkinter.LEFT, fill=tkinter.Y)
 
         #######################################################################

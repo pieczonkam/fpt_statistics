@@ -223,8 +223,8 @@ class App:
         definitions_dict[' '] = ''
         definitions_dict['  '] = ''
         definitions_dict[utils.setLabel(self.language, 'Czas operacji', 'Operation time')] = utils.setLabel(self.language, 
-                                                                                            'długość wykonywania operacji na danej stacji (kolumna "Aktualny czas trwania [s])".', 
-                                                                                            'duration of operation execution at given station ("Actual duration [s] column).')
+                                                                                            'długość wykonywania operacji na danej stacji (kolumna "Aktualny czas trwania [s]").', 
+                                                                                            'duration of operation execution at given station ("Actual duration [s]" column).')
         definitions_dict['   '] = ''
         definitions_dict['    '] = ''
         definitions_dict[utils.setLabel(self.language, 'Czas pasywny', 'Passive time')] = utils.setLabel(self.language,

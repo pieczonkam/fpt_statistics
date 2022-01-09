@@ -34,6 +34,7 @@ class ChecklistWindow:
         self.checklist_window.resizable(0, 0)
         self.checklist_window.title('PMS DA')
         self.checklist_window.iconbitmap(utils.resourcePath('applogo.ico'))
+        self.checklist_window.protocol('WM_DELETE_WINDOW', self.exit)
         self.checklist_window.grab_set()
 
         self.button_frame_top1 = ttk.Frame(
@@ -77,7 +78,7 @@ class ChecklistWindow:
         self.ok_button.place(relx=0.05, rely=0.16,
                              relwidth=0.4, relheight=0.70)
         ttk.Button(self.button_frame_bottom, text=utils.setLabel(language, 'Anuluj', 'Cancel'),
-                   command=self.checklist_window.destroy).place(relx=0.55, rely=0.16, relwidth=0.4, relheight=0.70)
+                   command=self.exit).place(relx=0.55, rely=0.16, relwidth=0.4, relheight=0.70)
 
         self.select_all_var = tkinter.IntVar(
             value=1 if self.areAllSelected() else 0)
@@ -183,8 +184,8 @@ class ChecklistWindow:
             self.frame_state = 'scroll'
             self.checklist_frame_scroll.pack(side=tkinter.TOP)
         else:
-            self.checklist_frame_no_scroll.pack(side=tkinter.TOP)
             self.frame_state = 'no_scroll'
+            self.checklist_frame_no_scroll.pack(side=tkinter.TOP)
         self.button_frame_bottom.pack(side=tkinter.TOP)
 
         self.hideLoadingCursor(self.root)
@@ -203,7 +204,11 @@ class ChecklistWindow:
             self.previous_search = self.search_var.get().lower()
         elif self.previous_search != self.search_var.get().lower():
             self.previous_search = self.search_var.get().lower()
-            self.page_nmb = 1
+        else:
+            self.hideLoadingCursor(self.checklist_window)
+            return
+
+        self.page_nmb = 1
         self.pages = math.ceil(len(self.col_list_filtered) / self.page_len)
         self.height_adjusted = self.height if self.pages > 1 else self.height - 30
 
@@ -443,6 +448,11 @@ class ChecklistWindow:
         for i in range(len(self.already_selected_list)):
             self.already_selected_list[i] = self.selected_list[i]
         self.hideLoadingCursor(self.checklist_window)
+        self.exit()
+
+    def exit(self):
+        self.canvas_scroll.unbind('<Enter>')
+        self.canvas_scroll.unbind('<Leave>')
         self.checklist_window.destroy()
 
     def showLoadingCursor(self, window, min=None):

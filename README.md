@@ -1,4 +1,4 @@
-#fpt_statistics
+# fpt_statistics
 
 Python app for analysis of automotive related data (could be easily adjusted to analyze any other kind of data).
 
